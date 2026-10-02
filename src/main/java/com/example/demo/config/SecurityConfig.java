@@ -23,7 +23,7 @@ public class SecurityConfig {
                                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/users", "/register/**", "/api/**", "/dashboard/**",
-                                                                "/css/**", "/products/**", "/product-form/**",
+                                                                "/css/**", "/products/**", "/add-product/**",
                                                                 "/add-product/**", "/products/product-search")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
