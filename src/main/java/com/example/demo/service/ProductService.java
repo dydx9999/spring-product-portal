@@ -22,6 +22,9 @@ public class ProductService {
         String requestProductName = newProduct.getProductName();
         BigDecimal requestProductPrice = newProduct.getProductPrice();
         int requestProductQuantity = newProduct.getProductQuantity();
+        if (!productRepository.findByProductNameContainingIgnoreCase(requestProductName).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product already exists");
+        }
 
         newProduct.setProductName(requestProductName);
         newProduct.setProductPrice(requestProductPrice);
