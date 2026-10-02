@@ -17,12 +17,16 @@ public class Product {
     @Column(name = "available_quantity", nullable = false)
     private int productQuantity;
 
-    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity) {
+    @Column(name = "product_sku", nullable = false)
+    private String productSKU;
+
+    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU) {
 
         this.id = id;
         this.productName = productName;
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;
+        this.productSKU = productSKU;
     }
 
     public Product() {
@@ -58,6 +62,14 @@ public class Product {
 
     public void setProductQuantity(int productQuantity) {
         this.productQuantity = productQuantity;
+    }
+
+    public String getProductSKU() {
+        return productSKU;
+    }
+
+    public void setProductSKU(String productSKU) {
+        this.productSKU = productSKU;
     }
 
 }
