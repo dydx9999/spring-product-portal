@@ -18,27 +18,20 @@ public class ProductViewController {
         this.productService = productService;
     }
 
+    // Render - Product Catalog Entries
     @GetMapping
     public String listProducts(Model model) {
         model.addAttribute("products", productService.getProducts());
         return "products";
     }
 
-    // Form handling - add-product.html
-    @PostMapping("/product-form")
-    public String addProducts(@ModelAttribute("productForm") Product productForm) {
-        productService.createProduct(productForm);
-        return "redirect:/products";
-    }
-
-    // Render add-product page
-    @GetMapping("/product-form")
+    // Render - add-product.html
+    @GetMapping("/add-product")
     public String showProductForm(Model model) {
         model.addAttribute("productForm", new Product());
         return "add-product";
     }
 
-    // Product search form results product-search.html
     // Render - product-search.html
     @GetMapping("/product-search")
     public String showProductSearch(Model model) {
