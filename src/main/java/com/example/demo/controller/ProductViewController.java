@@ -39,6 +39,28 @@ public class ProductViewController {
     }
 
     // Product search form results product-search.html
+    // Render - product-search.html
+    @GetMapping("/product-search")
+    public String showProductSearch(Model model) {
+        model.addAttribute("productSearchForm", new Product());
+        return "product-search";
+    }
+
+    // Form handling - add-product.html
+    @PostMapping("/add-product")
+    public String addProducts(@ModelAttribute("productForm") Product productForm,
+            RedirectAttributes redirectAttributes) {
+        boolean exists = !productService.searchProductsByName(productForm.getProductName()).isEmpty();
+        if (exists) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Product already exists");
+        } else {
+            productService.createProduct(productForm);
+            redirectAttributes.addFlashAttribute("successMessage", "Product successfully created");
+        }
+        return "redirect:/products/add-product";
+    }
+
+    // Form handling - product-search.html
     @PostMapping("/product-search")
     public String searchProducts(@ModelAttribute("productSearchForm") Product productSearchForm, Model model) {
         model.addAttribute("searchResults", productService.searchProductsByName(productSearchForm.getProductName()));
