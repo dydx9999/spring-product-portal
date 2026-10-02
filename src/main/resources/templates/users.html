@@ -16,7 +16,6 @@
                 <th>ID</th>
                 <th>Username</th>
                 <th>Balance</th>
-                <th>Cards</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +23,6 @@
                 <td th:text="${user.id}"></td>
                 <td th:text="${user.username}"></td>
                 <td th:text="${user.balance}"></td>
-                <td th:text="${#strings.listJoin(user.cards, ', ')}"></td>
             </tr>
         </tbody>
     </table>

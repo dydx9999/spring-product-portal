@@ -5,13 +5,10 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 
-import java.util.Random;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService {
-    private final Random rand = new Random();
     private final UserRepository repository;
 
     private final PasswordEncoder passwordEncoder;
@@ -28,18 +25,6 @@ public class UserService {
         newUser.setUsername(requestUsername);
         repository.save(newUser);
         return newUser;
-    }
-
-    public User createNewCard(User user) {
-        List<String> cards = user.getCards();
-        if (cards == null) {
-            cards = new ArrayList<>();
-        }
-        String cardNumber = String.format("%014d", rand.nextInt(1000000));
-        cards.add(cardNumber);
-        user.setCards(cards);
-        repository.save(user);
-        return user;
     }
 
     public List<User> getUsers() {

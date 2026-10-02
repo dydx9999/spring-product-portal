@@ -39,19 +39,4 @@ public class UserController {
         }
     }
 
-    @PostMapping("/register/card")
-    public ResponseEntity<?> createCard(@RequestBody User user) {
-        String username = user.getUsername();
-
-        try {
-            User requestUser = repository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            User updatedUser = userService.createNewCard(requestUser);
-            return ResponseEntity.ok(updatedUser);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
-        }
-
-    }
-
 }
