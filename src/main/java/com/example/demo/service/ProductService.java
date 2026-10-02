@@ -46,4 +46,13 @@ public class ProductService {
         return productRepository.save(existingProduct);
     }
 
+    public List<Product> getProducts() {
+        return productRepository.findAll();
+    }
+
+    public Product getProductByProductName(Product productName) {
+        return productRepository.findByProductName(productName)
+                .orElseThrow(() -> new IllegalStateException("Product not found: " + productName));
+    }
+
 }
