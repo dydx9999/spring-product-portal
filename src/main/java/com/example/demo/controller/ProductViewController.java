@@ -24,24 +24,28 @@ public class ProductViewController {
         return "products";
     }
 
+    // Form handling - add-product.html
     @PostMapping("/product-form")
     public String addProducts(@ModelAttribute("productForm") Product productForm) {
         productService.createProduct(productForm);
         return "redirect:/products";
     }
 
+    // Render add-product page
     @GetMapping("/product-form")
     public String showProductForm(Model model) {
         model.addAttribute("productForm", new Product());
         return "add-product";
     }
 
+    // Product search form results product-search.html
     @PostMapping("/product-search")
-    public String searchProducts(@ModelAttribute("productSearchForm") Product productName) {
-        productService.getProductByProductName(productName);
-        return "redirect:/products";
+    public String searchProducts(@ModelAttribute("productSearchForm") Product productSearchForm, Model model) {
+        model.addAttribute("searchResults", productService.searchProductsByName(productSearchForm.getProductName()));
+        return "product-search";
     }
 
+    // Display search products page
     @GetMapping("/product-search")
     public String showProductSearch(Model model) {
         model.addAttribute("productSearchForm", new Product());
