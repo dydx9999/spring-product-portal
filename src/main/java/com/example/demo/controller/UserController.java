@@ -1,0 +1,57 @@
+package com.example.demo.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import java.util.List;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
+
+@RestController
+@RequestMapping("/api")
+public class UserController {
+    private final UserRepository repository;
+    private final UserService userService;
+
+    public UserController(UserRepository repository, UserService userService) {
+        this.repository = repository;
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public List<User> testFunction() {
+        return userService.getUsers();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> createUser(@RequestBody User newUser) {
+
+        try {
+            User updatedUser = userService.setUserDetails(newUser);
+            return ResponseEntity.ok(repository.save(updatedUser));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+        }
+    }
+
+    @PostMapping("/register/card")
+    public ResponseEntity<?> createCard(@RequestBody User user) {
+        String username = user.getUsername();
+
+        try {
+            User requestUser = repository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            User updatedUser = userService.createNewCard(requestUser);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+        }
+
+    }
+
+}
