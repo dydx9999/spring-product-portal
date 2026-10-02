@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
