@@ -43,7 +43,7 @@ public class ProductViewController {
     @PostMapping("/add-product")
     public String addProducts(@ModelAttribute("productForm") Product productForm,
             RedirectAttributes redirectAttributes) {
-        boolean exists = !productService.searchProductsByName(productForm.getProductName()).isEmpty();
+        boolean exists = productService.checkProductExists(productForm.getProductName());
         if (exists) {
             redirectAttributes.addFlashAttribute("errorMessage", "Product already exists");
         } else {
