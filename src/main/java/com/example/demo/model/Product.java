@@ -14,7 +14,7 @@ public class Product {
     private String productName;
     @Column(name = "product_price", nullable = false)
     private BigDecimal productPrice;
-    @Column(name = "avaliable_quantity", nullable = false)
+    @Column(name = "available_quantity", nullable = false)
     private int availableQuantity;
 
     public Product(Long id, String productName, BigDecimal productPrice, int availableQuantity) {
