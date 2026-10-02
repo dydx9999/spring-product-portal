@@ -21,11 +21,11 @@ public class ProductService {
     public Product createProduct(Product newProduct) {
         String requestProductName = newProduct.getProductName();
         BigDecimal requestProductPrice = newProduct.getProductPrice();
-        int requestAvailableQuantity = newProduct.getAvailableQuantity();
+        int requestProductQuantity = newProduct.getProductQuantity();
 
         newProduct.setProductName(requestProductName);
         newProduct.setProductPrice(requestProductPrice);
-        newProduct.setAvailableQuantity(requestAvailableQuantity);
+        newProduct.setProductQuantity(requestProductQuantity);
         productRepository.save(newProduct);
         return newProduct;
 
@@ -40,7 +40,7 @@ public class ProductService {
 
         existingProduct.setProductName(newProduct.getProductName());
         existingProduct.setProductPrice(newProduct.getProductPrice());
-        existingProduct.setAvailableQuantity(newProduct.getAvailableQuantity());
+        existingProduct.setProductQuantity(newProduct.getProductQuantity());
 
         return productRepository.save(existingProduct);
     }
@@ -49,9 +49,8 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product getProductByProductName(Product productName) {
-        return productRepository.findByProductName(productName)
-                .orElseThrow(() -> new IllegalStateException("Product not found: " + productName));
+    public List<Product> searchProductsByName(String productName) {
+        return productRepository.findByProductNameContainingIgnoreCase(productName == null ? "" : productName.trim());
     }
 
 }

@@ -15,18 +15,17 @@ public class Product {
     @Column(name = "product_price", nullable = false)
     private BigDecimal productPrice;
     @Column(name = "available_quantity", nullable = false)
-    private int availableQuantity;
+    private int productQuantity;
 
-    public Product(Long id, String productName, BigDecimal productPrice, int availableQuantity) {
+    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity) {
 
         this.id = id;
         this.productName = productName;
         this.productPrice = productPrice;
-        this.availableQuantity = availableQuantity;
+        this.productQuantity = productQuantity;
     }
 
     public Product() {
-
     }
 
     public Long getId() {
@@ -53,12 +52,12 @@ public class Product {
         this.productPrice = productPrice;
     }
 
-    public int getAvailableQuantity() {
-        return availableQuantity;
+    public int getProductQuantity() {
+        return productQuantity;
     }
 
-    public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
     }
 
 }

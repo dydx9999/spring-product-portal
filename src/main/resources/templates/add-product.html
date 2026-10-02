@@ -8,8 +8,13 @@
 </head>
 
 <body>
+    <nav>
+        <ul>
+            <li><a th:href="@{/products/product-form}">Add new product</a></li>
+            <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
+        </ul>
+    </nav>
     <p th:if="${param.error}" style="color: red;">Invalid product value</p>
-
     <div class="product-form">
         <form th:action="@{/products/product-form}" th:object="${productForm}" method="post">
             <p>Product Name:</p>
@@ -17,7 +22,7 @@
             <p>Product Price:</p>
             <input type="number" th:field="*{productPrice}">
             <p>Product Quantity:</p>
-            <input type="number" th:field="*{availableQuantity}">
+            <input type="number" th:field="*{productQuantity}">
             <button type="submit">Add product</button>
         </form>
     </div>
