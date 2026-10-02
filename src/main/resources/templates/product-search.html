@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+</head>
+
+<body>
+    <h1>Product Search</h1>
+    <form th:action="@{/products/product-search}" th:object="${productSearchForm}" method="post">
+        <p>Product Name</p>
+        <input type="text" th:field="*{productName}">
+        <button type="submit">Search</button>
+    </form>
+
+</body>
+
+</html>
