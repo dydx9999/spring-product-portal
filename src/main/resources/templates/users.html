@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <h1>Users</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Balance</th>
+                <th>Cards</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.balance}"></td>
+                <td th:text="${#strings.listJoin(user.cards, ', ')}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+
+        <form th:action="@{/login}" method="get">
+            <button type="submit">Login</button>
+        </form>
+
+
+
+
+        <form th:action="@{/register}" method="get">
+            <button type="submit">Register</button>
+        </form>
+
+
+
+        <form th:action="@{/dashboard}" method="get">
+            <button type="submit">View Dashboard</button>
+        </form>
+    </div>
+
+</body>
+
+</html>

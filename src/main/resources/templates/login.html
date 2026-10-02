@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+    <div>
+        <h1>User Login Portal</h1>
+    </div>
+
+    <p th:if="${param.error}" style="color: red;">Invalid username or password</p>
+
+    <form th:action="@{/login}" th:object="${loginForm}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <p>Username:</p>
+        <input type="text" th:field="*{username}">
+        <br>
+        <p>Password:</p>
+        <input type="password" th:field="*{password}">
+        <br>
+        <button type="submit">Login</button>
+    </form>
+    <form th:action="@{/users}" method="get">
+        <button type="submit">View user records</button>
+    </form>
+
+    <form action="@{/register}" method="get">
+        <button type="submit">Create new account</button>
+    </form>
+
+</body>
+
+</html>
