@@ -1,15 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.repository.ProductRepository;
-
 import java.math.BigDecimal;
-
-import org.springframework.stereotype.Service;
-import com.example.demo.model.Product;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
-
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.example.demo.model.Product;
+import com.example.demo.repository.ProductRepository;
 
 @Service
 public class ProductService {
