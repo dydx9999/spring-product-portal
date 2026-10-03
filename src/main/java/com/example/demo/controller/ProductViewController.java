@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.service.ProductService;
 import com.example.demo.model.Product;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequestMapping("/products")
@@ -60,11 +62,10 @@ public class ProductViewController {
         return "product-search";
     }
 
-    // Display search products page
-    @GetMapping("/product-search")
-    public String showProductSearch(Model model) {
-        model.addAttribute("productSearchForm", new Product());
-        return "product-search";
-    }
+    // Form Handling - produducts.html - Purchase
+    @PostMapping("/products/purchase/{id}")
+    public String purchaseProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
+        return "redirect:/products";
 
+    }
 }
