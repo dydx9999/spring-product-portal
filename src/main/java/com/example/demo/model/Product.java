@@ -14,19 +14,22 @@ public class Product {
     private String productName;
     @Column(name = "product_price", nullable = false)
     private BigDecimal productPrice;
-    @Column(name = "avaliable_quantity", nullable = false)
-    private int availableQuantity;
+    @Column(name = "available_quantity", nullable = false)
+    private int productQuantity;
 
-    public Product(Long id, String productName, BigDecimal productPrice, int availableQuantity) {
+    @Column(name = "product_sku", nullable = false)
+    private String productSKU;
+
+    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU) {
 
         this.id = id;
         this.productName = productName;
         this.productPrice = productPrice;
-        this.availableQuantity = availableQuantity;
+        this.productQuantity = productQuantity;
+        this.productSKU = productSKU;
     }
 
     public Product() {
-
     }
 
     public Long getId() {
@@ -53,12 +56,20 @@ public class Product {
         this.productPrice = productPrice;
     }
 
-    public int getAvailableQuantity() {
-        return availableQuantity;
+    public int getProductQuantity() {
+        return productQuantity;
     }
 
-    public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
+    }
+
+    public String getProductSKU() {
+        return productSKU;
+    }
+
+    public void setProductSKU(String productSKU) {
+        this.productSKU = productSKU;
     }
 
 }

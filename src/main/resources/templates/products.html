@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog</title>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a th:href="@{/products/product-form}">Add new product</a></li>
+            <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
+        </ul>
+    </nav>
+    <h1>Product Catalog</h1>
+    <h2>Products</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>SKU</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.id}"></td>
+                <td th:text="${product.productName}"></td>
+                <td th:text="${product.productPrice}"></td>
+                <td th:text="${product.productQuantity}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <a th:href="@{/products/product-form}">Add new product</a>
+    <a th:href="@{/products/product-search}">Search for a product</a>
+
+</body>
+
+</html>

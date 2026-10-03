@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a th:href="@{/products/add-product}">Add new product</a></li>
+            <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
+            <li><a th:href="@{/products}">View product catalog</a> </li>
+        </ul>
+    </nav>
+    <h1>Product Search</h1>
+    <form th:action="@{/products/product-search}" th:object="${productSearchForm}" method="post">
+        <p>Product Name</p>
+        <input type="text" th:field="*{productName}">
+        <button type="submit">Search</button>
+    </form>
+
+    <div th:if="${searchResults != null}">
+        <p th:if="${#lists.isEmpty(searchResults)}">No products found.</p>
+        <table th:unless="${#lists.isEmpty(searchResults)}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Available Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${searchResults}">
+                    <td th:text="${product.id}"></td>
+                    <td th:text="${product.productName}"></td>
+                    <td th:text="${product.productPrice}"></td>
+                    <td th:text="${product.productQuantity}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
