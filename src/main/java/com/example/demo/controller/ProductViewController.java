@@ -10,20 +10,32 @@ import com.example.demo.service.ProductService;
 import com.example.demo.model.Product;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.Authentication;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
 
 @Controller
 @RequestMapping("/products")
 public class ProductViewController {
     private final ProductService productService;
+    private final UserService userService;
 
-    public ProductViewController(ProductService productService) {
+    public ProductViewController(ProductService productService, UserService userService) {
         this.productService = productService;
+        this.userService = userService;
     }
 
-    // Render - Product Catalog Entries
+    // GET - products.html
     @GetMapping
-    public String listProducts(Model model) {
+    public String listProducts(Model model, Authentication authentication) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        model.addAttribute("isAdmin", isAdmin);
+
         model.addAttribute("products", productService.getProducts());
+        model.addAttribute("username", currentUser.getUsername());
         return "products";
     }
 
