@@ -1,0 +1,30 @@
+html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+</head>
+
+<body>
+    <div th:fragment="site-navigation">
+        <nav>
+            <ul>
+                <li> <a th:href="@{/products}">View product catalog</a> </li>
+
+                <li> <a th:href="@{/products/add-product}">Add new
+                        product</a> </li>
+                <li> <a th:href="@{/products/product-search}">Search for a
+                        product</a> </li>
+                <li> <a th:href="@{/login}">Logout</a> </li>
+            </ul>
+        </nav>
+    </div>
+    <!-- A simple footer fragment -->
+    <div th:fragment="site-footer">
+        <p>&copy; 2026 My Web Application. All rights reserved.</p>
+    </div>
+
+</body>
+
+</html>
