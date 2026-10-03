@@ -26,7 +26,7 @@ public class ProductService {
         int requestProductQuantity = newProduct.getProductQuantity();
         String generatedSKU = generateProductSKU();
 
-        if (!productRepository.findByProductNameContainingIgnoreCase(requestProductName).isEmpty()) {
+        if (!productRepository.findByProductNameIgnoreCase(requestProductName).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product already exists");
         }
 
