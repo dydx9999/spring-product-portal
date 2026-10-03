@@ -20,14 +20,19 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Name</th>
                 <th>Price</th>
-                <th>Available Quantity</th>
+                <th>Quantity</th>
+                <th>SKU</th>
+                <th>Actions</th>
+
             </tr>
         </thead>
         <tbody>
             <tr th:each="product : ${products}">
                 <td th:text="${product.id}"></td>
                 <td th:text="${product.productName}"></td>
+                <td th:text="${product.productPrice}"></td>
                 <td th:text="${product.productQuantity}"></td>
             </tr>
         </tbody>
