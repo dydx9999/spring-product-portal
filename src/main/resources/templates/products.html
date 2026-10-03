@@ -8,14 +8,11 @@
 </head>
 
 <body>
-    <nav>
-        <ul>
-            <li><a th:href="@{/products/product-form}">Add new product</a></li>
-            <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
-        </ul>
-    </nav>
+
+
+    <div th:replace="~{fragments/fragments :: site-navigation}"></div>
     <h1>Product Catalog</h1>
-    <h2>Products</h2>
+    <p>Currently logged in as: <strong><span th:text="${username}">Username</span></strong></p>
     <table>
         <thead>
             <tr>

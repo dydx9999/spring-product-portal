@@ -9,13 +9,7 @@
 </head>
 
 <body>
-    <nav>
-        <ul>
-            <li><a th:href="@{/products/add-product}">Add new product</a></li>
-            <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
-            <li><a th:href="@{/products}">View product catalog</a> </li>
-        </ul>
-    </nav>
+    <div th:replace="~{fragments/fragments :: site-navigation}"></div>
     <h1>Product Search</h1>
     <form th:action="@{/products/product-search}" th:object="${productSearchForm}" method="post">
         <p>Product Name</p>
@@ -44,6 +38,7 @@
             </tbody>
         </table>
     </div>
+    <div th:replace="~{fragments/fragments :: site-footer}"></div>
 
 </body>
 
