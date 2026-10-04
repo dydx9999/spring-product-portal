@@ -75,4 +75,26 @@ public class ProductService {
         return productRepository.existsByProductNameIgnoreCase(productName);
     }
 
+    public boolean checkProductExistsById(Long productId) {
+        return productRepository.existsById(productId);
+    }
+
+    public Product searchProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Product does not exist!"));
+    }
+
+    public void updateProductQuantity(Long productId) {
+
+        Product updatedProduct = searchProductById(productId);
+        int currentQuantity = updatedProduct.getProductQuantity();
+        if (currentQuantity <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product is out of stock");
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        updatedProduct.setProductQuantity(newQuantity);
+        productRepository.save(updatedProduct);
 }
