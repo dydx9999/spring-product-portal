@@ -74,8 +74,8 @@ public class ProductViewController {
         return "product-search";
     }
 
-    // Form Handling - produducts.html - Purchase
-    @PostMapping("/products/purchase/{id}")
+    // Form Handling - products.html - Purchase
+    @PostMapping("/purchase/{id}")
     public String purchaseProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
         return "redirect:/products";
 
