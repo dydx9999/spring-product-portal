@@ -19,7 +19,7 @@ public class SecurityConfig {
                 http
                                 // allow the H2 console to render inside a frame and skip CSRF for it and /test
                                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2/**", "/h2-console/**", "/api/**",
-                                                "/register/**"))
+                                                "/register/**", "/cart/**"))
                                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/users", "/register/**", "/api/**", "/dashboard/**",
