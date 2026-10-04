@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Cart</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <h1>Your cart</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Product Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${cart}">
+                <td th:text="${product.id}"></td>
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.quantity}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="submit">Checkout</button>
+
+    <p th:if="${successMessage}" th:text="${successMessage}" style="color:green;"></p>
+</body>
+
+</html>
