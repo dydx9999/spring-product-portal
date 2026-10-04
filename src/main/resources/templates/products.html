@@ -15,8 +15,10 @@
 
     <div th:replace="~{fragments/fragments :: site-navigation}"></div>
     <h1>Product Catalog</h1>
-    <p>Currently logged in as:</ <strong><span th:text="${username}">Username</span></strong>
-    <p>Roles:</p>
+    <p>Currently logged in as: <strong><span th:text="${username}">Username</span></strong></p>
+    <p>Roles: <strong><span th:if="${isAdmin}" th:text="Admin">Role</span></strong></p>
+    <p>Currently showing: <strong><span th:text="${productCount}">0</span> <span
+                th:text="${productCount == 1 ? 'entry' : 'entries'}">entries</span></strong></p>
 
 
     <table>
@@ -42,7 +44,6 @@
 
                 <td sec:authorize="hasRole('ADMIN')">
                     <!-- TODO: Implement product delete POST endpoint -->
-
                     <form th:action="@{/products/delete/{id}(id=${product.id})}" method="post">
                         <button type="submit">Delete</button>
                     </form>
@@ -54,12 +55,11 @@
                         <button type="submit">Purchase</button>
                     </form>
                 </td>
-
-                <span sec:authentication="name"></span>
-
-
             </tr>
         </tbody>
+        <div class="successMessage">
+            <span th:if="${successMessage}" th:text="${successMessage}"></span>
+        </div>
     </table>
     <!-- TODO: Add product catalog pagination features -->
     <div th:replace="~{fragments/fragments :: site-footer}"></div>
