@@ -18,14 +18,24 @@ public class SecurityConfig {
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
                                 // allow the H2 console to render inside a frame and skip CSRF for it and /test
-                                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2/**", "/h2-console/**", "/api/**",
-                                                "/register/**", "/cart/**"))
+                                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2/**",
+                                                "/h2-console/**",
+                                                "/api/**",
+                                                "/register/**",
+                                                "/cart/**"))
                                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/users", "/register/**", "/api/**", "/dashboard/**",
-                                                                "/css/**", "/webjars/**", "/products/**",
+                                                .requestMatchers("/users",
+                                                                "/register/**",
+                                                                "/api/**",
+                                                                "/dashboard/**",
+                                                                "/css/**",
+                                                                "/webjars/**",
+                                                                "/products/**",
                                                                 "/add-product/**",
-                                                                "/add-product/**", "/products/product-search")
+                                                                "/add-product/**",
+                                                                "/products/product-search",
+                                                                "/cart")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
