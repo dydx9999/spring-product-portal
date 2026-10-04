@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
+
 <body>
-    <nav>
-        <ul>
-            <li><a th:href="@{/products/add-product}">Add new product</a></li>
-            <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
-        </ul>
-    </nav>
+
+
+    <div th:replace="~{fragments/fragments :: site-navigation}"></div>
     <h1>Product Catalog</h1>
-    <h2>Products</h2>
+    <p>Currently logged in as:</ <strong><span th:text="${username}">Username</span></strong>
+    <p>Roles:</p>
+
+
     <table>
         <thead>
             <tr>
@@ -36,13 +37,33 @@
                 <td th:text="${product.productName}"></td>
                 <td th:text="${product.productPrice}"></td>
                 <td th:text="${product.productQuantity}"></td>
+                <td th:text="${product.productSKU}"></td>
+                <!-- TODO: display button actions based on viewer role -->
+
+                <td sec:authorize="hasRole('ADMIN')">
+                    <!-- TODO: Implement product delete POST endpoint -->
+
+                    <form th:action="@{/products/delete/{id}(id=${product.id})}" method="post">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+
+                <td sec:authorize="isAuthenticated()">
+                    <!-- TODO: Implement product purchase POST endpoint -->
+                    <form th:action="@{/products/purchase/{id}(id=${product.id})}" method="post">
+                        <button type="submit">Purchase</button>
+                    </form>
+                </td>
+
+                <span sec:authentication="name"></span>
+
+
             </tr>
         </tbody>
     </table>
+    <!-- TODO: Add product catalog pagination features -->
+    <div th:replace="~{fragments/fragments :: site-footer}"></div>
 
-
-    <a th:href="@{/products/add-product}">Add new product</a>
-    <a th:href="@{/products/product-search}">Search for a product</a>
 
 </body>
 

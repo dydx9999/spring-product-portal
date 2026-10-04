@@ -23,6 +23,17 @@ public class User {
     @Column(name = "balance")
     private BigDecimal balance = BigDecimal.ZERO;
 
+    @Column(name = "role")
+    private String role = "USER";
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public User(Long id, String username, String password, BigDecimal balance) {
         this.id = id;
         this.username = username;

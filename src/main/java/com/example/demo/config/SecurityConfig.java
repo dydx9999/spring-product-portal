@@ -31,7 +31,7 @@ public class SecurityConfig {
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .loginProcessingUrl("/login")
-                                                .defaultSuccessUrl("/dashboard", true)
+                                                .defaultSuccessUrl("/products", true)
                                                 .failureUrl("/login?error")
                                                 .permitAll());
                 return http.build();
@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 .map(user -> org.springframework.security.core.userdetails.User
                                                 .withUsername(user.getUsername())
                                                 .password(user.getPassword())
-                                                .roles("USER")
+                                                .roles(user.getRole())
                                                 .build())
                                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         }

@@ -10,13 +10,7 @@
 </head>
 
 <body>
-    <nav>
-        <ul>
-            <li><a th:href="@{/products/add-product}">Add new product</a></li>
-            <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
-            <li><a th:href="@{/products}">View product catalog</a> </li>
-        </ul>
-    </nav>
+    <div th:replace="~{fragments/fragments :: site-navigation}"></div>
     <div>
         <form th:action=" @{/products/add-product}" th:object="${productForm}" method="post">
             <p>Product Name:</p>
@@ -32,6 +26,7 @@
         <p th:if="${successMessage}" th:text="${successMessage}" style="color : green;"></p>
         <p th:if="${errorMessage}" th:text="${errorMessage}" style="color : red;"></p>
     </div>
+    <div th:replace="~{fragments/fragments :: site-footer}"></div>
 
 </body>
 

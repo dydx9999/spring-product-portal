@@ -10,8 +10,13 @@ html
     <div th:fragment="site-navigation">
         <nav>
             <ul>
-                <li><a th:href="@{/products/add-product}">Add new product</a></li>
-                <li><a th:href="@{/products/product-search}">Search for a product</a> </li>
+                <li> <a th:href="@{/products}">View product catalog</a> </li>
+
+                <li> <a th:href="@{/products/add-product}">Add new
+                        product</a> </li>
+                <li> <a th:href="@{/products/product-search}">Search for a
+                        product</a> </li>
+                <li> <a th:href="@{/login}">Logout</a> </li>
             </ul>
         </nav>
     </div>
