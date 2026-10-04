@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.repository.ProductRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +18,15 @@ import com.example.demo.service.UserService;
 @Controller
 @RequestMapping("/products")
 public class ProductViewController {
+    private final ProductRepository productRepository;
     private final ProductService productService;
     private final UserService userService;
 
-    public ProductViewController(ProductService productService, UserService userService) {
+    public ProductViewController(ProductService productService, UserService userService,
+            ProductRepository productRepository) {
         this.productService = productService;
         this.userService = userService;
+        this.productRepository = productRepository;
     }
 
     // GET - products.html
@@ -36,6 +40,7 @@ public class ProductViewController {
 
         model.addAttribute("products", productService.getProducts());
         model.addAttribute("username", currentUser.getUsername());
+        model.addAttribute("productCount", productRepository.countProducts());
         return "products";
     }
 
@@ -77,6 +82,14 @@ public class ProductViewController {
     // Form Handling - products.html - Purchase
     @PostMapping("/purchase/{id}")
     public String purchaseProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
+
+        boolean exists = productService.checkProductExistsById(productId);
+
+        if (exists) {
+            redirectAttributes.addFlashAttribute("successMessage", "Product successfully added to cart");
+            productService.updateProductQuantity(productId);
+        }
+
         return "redirect:/products";
 
     }
