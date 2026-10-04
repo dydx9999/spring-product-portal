@@ -98,4 +98,23 @@ public class ProductService {
         updatedProduct.setProductQuantity(newQuantity);
         productRepository.save(updatedProduct);
     }
+
+    public boolean productInStock(Long productId) {
+        Product checkProduct = searchProductById(productId);
+        int stock = checkProduct.getProductQuantity();
+        if (stock > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void deleteProduct(Long productId) {
+
+        try {
+            productRepository.deleteById(productId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exist!");
+        }
+    }
 }
