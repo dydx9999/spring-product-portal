@@ -82,7 +82,7 @@ public class ProductService {
     public Product searchProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Product does not exist!"));
+                        HttpStatus.NOT_FOUND, "Product does not exist!"));
     }
 
     public void updateProductQuantity(Long productId) {
@@ -97,4 +97,5 @@ public class ProductService {
 
         updatedProduct.setProductQuantity(newQuantity);
         productRepository.save(updatedProduct);
+    }
 }
