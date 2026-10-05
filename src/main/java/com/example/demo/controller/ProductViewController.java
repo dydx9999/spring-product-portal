@@ -82,14 +82,19 @@ public class ProductViewController {
     // Form Handling - products.html - Purchase
     @PostMapping("/purchase/{id}")
     public String purchaseProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
-
         boolean exists = productService.checkProductExistsById(productId);
-
-        if (exists) {
-            redirectAttributes.addFlashAttribute("successMessage", "Product successfully added to cart");
-            productService.updateProductQuantity(productId);
+        boolean isInStock = productService.productInStock(productId);
+        if (!isInStock) {
+            redirectAttributes.addFlashAttribute("outOfStockMessage", "Product is out of stock!");
         }
-
+        if (exists && isInStock) {
+            try {
+                productService.updateProductQuantity(productId);
+                redirectAttributes.addFlashAttribute("successMessage", "Product successfully added to cart");
+            } catch (ResponseStatusException exception) {
+                redirectAttributes.addFlashAttribute("outOfStockMessage", exception.getReason());
+            }
+        }
         return "redirect:/products";
 
     }
