@@ -12,6 +12,7 @@ import com.example.demo.model.Product;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 
@@ -37,10 +38,14 @@ public class ProductViewController {
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         model.addAttribute("isAdmin", isAdmin);
+        boolean isUser = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_USER"));
+        model.addAttribute("isUser", isUser);
 
         model.addAttribute("products", productService.getProducts());
         model.addAttribute("username", currentUser.getUsername());
         model.addAttribute("productCount", productRepository.countProducts());
+
         return "products";
     }
 
@@ -96,6 +101,12 @@ public class ProductViewController {
             }
         }
         return "redirect:/products";
+    }
 
+    @PostMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
+        productService.deleteProduct(productId);
+        redirectAttributes.addFlashAttribute("deleteSuccess", "Product successfully deleted!");
+        return "redirect:/products";
     }
 }
