@@ -17,13 +17,9 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
-                                // allow the H2 console to render inside a frame and skip CSRF for it and /test
-                                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2/**",
-                                                "/h2-console/**",
-                                                "/api/**",
+                                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**",
                                                 "/register/**",
                                                 "/cart/**"))
-                                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/users",
                                                                 "/register/**",
@@ -35,7 +31,10 @@ public class SecurityConfig {
                                                                 "/add-product/**",
                                                                 "/add-product/**",
                                                                 "/products/product-search",
-                                                                "/cart")
+                                                                "/cart",
+                                                                "/vendor-dashboard/**",
+                                                                "/vendor/**",
+                                                                "/home/**")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
