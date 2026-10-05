@@ -10,7 +10,6 @@
 </head>
 
 <body>
-    <div th:replace="~{fragments/fragments :: site-navigation}"></div>
     <h1>Product Search</h1>
     <form th:action="@{/products/product-search}" th:object="${productSearchForm}" method="post">
         <p>Product Name</p>
@@ -33,7 +32,7 @@
                 <tr th:each="product : ${searchResults}">
                     <td th:text="${product.id}"></td>
                     <td th:text="${product.productName}"></td>
-                    <td th:text="${product.productPrice}"></td>
+                    <td>$<span th:text="${product.productPrice}"></span></td>
                     <td th:text="${product.productQuantity}"></td>
                 </tr>
             </tbody>

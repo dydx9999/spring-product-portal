@@ -108,6 +108,7 @@ thead th {
 .product-action-form+.product-action-form {
     margin-left: 0.5rem;
 }
+
 tbody tr:nth-child(even) {
     background-color: #f9fafb;
 }

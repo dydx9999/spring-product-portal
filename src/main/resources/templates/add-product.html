@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div th:replace="~{fragments/fragments :: site-navigation}"></div>
+    <div th:replace="~{fragments/fragments :: site-navigation('add-product')}"></div>
     <div>
         <form th:action=" @{/products/add-product}" th:object="${productForm}" method="post">
             <p>Product Name:</p>

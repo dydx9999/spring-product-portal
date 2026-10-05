@@ -29,7 +29,7 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>SKU</th>
-                <th>Actions</th>
+                <th class="actions-column">Actions</th>
 
             </tr>
         </thead>
@@ -37,7 +37,7 @@
             <tr th:each="product : ${products}">
                 <td th:text="${product.id}"></td>
                 <td th:text="${product.productName}"></td>
-                <td th:text="${product.productPrice}"></td>
+                <td>$<span th:text="${product.productPrice}"></span></td>
                 <td th:text="${product.productQuantity}"></td>
                 <td th:text="${product.productSKU}"></td>
                 <!-- TODO: display button actions based on viewer role -->
