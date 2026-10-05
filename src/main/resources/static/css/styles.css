@@ -91,6 +91,23 @@ thead th {
     color: #fff;
 }
 
+.actions-column {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.product-action-form {
+    display: inline-flex;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.product-action-form+.product-action-form {
+    margin-left: 0.5rem;
+}
 tbody tr:nth-child(even) {
     background-color: #f9fafb;
 }
