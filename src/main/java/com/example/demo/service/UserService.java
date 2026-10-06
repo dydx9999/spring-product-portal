@@ -19,12 +19,19 @@ public class UserService {
     }
 
     public User setUserDetails(User newUser) {
-        String requestUsername = newUser.getUsername();
-        String requestPassword = newUser.getPassword();
-        newUser.setPassword(passwordEncoder.encode(requestPassword));
-        newUser.setUsername(requestUsername);
-        repository.save(newUser);
-        return newUser;
+        newUser.setRole("USER");
+        return saveUser(newUser);
+    }
+
+    public User setVendorDetails(User newVendor) {
+        newVendor.setRole("VENDOR");
+        return saveUser(newVendor);
+    }
+
+    private User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        repository.save(user);
+        return user;
     }
 
     public List<User> getUsers() {

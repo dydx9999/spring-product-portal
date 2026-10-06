@@ -7,23 +7,33 @@
     <title>Register</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-</head>
 
-<body>
-
-    <div>
-        <h1>User Registration</h1>
-    </div>
-
-    <form th:action="@{/register}" th:object="${userForm}" method="post">
-
-        <p>Username:</p>
-        <input type="text" name="" th:field="*{username}">
-        <br>
-        <p>Password:</p>
-        <input type="password" th:field="*{password}">
-        <br>
-        <button type="submit">Register</button>
+<body class="site-auth-page">
+    <main class="w-100" style="max-width: 420px;">
+        <div class="mb-4 text-center">
+            <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Spring Product Portal</p>
+            <h1 class="h2 mb-2">Create your account</h1>
+            <p class="text-secondary mb-0">Register to get started.</p>
+        </div>
+        <section class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/register}" th:object="${userForm}" method="post" class="site-form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-semibold">Username</label>
+                        <input id="username" type="text" class="form-control" th:field="*{username}">
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">Password</label>
+                        <input id="password" type="password" class="form-control" th:field="*{password}">
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Register</button>
+                    <p class="text-center text-secondary mt-3 mb-0">Already registered? <a th:href="@{/login}">Sign
+                            in</a></p>
+                </form>
+            </div>
+        </section>
+    </main>
+    <button type="submit">Register</button>
     </form>
 
 </body>

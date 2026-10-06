@@ -9,36 +9,67 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
-<body>
-    <h1>Product Search</h1>
-    <form th:action="@{/products/product-search}" th:object="${productSearchForm}" method="post">
-        <p>Product Name</p>
-        <input type="text" th:field="*{productName}">
-        <button type="submit">Search</button>
-    </form>
+<body class="site-page">
+    <div th:replace="~{fragments/fragments :: site-navigation('product-search')}"></div>
+    <main class="container py-4">
+        <header class="mb-4">
+            <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Catalog</p>
+            <h1 class="h2 mb-2">Search products</h1>
+            <p class="text-secondary mb-0">Find products by name.</p>
+        </header>
 
-    <div th:if="${searchResults != null}">
-        <p th:if="${#lists.isEmpty(searchResults)}">No products found.</p>
-        <table th:unless="${#lists.isEmpty(searchResults)}">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Available Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="product : ${searchResults}">
-                    <td th:text="${product.id}"></td>
-                    <td th:text="${product.productName}"></td>
-                    <td>$<span th:text="${product.productPrice}"></span></td>
-                    <td th:text="${product.productQuantity}"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        <section class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <form th:action="@{/products/product-search}" th:object="${productSearchForm}" method="post"
+                    class="site-form">
+                    <label for="productName" class="form-label fw-semibold">Product name</label>
+                    <div class="input-group">
+                        <input id="productName" type="text" class="form-control" placeholder="Enter a product name"
+                            th:field="*{productName}">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section th:if="${searchResults != null}">
+            <h2 class="h5 mb-3">Search results</h2>
+            <div th:if="${#lists.isEmpty(searchResults)}" class="alert alert-info" role="status">No products found.
+            </div>
+            <div th:unless="${#lists.isEmpty(searchResults)}" class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-striped site-table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Available quantity</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${searchResults}">
+                                <td th:text="${product.id}"></td>
+                                <td th:text="${product.productName}"></td>
+                                <td>$<span th:text="${product.productPrice}"></span></td>
+                                <td th:text="${product.productQuantity}"></td>
+                                <td>
+                                    <form class="product-action-form"
+                                        th:action="@{/products/purchase/{id}(id=${product.id})}" method="post">
+                                        <button class="btn btn-sm btn-outline-primary" type="submit">Purchase</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="container py-3">
+        <div th:replace="~{fragments/fragments :: site-footer}"></div>
+    </footer>
 
 </body>
 

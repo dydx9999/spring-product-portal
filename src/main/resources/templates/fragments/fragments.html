@@ -8,29 +8,32 @@ html
 
 <body>
     <div th:fragment="site-navigation(activePage)">
-        <nav aria-label="Main navigation">
-            <ul class="nav nav-pills">
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activePage == 'products'} ? 'active' : ''"
-                        th:href="@{/products}">View product catalog</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activePage == 'add-product'} ? 'active' : ''"
-                        th:href="@{/products/add-product}">Add new product</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activePage == 'product-search'} ? 'active' : ''"
-                        th:href="@{/products/product-search}">Search for a product</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activePage == 'login'} ? 'active' : ''"
-                        th:href="@{/login}">Logout</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activePage == 'cart'} ? 'active' : ''" th:href="@{/cart}">View
-                        cart</a>
-                </li>
-            </ul>
+        <nav class="site-navigation" aria-label="Main navigation">
+            <div class="container py-3">
+                <ul class="nav nav-pills gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'products'} ? 'active' : ''"
+                            th:href="@{/products}">View product catalog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'add-product'} ? 'active' : ''"
+                            th:href="@{/products/add-product}">Add new product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'product-search'} ? 'active' : ''"
+                            th:href="@{/products/product-search}">Search for a product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'login'} ? 'active' : ''"
+                            th:href="@{/login}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'cart'} ? 'active' : ''"
+                            th:href="@{/cart/view}">View
+                            cart</a>
+                    </li>
+                </ul>
+            </div>
         </nav>
     </div>
     <!-- A simple footer fragment -->

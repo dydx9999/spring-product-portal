@@ -1,24 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Creation Form</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vendor Dashboard</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        body.vendor-dashboard-body {
+            padding: 0;
+        }
+
+        .vendor-dashboard-body .sidebar {
+            position: fixed;
+            top: 3.5rem;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 1rem 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        }
+
+        .vendor-dashboard-body .sidebar .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 0;
+            padding: 0 1rem;
+        }
+
+        .vendor-dashboard-body .sidebar .nav-link {
+            color: #35434d;
+        }
+
+        .vendor-dashboard-body .sidebar .nav-link.active {
+            color: #fff;
+            background-color: #256b62;
+        }
+
+        .vendor-dashboard-body table {
+            max-width: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .vendor-dashboard-body .sidebar {
+                top: 3.5rem;
+                bottom: auto;
+                height: auto;
+                padding: .5rem 0;
+            }
+        }
+    </style>
 </head>
 
-<body>
-    <div th:replace="~{fragments/fragments :: site-navigation('add-product')}"></div>
+<body class="vendor-dashboard-body">
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" th:href="@{/vendor}">Spring Product Portal</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <input class="form-control form-control-dark w-100" type="search" placeholder="Search" aria-label="Search">
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <a class="nav-link px-3" th:href="@{/login}">Sign out</a>
+            </div>
+        </div>
+    </header>
 
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" th:href="@{/vendor}">
+                                <span data-feather="home"></span> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products/add-product}">
+                                <span data-feather="plus-circle"></span> New listing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="file"></span> Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products}">
+                                <span data-feather="shopping-cart"></span> Products
+                            </a>
+                        </li>
 
-    <h1>Vendor Dashboard</h1>
-    <p>Overview for: <span th:text="${vendorUsername}" </span></p>
+                    </ul>
+                </div>
+            </nav>
 
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div>
+                        <h1 class="h2">Vendor Dashboard</h1>
+                        <p class="mb-0">Overview for <span th:text="${vendorUsername}">vendor</span></p>
+                    </div>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                            <span data-feather="calendar"></span> This week
+                        </button>
+                    </div>
+                </div>
 
+                <canvas class="my-4 w-100" id="myChart" width="900" height="380"
+                    aria-label="Vendor sales chart placeholder"></canvas>
 
+                <h2>Vendor performance</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm site-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Vendor ID</th>
+                                <th scope="col">Products listed</th>
+                                <th scope="col">Sales</th>
+                                <th scope="col">Revenue</th>
+                                <th scope="col">Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="vendor : ${vendors}">
+                                <td th:text="${vendor.vendorId}">Vendor ID</td>
+                                <td>
+                                    <span th:each="sku, status : ${vendor.productsListed}"
+                                        th:text="${sku + (status.last ? '' : ', ')}">SKU</span>
+                                </td>
+                                <td th:text="${vendor.salesCount != null ? vendor.salesCount : 'Not available'}">Sales
+                                </td>
 
+                                <td th:text="${vendor.salesRevenue != null ? vendor.salesRevenue : 'Not available'}">
+                                    Revenue
+                                </td>
+                                <td th:text="${vendor.totalFeedback}">Feedback</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+        crossorigin="anonymous"></script>
+    <script>feather.replace();</script>
 </body>
 
 </html>

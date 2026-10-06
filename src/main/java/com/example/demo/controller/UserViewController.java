@@ -53,6 +53,7 @@ public class UserViewController {
         User currentUser = userService.getUserByUsername(authentication.getName());
         model.addAttribute("username", currentUser.getUsername());
         model.addAttribute("balance", currentUser.getBalance());
+        model.addAttribute("role", currentUser.getRole());
         return "dashboard";
     }
 

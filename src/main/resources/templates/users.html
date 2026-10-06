@@ -9,43 +9,46 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
-<body>
-    <h1>Users</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.id}"></td>
-                <td th:text="${user.username}"></td>
-                <td th:text="${user.balance}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
-
-        <form th:action="@{/login}" method="get">
-            <button type="submit">Login</button>
-        </form>
-
-
-
-
-        <form th:action="@{/register}" method="get">
-            <button type="submit">Register</button>
-        </form>
-
-
-
-        <form th:action="@{/dashboard}" method="get">
-            <button type="submit">View Dashboard</button>
-        </form>
-    </div>
+<body class="site-page">
+    <div th:replace="~{fragments/fragments :: site-navigation('')}"></div>
+    <main class="container py-4">
+        <header class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <div>
+                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Administration</p>
+                <h1 class="h2 mb-0">Users</h1>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a th:href="@{/login}" class="btn btn-outline-secondary">Login</a>
+                <a th:href="@{/register}" class="btn btn-primary">Register</a>
+                <a th:href="@{/dashboard}" class="btn btn-outline-secondary">View dashboard</a>
+            </div>
+        </header>
+        <section class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-striped site-table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Balance</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.balance}"></td>
+                            <td th:text="${user.role}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <footer class="container py-3">
+        <div th:replace="~{fragments/fragments :: site-footer}"></div>
+    </footer>
 
 </body>
 

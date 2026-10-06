@@ -5,65 +5,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 
-<body>
+<body class="site-page">
+    <div th:replace="~{fragments/fragments :: site-navigation('products')}"></div>
+    <main class="container py-4">
+        <header class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <div>
+                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Inventory</p>
+                <h1 class="h2 mb-2">Product catalog</h1>
+                <p class="text-secondary mb-0">Signed in as <strong><span th:text="${username}">Username</span></strong>
+                    <span class="ms-1" th:if="${isAdmin}">(Admin)</span><span class="ms-1"
+                        th:if="${isUser}">(User)</span><span class="ms-1" th:if="${isVendor}">(Vendor)</span>
+                </p>
+            </div>
+            <a th:href="@{/products/add-product}" class="btn btn-primary">Add product</a>
+        </header>
 
-
-    <div th:replace="~{fragments/fragments :: site-navigation}"></div>
-    <h1>Product Catalog</h1>
-    <p>Currently logged in as: <strong><span th:text="${username}">Username</span></strong></p>
-    <p>Roles: <strong><span th:if="${isAdmin}" th:text="Admin">Role</span></strong></p>
-    <p>Currently showing: <strong><span th:text="${productCount}">0</span> <span
-                th:text="${productCount == 1 ? 'entry' : 'entries'}">entries</span></strong></p>
-
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>SKU</th>
-                <th class="actions-column">Actions</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.id}"></td>
-                <td th:text="${product.productName}"></td>
-                <td>$<span th:text="${product.productPrice}"></span></td>
-                <td th:text="${product.productQuantity}"></td>
-                <td th:text="${product.productSKU}"></td>
-                <!-- TODO: display button actions based on viewer role -->
-
-                <td sec:authorize="hasRole('ADMIN')">
-                    <!-- TODO: Implement product delete POST endpoint -->
-                    <form th:action="@{/products/delete/{id}(id=${product.id})}" method="post">
-                        <button type="submit">Delete</button>
-                    </form>
-                </td>
-
-                <td sec:authorize="isAuthenticated()">
-                    <!-- TODO: Implement product purchase POST endpoint -->
-                    <form th:action="@{/products/purchase/{id}(id=${product.id})}" method="post">
-                        <button type="submit">Purchase</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-        <div class="successMessage">
-            <span th:if="${successMessage}" th:text="${successMessage}"></span>
+        <div th:if="${outOfStockMessage}" class="alert alert-warning" role="status" th:text="${outOfStockMessage}">
         </div>
-    </table>
-    <!-- TODO: Add product catalog pagination features -->
-    <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        <div th:if="${deleteSuccess}" class="alert alert-success" role="status" th:text="${deleteSuccess}"></div>
+        <div th:if="${successMessage}" class="alert alert-success" role="status" th:text="${successMessage}"></div>
 
+        <div class="d-flex align-items-center gap-2 mb-3">
+
+            <button type="button" class="btn btn-primary">
+                Products <span class="badge text-bg-secondary" th:text="${productCount}">0</span>
+
+
+        </div>
+
+        <section class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-striped site-table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">SKU</th>
+                            <th th:if="${isVendor}" th:text="Notes" scope="col">Notes</th>
+                            <th scope="col" class="actions-column">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${products}">
+                            <td th:text="${product.id}"></td>
+                            <td th:text="${product.productName}"></td>
+                            <td>$<span th:text="${product.productPrice}"></span></td>
+                            <td th:text="${product.productQuantity}"></td>
+                            <td th:text="${product.productSKU}"></td>
+                            <td th:if="${isVendor}" <span th:text="${product.vendorNotes}"></span></td>
+                            <td class="actions-column">
+                                <form class="product-action-form" sec:authorize="hasRole('ADMIN')"
+                                    th:action="@{/products/delete/{id}(id=${product.id})}" method="post">
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                                </form>
+                                <form class="product-action-form" sec:authorize="isAuthenticated()"
+                                    th:action="@{/products/purchase/{id}(id=${product.id})}" method="post">
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">Purchase</button>
+                                </form>
+                                <form class="product-action-form" sec:authorize="hasRole('VENDOR')"
+                                    th:action="@{/products/update/{id}(id=${product.id})}" method="post">
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+    <footer class="container py-3">
+        <div th:replace="~{fragments/fragments :: site-footer}"></div>
+    </footer>
 
 </body>
 

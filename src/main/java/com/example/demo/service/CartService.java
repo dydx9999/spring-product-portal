@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.repository.CartRepository;
 import com.example.demo.model.Cart;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.model.Product;
+import java.util.List;
 
 @Service
 public class CartService {
@@ -18,7 +21,7 @@ public class CartService {
         this.productRepository = productRepository;
     }
 
-    public Cart addCartProduct(Cart cartProduct) {
+    public Cart addProductToCart(Cart cartProduct) {
 
         Long productId = cartProduct.getProductId();
         int productQuantity = cartProduct.getQuantity();
@@ -37,8 +40,21 @@ public class CartService {
     }
 
     public boolean cartExists(Long userId) {
-        return (cartRepository
-                .findByUserId(userId) != null);
+        return !cartRepository
+                .findByUserId(userId).isEmpty();
+    }
 
+    public List<Cart> listUserCart(Long userId) {
+
+        try {
+            return cartRepository.findByUserId(userId);
+        } catch (Exception e) {
+            throw new ResponseStatusException((HttpStatus.BAD_REQUEST), "User does not exist!");
+        }
+
+    }
+
+    public List<Cart> listCarts() {
+        return cartRepository.findAll();
     }
 }

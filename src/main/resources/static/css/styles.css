@@ -2,24 +2,22 @@
     box-sizing: border-box;
 }
 
+:root {
+    --portal-ink: #20302f;
+    --portal-accent: #256b62;
+    --portal-muted: #66736f;
+    --portal-line: #dfe7e4;
+}
+
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
     background-color: #f4f6f8;
-    color: #222;
-    padding: 2rem;
+    color: var(--portal-ink);
 }
 
 h1 {
-    color: #1a2733;
-    margin-bottom: 0.5rem;
-    justify-content: center;
-}
-
-h2 {
-    color: #2c3e50;
-    font-size: 1.2rem;
-    margin-top: 2rem;
+    color: var(--portal-ink);
 }
 
 p {
@@ -27,68 +25,54 @@ p {
 }
 
 a {
-    color: #2563eb;
+    color: var(--portal-accent);
 }
 
-nav ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
-    margin: 0 0 1.5rem;
-    padding: 0;
+.site-page {
+    min-height: 100vh;
 }
 
-form {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+.site-auth-page {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
     padding: 1.5rem;
-    max-width: 360px;
-    margin-bottom: 1rem;
 }
 
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 0.75rem;
-    font-size: 1rem;
+.site-navigation {
+    border-bottom: 1px solid var(--portal-line);
+    background-color: #fff;
 }
 
-button {
-    background-color: #2563eb;
+.site-navigation .nav-link {
+    color: var(--portal-muted);
+}
+
+.site-navigation .nav-link.active {
     color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    cursor: pointer;
+    background-color: var(--portal-accent);
 }
 
-button:hover {
-    background-color: #1d4ed8;
+.page-eyebrow {
+    color: var(--portal-accent);
 }
 
-table {
-    width: 100%;
-    max-width: 800px;
-    border-collapse: collapse;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.site-form {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
 }
 
-th,
-td {
-    text-align: left;
-    padding: 0.6rem 0.8rem;
-    border-bottom: 1px solid #e5e7eb;
+.site-form .form-control {
+    margin-bottom: 0;
 }
 
-thead th {
-    background-color: #1a2733;
-    color: #fff;
+.site-table {
+    max-width: none;
+    box-shadow: none;
+    vertical-align: middle;
 }
 
 .actions-column {
@@ -107,13 +91,4 @@ thead th {
 
 .product-action-form+.product-action-form {
     margin-left: 0.5rem;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f9fafb;
-}
-
-.grid {
-    display: inline;
-    align-items: center;
 }

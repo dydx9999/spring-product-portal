@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.demo.service.CartService;
 import com.example.demo.service.ProductService;
 import com.example.demo.model.Product;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import com.example.demo.service.CartService;
 
 @Controller
 @RequestMapping("/products")
@@ -22,12 +25,14 @@ public class ProductViewController {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final UserService userService;
+    private final CartService cartService;
 
     public ProductViewController(ProductService productService, UserService userService,
-            ProductRepository productRepository) {
+            ProductRepository productRepository, CartService cartService) {
         this.productService = productService;
         this.userService = userService;
         this.productRepository = productRepository;
+        this.cartService = cartService;
     }
 
     // GET - products.html
@@ -41,6 +46,9 @@ public class ProductViewController {
         boolean isUser = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_USER"));
         model.addAttribute("isUser", isUser);
+        boolean isVendor = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_VENDOR"));
+        model.addAttribute("isVendor", isVendor);
 
         model.addAttribute("products", productService.getProducts());
         model.addAttribute("username", currentUser.getUsername());
@@ -61,6 +69,15 @@ public class ProductViewController {
     public String showProductSearch(Model model) {
         model.addAttribute("productSearchForm", new Product());
         return "product-search";
+    }
+
+    // Render - update-product.html (pre-filled form for a specific product)
+    @GetMapping("/update-product/{id}")
+    public String renderUpdateForm(@PathVariable("id") Long productId, Model model) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND));
+        model.addAttribute("productForm", product);
+        return "update-product";
     }
 
     // Form handling - add-product.html
@@ -109,4 +126,35 @@ public class ProductViewController {
         redirectAttributes.addFlashAttribute("deleteSuccess", "Product successfully deleted!");
         return "redirect:/products";
     }
+
+    @GetMapping("/home")
+    public String renderHome() {
+        return "home";
+    }
+
+    // @PostMapping("/update/{id}")
+    // public String updateProduct(@PathVariable("id") Long productId,
+    // RedirectAttributes redirectAttributes) {
+
+    // return "redirect:/update-product";
+    // }
+
+    // @GetMapping("/update-product")
+    // public String renderUpdateForm(Model model) {
+    // model.addAttribute("productForm", new Product());
+    // return "update-product";
+    // }
+
+    // Form handling - update-product.html
+    // @PostMapping("/update/{id}")
+    // public String updateProduct(@PathVariable("id") Long productId,
+    // @ModelAttribute("productForm") Product productForm,
+    // RedirectAttributes redirectAttributes) {
+    // productForm.setId(productId);
+    // productService.updateProduct(productForm);
+    // redirectAttributes.addFlashAttribute("successMessage", "Product successfully
+    // updated");
+    // return "redirect:/products";
+    // }
+
 }
