@@ -20,13 +20,22 @@ public class Product {
     @Column(name = "product_sku", nullable = false)
     private String productSKU;
 
-    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU) {
+    @Column(name = "vendor_name")
+    private String vendorName;
+
+    @Column(name = "vendor_notes")
+    private String vendorNotes;
+
+    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU,
+            String vendorNotes, String vendorName) {
 
         this.id = id;
         this.productName = productName;
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;
         this.productSKU = productSKU;
+        this.vendorNotes = vendorNotes;
+        this.vendorName = vendorName;
     }
 
     public Product() {
@@ -70,6 +79,22 @@ public class Product {
 
     public void setProductSKU(String productSKU) {
         this.productSKU = productSKU;
+    }
+
+    public String getVendorNotes() {
+        return vendorNotes;
+    }
+
+    public void setVendorNotes(String vendorNotes) {
+        this.vendorNotes = vendorNotes;
+    }
+
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
     }
 
 }
