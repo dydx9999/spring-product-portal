@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Random;
-
+import org.springframework.data.domain.Sort;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 
@@ -20,7 +20,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product newProduct) {
+    public Product createProduct(Product newProduct, String vendorName) {
         String requestProductName = newProduct.getProductName();
         BigDecimal requestProductPrice = newProduct.getProductPrice();
         int requestProductQuantity = newProduct.getProductQuantity();
@@ -34,6 +34,7 @@ public class ProductService {
         newProduct.setProductPrice(requestProductPrice);
         newProduct.setProductQuantity(requestProductQuantity);
         newProduct.setProductSKU(generatedSKU);
+        newProduct.setVendorName(vendorName);
         productRepository.save(newProduct);
         return newProduct;
 
@@ -59,6 +60,7 @@ public class ProductService {
         existingProduct.setProductName(newProduct.getProductName());
         existingProduct.setProductPrice(newProduct.getProductPrice());
         existingProduct.setProductQuantity(newProduct.getProductQuantity());
+        existingProduct.setVendorNotes(newProduct.getVendorNotes());
 
         return productRepository.save(existingProduct);
     }
