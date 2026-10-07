@@ -4,7 +4,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-
 import java.util.List;
 
 @Service
@@ -23,9 +22,9 @@ public class UserService {
         return saveUser(newUser);
     }
 
-    public User setVendorDetails(User newVendor) {
-        newVendor.setRole("VENDOR");
-        return saveUser(newVendor);
+    public User setVendorDetails(User newUser) {
+        newUser.setRole("VENDOR");
+        return saveUser(newUser);
     }
 
     private User saveUser(User user) {
