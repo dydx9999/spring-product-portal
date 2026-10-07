@@ -37,14 +37,26 @@ public class Vendor {
             "positive", 0,
             "neutral", 0));
 
-    public Vendor(Long id, Long vendorId, List<String> productsListed, Integer salesCount,
-            BigDecimal salesRevenue, Map<String, Integer> totalFeedback) {
+    @Column(name = "business_name")
+    private String businessName;
+
+    public Vendor(Long id, Long vendorId, List<String> productsListed, Integer salesCount, BigDecimal salesRevenue,
+            Map<String, Integer> totalFeedback, String businessName) {
         this.id = id;
         this.vendorId = vendorId;
         this.productsListed = productsListed;
         this.salesCount = salesCount;
         this.salesRevenue = salesRevenue;
         this.totalFeedback = totalFeedback;
+        this.businessName = businessName;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
     public Long getId() {

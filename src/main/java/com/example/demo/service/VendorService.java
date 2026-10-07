@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.VendorRepository;
 import com.example.demo.model.Vendor;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -16,5 +18,11 @@ public class VendorService {
 
     public List<Vendor> listVendors() {
         return vendorRepository.findAll();
+    }
+
+    public Vendor createVendor(Long userId, String businessName) {
+        Vendor vendor = new Vendor(null, userId, List.of(), 0, BigDecimal.ZERO,
+                new HashMap<>(), businessName);
+        return vendorRepository.save(vendor);
     }
 }
