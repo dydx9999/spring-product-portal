@@ -22,7 +22,22 @@
                         th:if="${isUser}">(User)</span><span class="ms-1" th:if="${isVendor}">(Vendor)</span>
                 </p>
             </div>
-            <a th:href="@{/products/add-product}" class="btn btn-primary">Add product</a>
+            <div>
+                <a th:if="${isVendor}" th:href="@{/products/add-product}" class="btn btn-primary">Add
+                    product</a>
+                <a th:unless="${isVendor}" th:href="@{/cart/view}" class="btn btn-primary">View cart</a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Filter
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <li><button class="dropdown-item" type="button">$ Price (Ascending)</button></li>
+                        <li><button class="dropdown-item" type="button">Another action</button></li>
+                        <li><button class="dropdown-item" type="button">Something else here</button></li>
+                    </ul>
+                </div>
+            </div>
         </header>
 
         <div th:if="${outOfStockMessage}" class="alert alert-warning" role="status" th:text="${outOfStockMessage}">
@@ -35,6 +50,9 @@
             <button type="button" class="btn btn-primary">
                 Products <span class="badge text-bg-secondary" th:text="${productCount}">0</span>
 
+            <button type="button" class="btn btn-primary">
+                Out of stock <span class="badge text-bg-danger" th:text="${outOfStockProducts}">0</span>
+            </button>
 
         </div>
 

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.repository.ProductRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +52,7 @@ public class ProductViewController {
         model.addAttribute("products", productService.getProducts());
         model.addAttribute("username", currentUser.getUsername());
         model.addAttribute("productCount", productRepository.countProducts());
+        model.addAttribute("outOfStockProducts", productRepository.countOutOfStockProducts());
 
         return "products";
     }
@@ -82,12 +83,14 @@ public class ProductViewController {
     // Form handling - add-product.html
     @PostMapping("/add-product")
     public String addProducts(@ModelAttribute("productForm") Product productForm,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes, Authentication authentication) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        String vendorName = currentUser.getUsername();
         boolean exists = productService.checkProductExists(productForm.getProductName());
         if (exists) {
             redirectAttributes.addFlashAttribute("errorMessage", "Product already exists");
         } else {
-            productService.createProduct(productForm);
+            productService.createProduct(productForm, vendorName);
             redirectAttributes.addFlashAttribute("successMessage", "Product successfully created");
         }
         return "redirect:/products/add-product";
