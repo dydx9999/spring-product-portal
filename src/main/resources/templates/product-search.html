@@ -57,8 +57,10 @@
                                 <td>$<span th:text="${product.productPrice}"></span></td>
                                 <td th:text="${product.productQuantity}"></td>
                                 <td>
-                                    <form class="product-action-form"
+                                    <form class="product-action-form" sec:authorize="isAuthenticated()"
                                         th:action="@{/products/purchase/{id}(id=${product.id})}" method="post">
+                                        <input type="number" name="quantity" value="1" min="1"
+                                            th:attr="max=${product.productQuantity}" required>
                                         <button class="btn btn-sm btn-outline-primary" type="submit">Purchase</button>
                                     </form>
                                 </td>
