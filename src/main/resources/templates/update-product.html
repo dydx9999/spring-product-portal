@@ -15,16 +15,19 @@
     <main class="container py-4">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8 col-xl-7">
+                <!-- Product update heading -->
                 <div class="mb-4">
                     <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Update inventory</p>
                     <h1 class="h2 mb-2">Update a product</h1>
                     <p class="text-secondary mb-0">Enter the product details to add it to your catalog.</p>
                 </div>
+                <!-- Product update status messages -->
 
                 <div th:if="${successMessage}" class="alert alert-success" role="status" th:text="${successMessage}">
                 </div>
                 <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
 
+                <!-- Product editing form -->
                 <section class="card border-0 shadow-sm">
                     <div class="card-body p-4 p-md-5">
                         <form th:action="@{/products/add-product}" th:object="${productForm}" method="post"

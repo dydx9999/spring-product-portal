@@ -12,11 +12,13 @@
 <body class="site-page">
     <div th:replace="~{fragments/fragments :: site-navigation('')}"></div>
     <main class="container py-4">
+        <!-- Account dashboard heading -->
         <header class="mb-4">
             <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Account</p>
             <h1 class="h2 mb-2">Your dashboard</h1>
             <p class="text-secondary mb-0">Welcome, <span th:text="${username}">User</span>.</p>
         </header>
+        <!-- Account summary -->
         <div class="row g-3">
             <div class="col-12 col-md-6">
                 <section class="card border-0 shadow-sm h-100">

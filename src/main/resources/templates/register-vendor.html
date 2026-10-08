@@ -11,11 +11,13 @@
 
 <body class="site-auth-page">
     <main class="w-100" style="max-width: 420px;">
+        <!-- Vendor registration heading -->
         <div class="mb-4 text-center">
             <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Spring Product Portal</p>
             <h1 class="h2 mb-2">Register as a vendor</h1>
             <p class="text-secondary mb-0">Set up your business account.</p>
         </div>
+        <!-- Vendor account form and alternate links -->
         <section class="card border-0 shadow-sm">
             <div class="card-body p-4 p-md-5">
                 <form th:action="@{/register/vendor}" th:object="${vendorForm}" method="post" class="site-form">

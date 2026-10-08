@@ -17,8 +17,10 @@
             <h1 class="h2 mb-2">Review your cart</h1>
             <p class="text-secondary mb-0">Review the products currently in your cart.</p>
         </header>
+        <!-- Checkout error message -->
         <div th:if="${checkoutError}" class="alert alert-danger" role="alert" th:text="${checkoutError}"></div>
         <div>
+            <!-- Order item summary -->
             <div class="card border-0 shadow-sm">
                 <div class="table-responsive">
                     <table class="table table-striped site-table mb-0">
@@ -29,7 +31,7 @@
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Unit Price</th>
                                 <th scope="col">Total</th>
-                                <th scope="col">Actions</th>
+
 
 
                             </tr>
@@ -83,9 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-end align-items-center gap-2 mt-3">
-            <form th:action="@{/cart/checkout}" method="post">
-                <button type="submit" class="btn btn-primary btn-lg">Place order</button>
+        <!-- Order total and submission controls -->
             </form>
             <a th:href="@{/cart/view}" class="btn btn-secondary btn-lg">Go back</a>
         </div>

@@ -40,6 +40,7 @@
             </div>
         </header>
 
+        <!-- Catalog status messages -->
         <div th:if="${outOfStockMessage}" class="alert alert-warning" role="status" th:text="${outOfStockMessage}">
         </div>
         <div th:if="${deleteSuccess}" class="alert alert-success" role="status" th:text="${deleteSuccess}"></div>
@@ -58,6 +59,7 @@
 
         </div>
 
+        <!-- Product catalog table and actions -->
         <section class="card border-0 shadow-sm">
             <div class="table-responsive">
                 <table class="table table-striped site-table mb-0">

@@ -18,6 +18,7 @@
             <p class="text-secondary mb-0">Find products by name.</p>
         </header>
 
+        <!-- Product name search form -->
         <section class="card border-0 shadow-sm mb-4">
             <div class="card-body p-4">
                 <form th:action="@{/products/product-search}" th:object="${productSearchForm}" method="post"
@@ -32,6 +33,7 @@
             </div>
         </section>
 
+        <!-- Product search results -->
         <section th:if="${searchResults != null}">
             <h2 class="h5 mb-3">Search results</h2>
             <div th:if="${#lists.isEmpty(searchResults)}" class="alert alert-info" role="status">No products found.
