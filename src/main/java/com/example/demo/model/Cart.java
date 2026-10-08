@@ -21,20 +21,52 @@ public class Cart {
     @Column(name = "quantity")
     private int quantity;
 
+    private String vendorName;
+
+    public Cart(Long id, Long userId, Long productId, int quantity, String vendorName) {
+        this.id = id;
+        this.userId = userId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.vendorName = vendorName;
+    }
+
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
+
+    private String vendorName;
+
+    public Cart(Long id, Long userId, Long productId, int quantity, String vendorName) {
+        this.id = id;
+        this.userId = userId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.vendorName = vendorName;
+    }
+
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
+
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getUserId() {
         return userId;
-    }
-
-    public void setUser_id(Long userId) {
-        this.userId = userId;
     }
 
     public Long getProductId() {
@@ -50,13 +82,6 @@ public class Cart {
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Cart(Long id, Long userId, Long productId, int quantity) {
-        this.id = id;
-        this.userId = userId;
-        this.productId = productId;
         this.quantity = quantity;
     }
 
