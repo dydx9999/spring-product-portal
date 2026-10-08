@@ -39,24 +39,6 @@ public class Cart {
         this.vendorName = vendorName;
     }
 
-    private String vendorName;
-
-    public Cart(Long id, Long userId, Long productId, int quantity, String vendorName) {
-        this.id = id;
-        this.userId = userId;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.vendorName = vendorName;
-    }
-
-    public String getVendorName() {
-        return vendorName;
-    }
-
-    public void setVendorName(String vendorName) {
-        this.vendorName = vendorName;
-    }
-
     public Long getId() {
         return id;
     }
