@@ -66,18 +66,7 @@
 
 
                                 </td>
-                                <td>
-                                    <form th:action="@{/cart/delete/{id}(id=${cartItem.productId})}" method="post">
-                                        <button type="submit" class="btn btn-primary">Remove
-                                        </button>
-                                    </form>
-                                    <form class="d-flex gap-2 mt-2"
-                                        th:action="@{/cart/update/{id}(id=${cartItem.productId})}" method="post">
-                                        <input type="number" class="form-control text-center" style="max-width: 100px;"
-                                            name="quantity" th:value="${cartItem.quantity}" min="1" required>
-                                        <button type="submit" class="btn btn-outline-primary">Update</button>
-                                    </form>
-                                </td>
+
 
                             </tr>
                         </tbody>
@@ -86,8 +75,16 @@
             </div>
         </div>
         <!-- Order total and submission controls -->
+        <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+            <div class="align-content-center">
+                <div>
+                    <p>Your total: $<span th:text="${#numbers.formatDecimal(cartTotal, 1, 2)}"></span></p>
+                </div>
+            </div>
+            <form th:action=" @{/cart/checkout}" method="post">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Place order</button>
             </form>
-            <a th:href="@{/cart/view}" class="btn btn-secondary btn-lg">Go back</a>
+            <a th:href="@{/cart/view}" class="btn btn-secondary btn-lg btn-block">Go back</a>
         </div>
 
 
