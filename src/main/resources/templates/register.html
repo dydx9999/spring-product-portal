@@ -10,6 +10,7 @@
 
 <body class="site-auth-page">
     <main class="w-100" style="max-width: 420px;">
+        <!-- Account registration heading -->
         <div class="mb-4 text-center">
             <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Spring Product Portal</p>
             <h1 class="h2 mb-2">Create your account</h1>
@@ -29,7 +30,13 @@
                     </div>
                     <button class="btn btn-primary w-100" type="submit">Register</button>
                     <p class="text-center text-secondary mt-3 mb-0">Already registered? <a th:href="@{/login}">Sign
-                            in</a></p>
+                            in</a>
+                    </p>
+                    <p class="text-center text-secondary mt-3 mb-0">Registering as a business? <a
+                            th:href="@{/register/vendor}">Vendor
+                            Sign Up Portal</a>
+                    </p>
+
                 </form>
             </div>
         </section>
