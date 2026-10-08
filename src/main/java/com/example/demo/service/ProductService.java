@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -119,4 +120,33 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exist!");
         }
     }
+
+    public List<Product> getFilteredProducts(String filter) {
+        List<Product> filteredProducts = new ArrayList<>();
+
+        switch (filter) {
+            case "priceAsc":
+                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.ASC, "productPrice"));
+                break;
+            case "priceDesc":
+                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.DESC, "productPrice"));
+                break;
+            case "outOfStockProductsFilter":
+                filteredProducts = productRepository.findOutOfStockProducts();
+                break;
+            case "SKUAsc":
+                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.ASC, "productSKU"));
+                break;
+            case "SKUDesc":
+                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.DESC, "productSKU"));
+                break;
+
+            default:
+                filteredProducts = productRepository.findAll();
+
+        }
+
+        return filteredProducts;
+    }
+
 }
