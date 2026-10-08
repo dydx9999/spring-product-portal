@@ -32,10 +32,8 @@ public class SecurityConfig {
                                                                 "/add-product/**",
                                                                 "/add-product/**",
                                                                 "/products/product-search",
-                                                                "/cart",
-                                                                "/vendor-dashboard/**",
-                                                                "/home/**",
-                                                                "/cart/**")
+                                                                                                                                "/vendor-dashboard/**",
+                                                                "/home/**", "/orders/**")
                                                 .permitAll()
                                                 .requestMatchers("/vendor/**").hasRole("VENDOR")
                                                 .anyRequest().authenticated())
@@ -50,7 +48,13 @@ public class SecurityConfig {
                                                                         + (vendor ? "/vendor" : "/products"));
                                                 })
                                                 .failureUrl("/login?error")
-                                                .permitAll());
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login?logout")
+                                                .invalidateHttpSession(true)
+                                                .clearAuthentication(true)
+                                                .deleteCookies("JSESSIONID"));
                 return http.build();
         }
 
