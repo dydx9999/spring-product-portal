@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.UserService;
+import com.example.demo.service.VendorService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +54,7 @@ public class UserViewController {
         userService.setUserDetails(userForm);
         return "redirect:/users";
     }
+
     @PostMapping("/register/vendor")
     public String registerVendor(@ModelAttribute("vendorForm") VendorFormDTO vendorForm) {
         User newUser = new User();
