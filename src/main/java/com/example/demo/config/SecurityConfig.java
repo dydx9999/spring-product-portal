@@ -32,8 +32,9 @@ public class SecurityConfig {
                                                                 "/add-product/**",
                                                                 "/add-product/**",
                                                                 "/products/product-search",
-                                                                                                                                "/vendor-dashboard/**",
-                                                                "/home/**", "/orders/**")
+                                                                "/vendor-dashboard/**",
+                                                                "/home/**",
+                                                                "/orders/**", "/user/**")
                                                 .permitAll()
                                                 .requestMatchers("/vendor/**").hasRole("VENDOR")
                                                 .anyRequest().authenticated())
