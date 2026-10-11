@@ -121,7 +121,7 @@ public class ProductService {
         }
     }
 
-    public List<Product> getFilteredProducts(String filter) {
+    public List<Product> getFilteredProducts(String filter, String businessName) {
         List<Product> filteredProducts = new ArrayList<>();
 
         switch (filter) {
@@ -139,6 +139,16 @@ public class ProductService {
                 break;
             case "SKUDesc":
                 filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.DESC, "productSKU"));
+                break;
+            case "vendorAsc":
+                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.ASC, "vendorName"));
+                break;
+            case "vendorDesc":
+                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.DESC, "vendorName"));
+                break;
+            case "outOfStockCurrentVendor":
+                filteredProducts = productRepository.outOfStockProductsCurrentVendor(
+                        businessName, Sort.by(Sort.Direction.ASC, "productName"));
                 break;
 
             default:

@@ -10,52 +10,109 @@
 </head>
 
 
-<body class="site-page">
-    <div th:replace="~{fragments/fragments :: site-navigation('products')}"></div>
-    <main class="container py-4">
-        <header class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-            <div>
-                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Inventory</p>
-                <h1 class="h2 mb-2">Product catalog</h1>
-                <p class="text-secondary mb-0">Signed in as <strong><span th:text="${username}">Username</span></strong>
-                    <span class="ms-1" th:if="${isAdmin}">(Admin)</span><span class="ms-1"
-                        th:if="${isUser}">(User)</span><span class="ms-1" th:if="${isVendor}">(Vendor)</span>
-                </p>
-            </div>
-            <div>
-                <a th:if="${isVendor}" th:href="@{/products/add-product}" class="btn btn-primary">Add
-                    product</a>
-                <a th:unless="${isVendor}" th:href="@{/cart/view}" class="btn btn-primary">View cart</a>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Filter
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <li><button class="dropdown-item" type="button">$ Price (Ascending)</button></li>
-                        <li><button class="dropdown-item" type="button">Another action</button></li>
-                        <li><button class="dropdown-item" type="button">Something else here</button></li>
-                    </ul>
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('products')}"></div>
+        <main class="container py-4">
+            <header
+                class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+                <div>
+                    <p
+                        class="page-eyebrow text-uppercase small fw-semibold mb-2">Inventory</p>
+                    <h1 class="h2 mb-2">Product catalog</h1>
+                    <p class="text-secondary mb-0">Signed in as <strong><span
+                                th:text="${username}">Username</span></strong>
+                        <span class="ms-1"
+                            th:if="${isAdmin}">(Admin)</span><span class="ms-1"
+                            th:if="${isUser}">(User)</span><span class="ms-1"
+                            th:if="${isVendor}">(Vendor)</span>
+                    </p>
                 </div>
+                <div>
+
+                    <a th:if="${isVendor}" th:href="@{/products/add-product}"
+                        class="btn btn-primary">Add
+                        product</a>
+                    <a th:unless="${isVendor}" th:href="@{/cart/view}"
+                        class="btn btn-primary">View cart</a>
+                </div>
+            </header>
+
+            <!-- Product view filter controls -->
+            <section
+                class="d-flex flex-wrap align-items-end justify-content-between gap-3 py-3 mb-4 border-top border-bottom"
+                aria-label="Catalog sorting">
+                <div>
+                    <p
+                        class="text-uppercase small fw-semibold text-secondary mb-1">Catalog
+                        sorting</p>
+                    <p class="text-secondary small mb-0">Choose a price order
+                        for the product list.</p>
+                </div>
+                <form th:action="@{/products}" method="get"
+                    class="d-flex flex-wrap align-items-end gap-2">
+                    <input id="inStockProducts" type="checkbox"
+                        name="inStockOnly" value="true"
+                        th:checked="${inStockOnly}"
+                        onchange="this.form.submit()">
+                    <label for="inStockProducts">Hide out of stock
+                        products</label>
+                    <div>
+                        <label for="product-sort" class="form-label mb-1">Sort
+                            by</label>
+                        <select id="product-sort" class="form-select w-auto"
+                            name="filter">
+                            <option value="priceAsc">Price: low to high</option>
+                            <option value="priceDesc">Price: high to
+                                low</option>
+                            <option value="SKUAsc">Product SKU: low to
+                                high</option>
+                            <option value="SKUDesc">Product SKU: high to
+                                low</option>
+                            <option value="vendorAsc">Vendor name: A to
+                                Z</option>
+                            <option value="vendorDesc">Vendor name: Z to A
+                            </option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary"
+                        type="submit">Apply</button>
+
+                    <a th:href="@{/products}" class="btn btn-primary">Reset</a>
+
+                </form>
+            </section>
+
+            <!-- Catalog status messages -->
+            <div th:if="${outOfStockMessage}" class="alert alert-warning"
+                role="status" th:text="${outOfStockMessage}">
             </div>
-        </header>
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert"
+                th:text="${errorMessage}"></div>
+            <div th:if="${deleteSuccess}" class="alert alert-success"
+                role="status" th:text="${deleteSuccess}"></div>
+            <div th:if="${successMessage}" class="alert alert-success"
+                role="status" th:text="${successMessage}"></div>
 
-        <!-- Catalog status messages -->
-        <div th:if="${outOfStockMessage}" class="alert alert-warning" role="status" th:text="${outOfStockMessage}">
-        </div>
-        <div th:if="${deleteSuccess}" class="alert alert-success" role="status" th:text="${deleteSuccess}"></div>
-        <div th:if="${successMessage}" class="alert alert-success" role="status" th:text="${successMessage}"></div>
+            <!-- Product counts and stock filter -->
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <!-- Product catalog count  -->
+                <form action method="get"> <button name="filter" value
+                        type="submit"
+                        class="btn btn-primary shadow-lg">
+                        Products <span class="badge text-bg-success"
+                            th:text="${productCount}">0</span>
+                    </button></form>
 
-        <div class="d-flex align-items-center gap-2 mb-3">
-            <!-- Product catalog count  -->
-            <button type="button" class="btn btn-primary">
-                Products <span class="badge text-bg-secondary" th:text="${productCount}">0</span>
-            </button>
-            <!-- Out of stock products alert  -->
-
-            <button type="button" class="btn btn-primary">
-                Out of stock <span class="badge text-bg-danger" th:text="${outOfStockProducts}">0</span>
-            </button>
+                <!-- Out of stock products alert  -->
+                <form th:action="@{/products}" method="get">
+                    <button type="submit" name="filter"
+                        value="outOfStockProductsFilter"
+                        class="btn btn-primary shadow-lg">
+                        Out of stock <span class="badge text-bg-danger"
+                            th:text="${outOfStockProducts}">0</span>
+                    </button>
+                </form>
 
         </div>
 
