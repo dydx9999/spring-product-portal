@@ -94,4 +94,178 @@ public class CartService {
     public List<Cart> listCarts() {
         return cartRepository.findAll();
     }
+
+    @Transactional
+    public void removeCartItem(Long productId) {
+
+        try {
+            cartRepository.deleteByProductId(productId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exist!");
+        }
+    }
+
+    @Transactional
+    public void updateCartQuantity(Long productId, int quantity, Long userId) {
+        if (quantity <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity must be positive");
+        }
+
+        List<Cart> matchingItems = cartRepository.findByProductIdUserId(productId, userId);
+        if (matchingItems.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found");
+        }
+        Cart cart = matchingItems.get(0);
+        int currentQuantity = matchingItems.stream().mapToInt(Cart::getQuantity).sum();
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+
+        int quantityDifference = quantity - currentQuantity;
+        if (quantityDifference > product.getProductQuantity()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Insufficient stock");
+        }
+
+        product.setProductQuantity(product.getProductQuantity() - quantityDifference);
+        cart.setQuantity(quantity);
+        productRepository.save(product);
+        cartRepository.save(cart);
+        if (matchingItems.size() > 1) {
+            cartRepository.deleteAll(matchingItems.subList(1, matchingItems.size()));
+        }
+    }
+
+    @Transactional
+    public void processOrder(Long userId, UUID orderId) {
+        List<Cart> cart = cartRepository.findByUserId(userId);
+        if (cart.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cart is empty");
+        }
+
+        Map<Long, List<OrderItem>> orderItemsByVendorId = new LinkedHashMap<>();
+        for (Cart cartItem : cart) {
+            Product product = productRepository.findById(cartItem.getProductId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+            if (product.getVendorName() == null || product.getVendorName().isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "A cart product is not associated with a vendor");
+            }
+
+            List<Vendor> matchingVendors = vendorRepository
+                    .findAllByBusinessName(product.getVendorName());
+            if (matchingVendors.size() != 1) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Could not identify a unique vendor for a cart product");
+            }
+            Long vendorId = matchingVendors.get(0).getId();
+            OrderItem orderItem = new OrderItem(null, null, product.getProductPrice(),
+                    product.getProductName(), cartItem.getQuantity());
+            orderItemsByVendorId.computeIfAbsent(vendorId, ignored -> new ArrayList<>())
+                    .add(orderItem);
+        }
+
+        LocalDateTime orderCreatedAt = LocalDateTime.now();
+        List<Order> orders = orderItemsByVendorId.keySet().stream()
+                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt))
+                .toList();
+
+        List<Order> savedOrders = orderRepository.saveAll(orders);
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (Order order : savedOrders) {
+            List<OrderItem> vendorOrderItems = orderItemsByVendorId.get(order.getVendorId());
+            for (OrderItem orderItem : vendorOrderItems) {
+                orderItem.setOrderId(order.getId());
+            }
+            orderItems.addAll(vendorOrderItems);
+        }
+        orderItemRepository.saveAll(orderItems);
+        cartRepository.deleteAll(cart);
+    }
+
+    @Transactional
+    public void removeCartItem(Long productId) {
+
+        try {
+            cartRepository.deleteByProductId(productId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exist!");
+        }
+    }
+
+    @Transactional
+    public void updateCartQuantity(Long productId, int quantity, Long userId) {
+        if (quantity <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity must be positive");
+        }
+
+        List<Cart> matchingItems = cartRepository.findByProductIdUserId(productId, userId);
+        if (matchingItems.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found");
+        }
+        Cart cart = matchingItems.get(0);
+        int currentQuantity = matchingItems.stream().mapToInt(Cart::getQuantity).sum();
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+
+        int quantityDifference = quantity - currentQuantity;
+        if (quantityDifference > product.getProductQuantity()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Insufficient stock");
+        }
+
+        product.setProductQuantity(product.getProductQuantity() - quantityDifference);
+        cart.setQuantity(quantity);
+        productRepository.save(product);
+        cartRepository.save(cart);
+        if (matchingItems.size() > 1) {
+            cartRepository.deleteAll(matchingItems.subList(1, matchingItems.size()));
+        }
+    }
+
+    @Transactional
+    public void processOrder(Long userId, UUID orderId) {
+        List<Cart> cart = cartRepository.findByUserId(userId);
+        if (cart.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cart is empty");
+        }
+
+        Map<Long, List<OrderItem>> orderItemsByVendorId = new LinkedHashMap<>();
+        for (Cart cartItem : cart) {
+            Product product = productRepository.findById(cartItem.getProductId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+            if (product.getVendorName() == null || product.getVendorName().isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "A cart product is not associated with a vendor");
+            }
+
+            List<Vendor> matchingVendors = vendorRepository
+                    .findAllByBusinessName(product.getVendorName());
+            if (matchingVendors.size() != 1) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Could not identify a unique vendor for a cart product");
+            }
+            Long vendorId = matchingVendors.get(0).getId();
+            OrderItem orderItem = new OrderItem(null, null, product.getProductPrice(),
+                    product.getProductName(), cartItem.getQuantity());
+            orderItemsByVendorId.computeIfAbsent(vendorId, ignored -> new ArrayList<>())
+                    .add(orderItem);
+        }
+
+        LocalDateTime orderCreatedAt = LocalDateTime.now();
+        List<Order> orders = orderItemsByVendorId.keySet().stream()
+                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt))
+                .toList();
+
+        List<Order> savedOrders = orderRepository.saveAll(orders);
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (Order order : savedOrders) {
+            List<OrderItem> vendorOrderItems = orderItemsByVendorId.get(order.getVendorId());
+            for (OrderItem orderItem : vendorOrderItems) {
+                orderItem.setOrderId(order.getId());
+            }
+            orderItems.addAll(vendorOrderItems);
+        }
+        orderItemRepository.saveAll(orderItems);
+        cartRepository.deleteAll(cart);
+    }
 }
