@@ -18,4 +18,10 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT c FROM Cart c WHERE c.productId = :productId AND c.userId = :userId ORDER BY c.id")
     List<Cart> findByProductIdUserId(@Param("productId") Long productId, @Param("userId") Long userId);
 
+    @Query("SELECT COUNT(c) FROM Cart c WHERE c.productId = :productId")
+    int countProductsInCarts(@Param("productId") Long productId);
+
+    @Query("SELECT COUNT(DISTINCT c.userId) FROM Cart c WHERE c.productId = :productId")
+    long countDistinctUsersWithProduct(@Param("productId") Long productId);
+
 }
