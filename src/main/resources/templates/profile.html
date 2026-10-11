@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order History</title>
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
+
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('profile')}"></div>
+
+        <h1
+            class="d-flex align-items-center gap-2 text-decoration-none"
+            th:if="${signedIn}" th:href="@{/user/profile}"
+            aria-label="View signed-in user profile">
+            <span class="avatar-image" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <span class="d-flex flex-column">
+                <span class="fw-semibold"
+                    th:text="${signedInUsername}">Username</span>
+                <small class="text-muted"
+                    th:text="${signedInRole}">Role</small>
+            </span>
+        </h1>
