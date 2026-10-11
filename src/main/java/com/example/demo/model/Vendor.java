@@ -13,8 +13,8 @@ public class Vendor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "vendor_id")
-    private Long vendorId;
+    @Column(name = "user_id")
+    private Long userId;
 
     @ElementCollection
     @CollectionTable(name = "vendor_products_listed", joinColumns = @JoinColumn(name = "vendor_pk"))
@@ -40,10 +40,10 @@ public class Vendor {
     @Column(name = "business_name")
     private String businessName;
 
-    public Vendor(Long id, Long vendorId, List<String> productsListed, Integer salesCount, BigDecimal salesRevenue,
+    public Vendor(Long id, Long userId, List<String> productsListed, Integer salesCount, BigDecimal salesRevenue,
             Map<String, Integer> totalFeedback, String businessName) {
         this.id = id;
-        this.vendorId = vendorId;
+        this.userId = userId;
         this.productsListed = productsListed;
         this.salesCount = salesCount;
         this.salesRevenue = salesRevenue;
@@ -67,12 +67,12 @@ public class Vendor {
         this.id = id;
     }
 
-    public Long getVendorId() {
-        return vendorId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setVendorId(Long vendorId) {
-        this.vendorId = vendorId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public List<String> getProductsListed() {
