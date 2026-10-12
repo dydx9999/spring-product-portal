@@ -32,6 +32,10 @@ public class OrderItem {
         return productPrice;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public void setProductPrice(BigDecimal productPrice) {
         this.productPrice = productPrice;
     }
