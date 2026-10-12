@@ -26,6 +26,7 @@ public class ProductService {
         BigDecimal requestProductPrice = newProduct.getProductPrice();
         int requestProductQuantity = newProduct.getProductQuantity();
         String generatedSKU = generateProductSKU();
+        Long requestedWarehouseLocation = newProduct.getWarehouseId();
 
         if (!productRepository.findByProductNameIgnoreCase(requestProductName).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product already exists");
@@ -62,6 +63,7 @@ public class ProductService {
         existingProduct.setProductPrice(newProduct.getProductPrice());
         existingProduct.setProductQuantity(newProduct.getProductQuantity());
         existingProduct.setVendorNotes(newProduct.getVendorNotes());
+        existingProduct.setWarehouseId(newProduct.getWarehouseId());
 
         return productRepository.save(existingProduct);
     }
