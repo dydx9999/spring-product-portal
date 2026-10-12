@@ -26,16 +26,27 @@ public class Product {
     @Column(name = "vendor_notes")
     private String vendorNotes;
 
-    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU,
-            String vendorNotes, String vendorName) {
+    @Column(name = "warehouseId")
+    private Long warehouseId;
 
+    public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU,
+            String vendorName, String vendorNotes, Long warehouseId) {
         this.id = id;
         this.productName = productName;
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;
         this.productSKU = productSKU;
-        this.vendorNotes = vendorNotes;
         this.vendorName = vendorName;
+        this.vendorNotes = vendorNotes;
+        this.warehouseId = warehouseId;
+    }
+
+    public Long getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(Long warehouseId) {
+        this.warehouseId = warehouseId;
     }
 
     public Product() {
@@ -81,20 +92,20 @@ public class Product {
         this.productSKU = productSKU;
     }
 
-    public String getVendorNotes() {
-        return vendorNotes;
-    }
-
-    public void setVendorNotes(String vendorNotes) {
-        this.vendorNotes = vendorNotes;
-    }
-
     public String getVendorName() {
         return vendorName;
     }
 
     public void setVendorName(String vendorName) {
         this.vendorName = vendorName;
+    }
+
+    public String getVendorNotes() {
+        return vendorNotes;
+    }
+
+    public void setVendorNotes(String vendorNotes) {
+        this.vendorNotes = vendorNotes;
     }
 
 }
