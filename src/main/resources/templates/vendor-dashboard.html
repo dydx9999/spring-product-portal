@@ -1,162 +1,232 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Vendor Dashboard</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <style>
-        body.vendor-dashboard-body {
-            padding: 0;
-        }
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Vendor Dashboard</title>
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
 
-        .vendor-dashboard-body .sidebar {
-            position: fixed;
-            top: 3.5rem;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            padding: 1rem 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-        }
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('vendor-dashboard')}"></div>
+        <main class="container py-4">
+            <header
+                class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+                <!-- Top of page alerts  -->
 
-        .vendor-dashboard-body .sidebar .nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            margin: 0;
-            padding: 0 1rem;
-        }
-
-        .vendor-dashboard-body .sidebar .nav-link {
-            color: #35434d;
-        }
-
-        .vendor-dashboard-body .sidebar .nav-link.active {
-            color: #fff;
-            background-color: #256b62;
-        }
-
-        .vendor-dashboard-body table {
-            max-width: none;
-            box-shadow: none;
-        }
-
-        @media (max-width: 767.98px) {
-            .vendor-dashboard-body .sidebar {
-                top: 3.5rem;
-                bottom: auto;
-                height: auto;
-                padding: .5rem 0;
-            }
-        }
-    </style>
-</head>
-
-<body class="vendor-dashboard-body">
-    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" th:href="@{/vendor}">Spring Product Portal</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <input class="form-control form-control-dark w-100" type="search" placeholder="Search" aria-label="Search">
-        <div class="navbar-nav">
-            <div class="nav-item text-nowrap">
-                <a class="nav-link px-3" th:href="@{/login}">Sign out</a>
-            </div>
-        </div>
-    </header>
-
-    <div class="container-fluid">
-        <div class="row">
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" th:href="@{/vendor}">
-                                <span data-feather="home"></span> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/products/add-product}">
-                                <span data-feather="plus-circle"></span> New listing
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="file"></span> Orders
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/products}">
-                                <span data-feather="shopping-cart"></span> Products
-                            </a>
-                        </li>
-
-                    </ul>
-                </div>
-            </nav>
-
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div
-                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <div>
-                        <h1 class="h2">Vendor Dashboard</h1>
-                        <p class="mb-0">Overview for <span th:text="${vendorUsername}">vendor</span></p>
-                    </div>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                            <span data-feather="calendar"></span> This week
-                        </button>
-                    </div>
+                <div>
+                    <p
+                        class="page-eyebrow text-uppercase small fw-semibold mb-2">Vendor
+                        workspace</p>
+                    <h1 class="h2 mb-2">Vendor Dashboard - <span
+                            th:text="${currentVendor.businessName}">Business
+                            name</span></h1>
+                    <p class="text-secondary mb-0">Products and performance for
+                        <strong><span
+                                th:text="${currentVendor.businessName}">Business
+                                name</span></strong>
+                    </p>
                 </div>
 
-                <canvas class="my-4 w-100" id="myChart" width="900" height="380"
-                    aria-label="Vendor sales chart placeholder"></canvas>
+                <a class="btn btn-primary"
+                    th:href="@{/products/add-product}">Add product</a>
+            </header>
+            <!-- Out of stock alert banner  -->
+            <th:block
+                th:with="outOfStockCount=${#lists.size(products.?[productQuantity <= 0])}">
+                <div class="alert alert-warning" role="alert"
+                    th:if="${outOfStockCount > 0}">
+                    <strong><span th:text="${outOfStockCount}">0</span></strong>
+                    of your products are out of stock
+                    <a class="alert-link"
+                        th:href="@{/products(filter='outOfStockCurrentVendor')}">click
+                        to view products</a>
+                </div>
+            </th:block>
+            <!-- Vendor performance summary -->
+            <section class="card border-0 shadow-sm"
+                aria-labelledby="vendor-performance-heading">
+                <div class="card-body border-bottom">
+                    <h2 id="vendor-performance-heading" class="h5 mb-1">Vendor
+                        performance</h2>
+                    <p class="text-secondary small mb-0">Listings, sales,
+                        revenue, and customer feedback.</p>
+                </div>
 
-                <h2>Vendor performance</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm site-table">
-                        <thead>
+                    <table class="table table-striped site-table mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th scope="col">Vendor ID</th>
+                                <th scope="col">User ID</th>
                                 <th scope="col">Products listed</th>
                                 <th scope="col">Sales</th>
                                 <th scope="col">Revenue</th>
-                                <th scope="col">Feedback</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="vendor : ${vendors}">
-                                <td th:text="${vendor.vendorId}">Vendor ID</td>
+                            <tr>
+                                <td th:text="${currentVendor.userId}">User
+                                    ID</td>
                                 <td>
-                                    <span th:each="sku, status : ${vendor.productsListed}"
-                                        th:text="${sku + (status.last ? '' : ', ')}">SKU</span>
+                                    <span
+                                        th:text="${#lists.size(currentVendor.productsListed)}">productsListed</span>
                                 </td>
-                                <td th:text="${vendor.salesCount != null ? vendor.salesCount : 'Not available'}">Sales
+                                <td
+                                    th:text="${currentVendor.salesCount != null ? currentVendor.salesCount : 'Not available'}">
+                                    Sales
+                                </td>
+                                <td>
+                                    <span
+                                        th:if="${currentVendor.salesRevenue != null}">$<span
+                                            th:text="${#numbers.formatDecimal(currentVendor.salesRevenue, 1, 2)}">0.00</span></span>
+                                    <span
+                                        th:unless="${currentVendor.salesRevenue != null}">Not
+                                        available</span>
                                 </td>
 
-                                <td th:text="${vendor.salesRevenue != null ? vendor.salesRevenue : 'Not available'}">
-                                    Revenue
-                                </td>
-                                <td th:text="${vendor.totalFeedback}">Feedback</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </main>
-        </div>
-    </div>
+            </section>
 
-    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
-        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
-        crossorigin="anonymous"></script>
-    <script>feather.replace();</script>
-</body>
+            <section class="card border-0 shadow-sm mt-4"
+                aria-labelledby="vendor-products-heading">
+                <div class="card-body border-bottom">
+                    <h2 id="vendor-products-heading" class="h5 mb-1">Your
+                        products</h2>
+                    <p class="text-secondary small mb-0">Inventory listed by
+                        your business.</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped site-table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">SKU</th>
+                                <th scope="col">Notes</th>
+                                <th scope="col">Warehouse</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td th:text="${product.id}"></td>
+                                <td>
+                                    <span
+                                        th:text="${product.productName}"></span>
+                                    <span
+                                        th:if="${product.productQuantity <= 0}"
+                                        class="badge text-bg-danger">Out of
+                                        stock</span>
+                                    <span
+                                        th:if="${product.productQuantity > 0 and product.productQuantity <= 5}"
+                                        class="badge text-bg-warning">Low
+                                        stock</span>
+                                </td>
+                                <td>$<span
+                                        th:text="${product.productPrice}"></span></td>
+                                <td th:text="${product.productQuantity}"></td>
+                                <td th:text="${product.productSKU}"></td>
+                                <td th:text="${product.vendorNotes}"></td>
+                                <td th:text="${product.warehouseId}"></td>
+
+                                <td class="actions-column">
+                                    <form class="product-action-form"
+                                        sec:authorize="hasRole('VENDOR')"
+                                        th:action="@{/products/update/{id}(id=${product.id})}"
+                                        method="get">
+                                        <button
+                                            th:if="${product.productQuantity <= 0}"
+                                            class="btn btn-sm btn-outline-primary"
+                                            type="submit">Restock</button>
+                                        <button
+                                            th:unless="${product.productQuantity <= 0}"
+                                            class="btn btn-sm btn-outline-primary"
+                                            type="submit">Update</button>
+                                    </form>
+                                    <form class="product-action-form"
+                                        sec:authorize="hasRole('VENDOR')"
+                                        th:action="@{/products/delete/{id}(id=${product.id})}"
+                                        method="post">
+                                        <button
+                                            class="btn btn-sm btn-outline-danger"
+                                            type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(products)}">
+                                <td colspan="7"
+                                    class="text-secondary py-4 text-center">No
+                                    products listed yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card border-0 shadow-sm mt-4"
+                aria-labelledby="vendor-sales-heading">
+                <div class="card-body border-bottom">
+                    <h2 id="vendor-sales-heading" class="h5 mb-1">Your
+                        sales</h2>
+                    <p class="text-secondary small mb-0">Recent sales</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped site-table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Order Id</th>
+                                <th scope="col">Date Placed</th>
+                                <th scope="col">Item summary</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Buyer ID</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="orderDetail : ${orderDetails}">
+                                <td th:text="${orderDetail.orderId}"></td>
+                                <td th:text="${orderDetail.creationDate}"></td>
+                                <td>
+                                    <span
+                                        th:if="${!#lists.isEmpty(orderDetail.items)}"
+                                        th:text="${#strings.listJoin(orderDetail.items.![quantity + ' x ' + productName], ', ')}">item</span>
+                                    <span
+                                        th:unless="${!#lists.isEmpty(orderDetail.items)}"
+                                        class="text-secondary">No items</span>
+                                </td>
+                                <td> <span
+                                        th:text="${orderDetail.total}"></span></td>
+                                <td th:text="${orderDetail.buyerId}"></td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-primary"
+                                        th:href="@{/orders/{id}(id=${orderDetail.orderId})}">View</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(orderDetails)}">
+                                <td colspan="6"
+                                    class="text-secondary py-4 text-center">No
+                                    sales recorded yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+        <footer class="container py-3">
+            <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        </footer>
+
+    </body>
 
 </html>
