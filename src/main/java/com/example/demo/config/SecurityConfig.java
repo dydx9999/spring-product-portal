@@ -33,9 +33,10 @@ public class SecurityConfig {
                                                                 "/add-product/**",
                                                                 "/products/product-search",
                                                                 "/vendor-dashboard/**",
-                                                                "/home/**",
-                                                                "/orders/**", "/user/**")
+                                                                "/home/**")
                                                 .permitAll()
+                                                .requestMatchers("/orders/**").authenticated()
+                                                .requestMatchers("/user/**").authenticated()
                                                 .requestMatchers("/vendor/**").hasRole("VENDOR")
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
