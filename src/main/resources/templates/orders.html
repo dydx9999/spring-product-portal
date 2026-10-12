@@ -25,6 +25,7 @@
                         <th scope="col">Order ID</th>
                         <th scope="col">Vendor Id</th>
                         <th scope="col">Date placed</th>
+                        <th scope="col">Total</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -33,10 +34,10 @@
                         <td th:text="${order.orderId}"></td>
                         <td><span th:text="${order.vendorId}"></span></td>
                         <td th:text="${#temporals.format(order.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></td>
+                        <td>$<span th:text="${#numbers.formatDecimal(order.total, 1, 2)}">0.00</span></td>
                         <td>
-                            <form th:action="@{/orders/view/{orderId}(orderId=${order.orderId})}" method="get"><button
-                                    type="submit">View
-                                    details</button></form>
+                            <a class="btn btn-outline-primary mt-3"
+                                th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}">View details</a>
                         </td>
                     </tr>
                 </tbody>
