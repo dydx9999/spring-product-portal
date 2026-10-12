@@ -35,13 +35,13 @@
                                 a product</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item" sec:authorize="hasRole('USER')">
                             <a class="nav-link"
                                 th:classappend="${activePage == 'cart'} ? 'active' : ''"
                                 th:href="@{/cart/view}">View
                                 cart</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" sec:authorize="hasRole('USER')">
                             <a class="nav-link"
                                 th:classappend="${activePage == 'orders'} ? 'active' : ''"
                                 th:href="@{/orders}">My
@@ -81,6 +81,8 @@
         <!-- A simple footer fragment -->
         <div th:fragment="site-footer">
             <p>&copy; 2026 Spring Product Portal. All rights reserved.</p>
+            <script
+                th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
         </div>
 
     </body>
