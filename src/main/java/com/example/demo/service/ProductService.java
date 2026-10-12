@@ -37,6 +37,7 @@ public class ProductService {
         newProduct.setProductQuantity(requestProductQuantity);
         newProduct.setProductSKU(generatedSKU);
         newProduct.setVendorName(vendorName);
+        newProduct.setWarehouseId(requestedWarehouseLocation);
         productRepository.save(newProduct);
         return newProduct;
 
