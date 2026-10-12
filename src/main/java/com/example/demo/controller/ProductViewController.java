@@ -1,5 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.repository.WarehouseRepository;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.example.demo.model.OrderItem;
+import com.example.demo.repository.OrderItemRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,26 +24,38 @@ import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.CartService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
+import com.example.demo.service.VendorService;
+import com.example.demo.model.Vendor;
 
 @Controller
 @RequestMapping("/products")
 public class ProductViewController {
+    private final WarehouseRepository warehouseRepository;
+    private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final UserService userService;
     private final CartService cartService;
+    private final VendorService vendorService;
 
     public ProductViewController(ProductService productService, UserService userService,
-            ProductRepository productRepository, CartService cartService) {
+            ProductRepository productRepository, CartService cartService, VendorService vendorService,
+            OrderItemRepository orderItemRepository, WarehouseRepository warehouseRepository) {
         this.productService = productService;
         this.userService = userService;
         this.productRepository = productRepository;
         this.cartService = cartService;
+        this.vendorService = vendorService;
+        this.orderItemRepository = orderItemRepository;
+        this.warehouseRepository = warehouseRepository;
     }
 
-    // GET - products.html
+    // ---- Product list ----
+
     @GetMapping
-    public String listProducts(Model model, Authentication authentication) {
+    public String showProductList(@RequestParam(required = false) String filter,
+            @RequestParam(defaultValue = "false") boolean inStockOnly, Model model,
+            Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
 
         boolean isAdmin = authentication.getAuthorities().stream()
@@ -47,45 +66,54 @@ public class ProductViewController {
         model.addAttribute("isUser", isUser);
         boolean isVendor = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_VENDOR"));
-        model.addAttribute("isVendor", isVendor);
+        String vendorBusinessName = null;
+        if (isVendor) {
+            Vendor vendor = vendorService.getVendorByUserId(currentUser.getId());
+            vendorBusinessName = vendor.getBusinessName();
+        }
 
-        model.addAttribute("products", productService.getProducts());
+        model.addAttribute("isVendor", isVendor);
+        model.addAttribute("businessName", vendorBusinessName);
+
         model.addAttribute("username", currentUser.getUsername());
         model.addAttribute("productCount", productRepository.countProducts());
         model.addAttribute("outOfStockProducts", productRepository.countOutOfStockProducts());
+        Map<String, Integer> quantitySoldByProduct = new HashMap<>();
+        for (OrderItem orderItem : orderItemRepository.findAll()) {
+            if (orderItem.getProductName() != null) {
+                quantitySoldByProduct.merge(orderItem.getProductName(), orderItem.getProductQuantity(), Integer::sum);
+            }
+        }
+        model.addAttribute("quantitySoldByProduct", quantitySoldByProduct);
+        List<Product> products = filter == null
+                ? productService.getProducts()
+                : productService.getFilteredProducts(filter, vendorBusinessName);
+        if (inStockOnly) {
+            products = products.stream().filter(p -> p.getProductQuantity() > 0).toList();
+        }
+        model.addAttribute("products", products);
+        model.addAttribute("inStockOnly", inStockOnly);
 
         return "products";
     }
 
-    // Render - add-product.html
+    // ---- Add product ----
+
     @GetMapping("/add-product")
-    public String showProductForm(Model model) {
+    public String showAddProductForm(Model model, Authentication authentication) {
         model.addAttribute("productForm", new Product());
+        boolean isVendor = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_VENDOR"));
+        model.addAttribute("isVendor", isVendor);
+        model.addAttribute("warehouses", warehouseRepository.findAll());
         return "add-product";
     }
 
-    // Render - product-search.html
-    @GetMapping("/product-search")
-    public String showProductSearch(Model model) {
-        model.addAttribute("productSearchForm", new Product());
-        return "product-search";
-    }
-
-    // Render - update-product.html (pre-filled form for a specific product)
-    @GetMapping("/update-product/{id}")
-    public String renderUpdateForm(@PathVariable("id") Long productId, Model model) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND));
-        model.addAttribute("productForm", product);
-        return "update-product";
-    }
-
-    // Form handling - add-product.html
     @PostMapping("/add-product")
-    public String addProducts(@ModelAttribute("productForm") Product productForm,
+    public String handleAddProduct(@ModelAttribute("productForm") Product productForm,
             RedirectAttributes redirectAttributes, Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
-        String vendorName = currentUser.getUsername();
+        String vendorName = vendorService.getVendorByUserId(currentUser.getId()).getBusinessName();
         boolean exists = productService.checkProductExists(productForm.getProductName());
         if (exists) {
             redirectAttributes.addFlashAttribute("errorMessage", "Product already exists");
@@ -96,56 +124,66 @@ public class ProductViewController {
         return "redirect:/products/add-product";
     }
 
-    // Form handling - product-search.html
+    // ---- Search products ----
+
+    @GetMapping("/product-search")
+    public String showProductSearchForm(Model model) {
+        model.addAttribute("productSearchForm", new Product());
+        model.addAttribute("warehouse", warehouseRepository.findAll());
+        return "product-search";
+    }
+
     @PostMapping("/product-search")
-    public String searchProducts(@ModelAttribute("productSearchForm") Product productSearchForm, Model model) {
+    public String handleProductSearch(@ModelAttribute("productSearchForm") Product productSearchForm, Model model) {
         model.addAttribute("searchResults", productService.searchProductsByName(productSearchForm.getProductName()));
         return "product-search";
     }
 
-    // Form Handling - products.html - Purchase
-    @PostMapping("/purchase/{id}")
-    public String purchaseProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
-        boolean exists = productService.checkProductExistsById(productId);
-        boolean isInStock = productService.productInStock(productId);
-        if (!isInStock) {
-            redirectAttributes.addFlashAttribute("outOfStockMessage", "Product is out of stock!");
+    // ---- Update product ----
+
+    @GetMapping("/update/{id}")
+    public String showUpdateProductForm(@PathVariable("id") Long productId, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND,
+                            "Product not found"));
+            model.addAttribute("productForm", product);
+            model.addAttribute("warehouses", warehouseRepository.findAll());
+            return "update-product";
+        } catch (ResponseStatusException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getReason());
+            return "redirect:/products";
         }
-        if (exists && isInStock) {
-            try {
-                productService.updateProductQuantity(productId);
-                redirectAttributes.addFlashAttribute("successMessage", "Product successfully added to cart");
-            } catch (ResponseStatusException exception) {
-                redirectAttributes.addFlashAttribute("outOfStockMessage", exception.getReason());
-            }
+    }
+
+    @PostMapping("/update/{id}")
+    public String handleUpdateProduct(@PathVariable("id") Long productId,
+            @ModelAttribute("productForm") Product productForm,
+            RedirectAttributes redirectAttributes) {
+        productForm.setId(productId);
+        try {
+            productService.updateProduct(productForm);
+            redirectAttributes.addFlashAttribute("successMessage", "Product updated!");
+        } catch (ResponseStatusException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getReason());
         }
         return "redirect:/products";
     }
 
+    // ---- Delete product ----
+
     @PostMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
+    public String handleDeleteProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
         productService.deleteProduct(productId);
         redirectAttributes.addFlashAttribute("deleteSuccess", "Product successfully deleted!");
         return "redirect:/products";
     }
 
-    @GetMapping("/home")
-    public String renderHome() {
-        return "home";
-    }
-
-    @PostMapping("/update/{id}")
-    public String updateProduct(@PathVariable("id") Long productId,
-            @ModelAttribute("productForm") Product productForm,
-            RedirectAttributes redirectAttributes) {
-        productForm.setId(productId);
-        productService.updateProduct(productForm);
-        redirectAttributes.addFlashAttribute("successMessage", "Product updated!");
-        return "redirect:/products";
-    }
+    // ---- Cart / purchase ----
 
     @PostMapping("/purchase/{id}")
-    public String addCartProduct(
+    public String handleAddToCart(
             @PathVariable("id") Long productId,
             @RequestParam int quantity,
             Authentication authentication,
@@ -159,6 +197,13 @@ public class ProductViewController {
             redirectAttributes.addFlashAttribute("outOfStockMessage", exception.getReason());
         }
         return "redirect:/products";
+    }
+
+    // ---- Misc ----
+
+    @GetMapping("/home")
+    public String showHome() {
+        return "home";
     }
 
 }
