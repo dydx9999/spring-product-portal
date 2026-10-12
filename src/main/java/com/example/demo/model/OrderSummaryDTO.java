@@ -1,6 +1,9 @@
 package com.example.demo.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class OrderSummaryDTO {
@@ -9,6 +12,8 @@ public class OrderSummaryDTO {
     private Long buyerId;
     private Long vendorId;
     private LocalDateTime creationDate;
+    private BigDecimal total;
+    private List<OrderItemDTO> items = new ArrayList<>();
 
     public OrderSummaryDTO(UUID orderId, Long buyerId, Long vendorId, LocalDateTime creationDate) {
         this.orderId = orderId;
@@ -51,6 +56,22 @@ public class OrderSummaryDTO {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public List<OrderItemDTO> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItemDTO> items) {
+        this.items = items;
     }
 
 }
