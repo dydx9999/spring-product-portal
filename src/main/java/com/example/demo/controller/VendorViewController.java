@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.OrderService;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,15 +16,17 @@ import com.example.demo.service.VendorService;
 @Controller
 @RequestMapping("/vendor")
 public class VendorViewController {
+        private final OrderService orderService;
         private final VendorService vendorService;
         private final UserService userService;
         private final ProductRepository productRepository;
 
         public VendorViewController(VendorService vendorService, UserService userService,
-                        ProductRepository productRepository) {
+                        ProductRepository productRepository, OrderService orderService) {
                 this.vendorService = vendorService;
                 this.userService = userService;
                 this.productRepository = productRepository;
+                this.orderService = orderService;
         }
 
         @GetMapping
@@ -48,7 +51,7 @@ public class VendorViewController {
                 model.addAttribute("products", productRepository.findByVendorNameIgnoreCase(
                                 currentVendor.getBusinessName(), Sort.by(Sort.Direction.ASC, "id")));
                 model.addAttribute("businessName", currentVendor.getBusinessName());
-
+                model.addAttribute("orderDetails", orderService.getVendorSales(currentVendor.getId()));
                 return "vendor-dashboard";
         }
 }

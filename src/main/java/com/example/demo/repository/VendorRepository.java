@@ -7,4 +7,6 @@ import java.util.List;
 public interface VendorRepository extends JpaRepository<Vendor, Long> {
     List<Vendor> findAllByBusinessName(String businessName);
 
+    List<Vendor> findAllByUserId(Long userId);
+
 }

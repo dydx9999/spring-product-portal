@@ -28,15 +28,6 @@ public class Vendor {
     @Column(name = "total_sales_revenue")
     private BigDecimal salesRevenue;
 
-    @ElementCollection
-    @CollectionTable(name = "vendor_feedback", joinColumns = @JoinColumn(name = "vendor_pk"))
-    @MapKeyColumn(name = "feedback_type")
-    @Column(name = "feedback_count")
-    private Map<String, Integer> totalFeedback = new HashMap<>(Map.of(
-            "negative", 0,
-            "positive", 0,
-            "neutral", 0));
-
     @Column(name = "business_name")
     private String businessName;
 
@@ -47,7 +38,6 @@ public class Vendor {
         this.productsListed = productsListed;
         this.salesCount = salesCount;
         this.salesRevenue = salesRevenue;
-        this.totalFeedback = totalFeedback;
         this.businessName = businessName;
     }
 
@@ -97,14 +87,6 @@ public class Vendor {
 
     public void setSalesRevenue(BigDecimal salesRevenue) {
         this.salesRevenue = salesRevenue;
-    }
-
-    public Map<String, Integer> getTotalFeedback() {
-        return totalFeedback;
-    }
-
-    public void setTotalFeedback(Map<String, Integer> totalFeedback) {
-        this.totalFeedback = totalFeedback;
     }
 
     public Vendor() {
