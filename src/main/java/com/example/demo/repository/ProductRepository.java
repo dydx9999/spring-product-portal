@@ -3,11 +3,15 @@ package com.example.demo.repository;
 import com.example.demo.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByProductNameContainingIgnoreCase(String productName);
+
+    List<Product> findByVendorNameIgnoreCase(String vendorName, Sort sort);
 
     boolean existsByProductNameIgnoreCase(String productName);
 
@@ -23,5 +27,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.productQuantity <= 0")
     List<Product> findOutOfStockProducts();
+
+    @Query("SELECT p FROM Product p WHERE p.productQuantity <= 5 AND p.productQuantity > 0")
+    List<Product> lowStockAlert();
+
+    @Query("SELECT p FROM Product p WHERE p.productQuantity <= 0 AND p.vendorName = :businessName")
+    List<Product> outOfStockProductsCurrentVendor(@Param("businessName") String businessName, Sort sort);
+
+    @Query("SELECT p FROM Product p WHERE p.productQuantity > 0")
+    List<Product> findInStockProducts();
 
 }
