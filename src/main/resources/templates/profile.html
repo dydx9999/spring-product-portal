@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Order History</title>
+        <title>Account Profile</title>
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -13,23 +13,53 @@
     <body class="site-page">
         <div
             th:replace="~{fragments/fragments :: site-navigation('profile')}"></div>
+        <main class="container py-4">
+            <header class="mb-4">
+                <p
+                    class="page-eyebrow text-uppercase small fw-semibold mb-2">Account</p>
+                <h1 class="h2 mb-2">Your profile</h1>
+                <p class="text-secondary mb-0">Manage your sign-in details.</p>
+            </header>
 
-        <h1
-            class="d-flex align-items-center gap-2 text-decoration-none"
-            th:if="${signedIn}" th:href="@{/user/profile}"
-            aria-label="View signed-in user profile">
-            <span class="avatar-image" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
-                        fill="currentColor" />
-                </svg>
-            </span>
-            <span class="d-flex flex-column">
-                <span class="fw-semibold"
-                    th:text="${signedInUsername}">Username</span>
-                <small class="text-muted"
-                    th:text="${signedInRole}">Role</small>
-            </span>
-        </h1>
+            <section class="card border-0 shadow-sm"
+                aria-labelledby="account-details-heading">
+                <div class="card-body p-4">
+                    <div
+                        class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
+                        <div>
+                            <h2 id="account-details-heading"
+                                class="h5 mb-1">Account details</h2>
+                            <p class="text-secondary small mb-0">Your account
+                                credentials</p>
+                        </div>
+                        <form th:action="@{/user/profile/update}" method="get"
+                            class="site-form">
+                            <button class="btn btn-primary" type="submit">Edit
+                                profile</button>
+                        </form>
+                    </div>
+
+                    <dl class="row mb-0 border-top">
+                        <dt
+                            class="col-sm-3 py-3 text-secondary fw-medium">Username</dt>
+                        <dd class="col-sm-9 py-3 mb-0 border-bottom"
+                            th:text="${username}">Username</dd>
+                        <dt
+                            class="col-sm-3 py-3 text-secondary fw-medium">Password</dt>
+                        <dd class="col-sm-9 py-3 mb-0">••••••••</dd>
+
+                        <dt
+                            class="col-sm-3 py-3 text-secondary fw-medium"
+                            th:if="${isVendor}">Business
+                            Name</dt>
+                        <dd class="col-sm-9 py-3 mb-0"
+                            th:if="${isVendor}"
+                            th:text="${currentVendor.businessName}">Business
+                            Name</dd>
+                    </dl>
+                </div>
+            </section>
+
+        </main>
+    </body>
+</html>

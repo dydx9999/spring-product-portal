@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Update Profile</title>
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
+
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('profile-update')}"></div>
+
+        <main class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8 col-xl-7">
+                    <div class="mb-4">
+                        <p
+                            class="page-eyebrow text-uppercase small fw-semibold mb-2">Update
+                            your account information</p>
+                        <h1 class="h2 mb-2">Update your information</h1>
+                        <p class="text-secondary mb-0">Edit the details for your
+                            account.</p>
+                    </div>
+                    <form th:action="@{/user/profile/update}" method="post"
+                        th:object="${userForm}" class="site-form">
+                        <div class="mb-4">
+                            <label for="username"
+                                class="form-label fw-semibold">Username</label>
+                            <input id="username" th:field="*{username}"
+                                type="text"
+                                class="form-control form-control-lg"
+                                autocomplete="username" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password"
+                                class="form-label fw-semibold">New
+                                password</label>
+                            <input id="password" th:field="*{password}"
+                                type="password"
+                                class="form-control form-control-lg"
+                                autocomplete="new-password"
+                                placeholder="Leave blank to keep your current password">
+                        </div>
+                        <div class="mb-4" th:if="${isVendor}">
+                            <label for="businessName"
+                                class="form-label fw-semibold">Business
+                                name</label>
+                            <input id="businessName" th:field="*{businessName}"
+                                type="text"
+                                class="form-control form-control-lg"
+                                autocomplete="organization" required>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-primary" type="submit">Save
+                                changes</button>
+                            <a class="btn btn-outline-secondary"
+                                th:href="@{/user/profile}">Cancel</a>
+                        </div>
+                    </form>
