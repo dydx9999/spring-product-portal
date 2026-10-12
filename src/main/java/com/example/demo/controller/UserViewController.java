@@ -2,13 +2,20 @@ package com.example.demo.controller;
 
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
+
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.example.demo.model.User;
+import com.example.demo.model.Vendor;
 import com.example.demo.model.VendorFormDTO;
 
 @Controller
@@ -75,6 +82,63 @@ public class UserViewController {
         model.addAttribute("balance", currentUser.getBalance());
         model.addAttribute("role", currentUser.getRole());
         return "dashboard";
+    }
+
+    @GetMapping("/user/profile")
+    public String displayProfile(Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        String username = currentUser.getUsername();
+        String role = currentUser.getRole();
+        model.addAttribute("username", username);
+        model.addAttribute("role", role);
+
+        boolean isVendor = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"));
+        model.addAttribute("currentVendor",
+                isVendor ? vendorService.getVendorByUserId(currentUser.getId()) : null);
+        model.addAttribute("isVendor", isVendor);
+
+        return "profile";
+    }
+
+    @GetMapping("/user/profile/update")
+    public String showProfileUpdateForm(Model model, Authentication authentication) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        boolean isVendor = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"));
+
+        VendorFormDTO userForm = new VendorFormDTO();
+        userForm.setUsername(currentUser.getUsername());
+        model.addAttribute("userForm", userForm);
+        model.addAttribute("isVendor", isVendor);
+
+        if (isVendor) {
+            Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+            userForm.setBusinessName(currentVendor.getBusinessName());
+        }
+        return "profile-update";
+    }
+
+    @PostMapping("/user/profile/update")
+    public String updateProfile(@ModelAttribute("userForm") VendorFormDTO userForm,
+            Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        boolean isVendor = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"));
+        boolean credentialsChanged = !currentUser.getUsername().equals(userForm.getUsername())
+                || (userForm.getPassword() != null && !userForm.getPassword().isBlank());
+
+        User updatedUser = userService.updateAccount(currentUser.getUsername(), userForm.getUsername(),
+                userForm.getPassword());
+        if (isVendor) {
+            vendorService.updateBusinessName(updatedUser.getId(), userForm.getBusinessName());
+        }
+
+        if (credentialsChanged) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+            return "redirect:/login?profileUpdated";
+        }
+        return "redirect:/user/profile";
     }
 
 }
