@@ -89,9 +89,11 @@ public class UserViewController {
         User currentUser = userService.getUserByUsername(authentication.getName());
         String username = currentUser.getUsername();
         String role = currentUser.getRole();
+Long buyerId = currentUser.getId();
+        List<BuyerReviewDTO> buyerReviews = orderService.getReviewedItemsByBuyer(buyerId);
         model.addAttribute("username", username);
         model.addAttribute("role", role);
-
+        model.addAttribute("buyerReviews", buyerReviews);
         boolean isVendor = authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"));
         model.addAttribute("currentVendor",
@@ -121,7 +123,8 @@ public class UserViewController {
 
     @PostMapping("/user/profile/update")
     public String updateProfile(@ModelAttribute("userForm") VendorFormDTO userForm,
-            Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+            Authentication authentication, HttpServletRequest request, HttpServletResponse response,
+            RedirectAttributes redirectAttributes) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         boolean isVendor = authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"));
