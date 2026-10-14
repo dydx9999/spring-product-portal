@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import com.example.demo.model.PageView;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import java.util.List;
@@ -37,6 +39,10 @@ public class UserService {
 
     public List<User> getUsers() {
         return repository.findAll();
+    }
+
+    public PageView<User> getUsers(int page, int size) {
+        return PageView.load(page, size, Sort.by(Sort.Direction.ASC, "id"), pageable -> repository.findAll(pageable));
     }
 
     public boolean validateLogin(User loginAttempt) {

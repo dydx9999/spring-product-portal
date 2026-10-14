@@ -14,6 +14,8 @@ import com.example.demo.repository.ProductRepository;
 
 @Service
 public class ProductService {
+    private static final Sort BY_ID = Sort.by(Sort.Direction.ASC, "id");
+
     private final ProductRepository productRepository;
     private final Random rand = new Random();
 
@@ -75,7 +77,8 @@ public class ProductService {
     }
 
     public List<Product> searchProductsByName(String productName) {
-        return productRepository.findByProductNameContainingIgnoreCase(productName == null ? "" : productName.trim());
+        return productRepository.findByProductNameContainingIgnoreCase(productName == null ? "" : productName.trim(),
+                BY_ID);
     }
 
     public boolean checkProductExists(String productName) {
@@ -130,25 +133,27 @@ public class ProductService {
 
         switch (filter) {
             case "priceAsc":
-                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.ASC, "productPrice"));
+                filteredProducts = productRepository.findAll(sortedWithIdTieBreak(Sort.Direction.ASC, "productPrice"));
                 break;
             case "priceDesc":
-                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.DESC, "productPrice"));
+                filteredProducts = productRepository
+                        .findAll(sortedWithIdTieBreak(Sort.Direction.DESC, "productPrice"));
                 break;
             case "outOfStockProductsFilter":
-                filteredProducts = productRepository.findOutOfStockProducts();
+                filteredProducts = productRepository.findOutOfStockProducts(BY_ID);
                 break;
             case "SKUAsc":
-                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.ASC, "productSKU"));
+                filteredProducts = productRepository.findAll(sortedWithIdTieBreak(Sort.Direction.ASC, "productSKU"));
                 break;
             case "SKUDesc":
-                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.DESC, "productSKU"));
+                filteredProducts = productRepository.findAll(sortedWithIdTieBreak(Sort.Direction.DESC, "productSKU"));
                 break;
             case "vendorAsc":
-                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.ASC, "vendorName"));
+                filteredProducts = productRepository.findAll(sortedWithIdTieBreak(Sort.Direction.ASC, "vendorName"));
                 break;
             case "vendorDesc":
-                filteredProducts = productRepository.findAll(Sort.by(Sort.Direction.DESC, "vendorName"));
+                filteredProducts = productRepository
+                        .findAll(sortedWithIdTieBreak(Sort.Direction.DESC, "vendorName"));
                 break;
             case "outOfStockCurrentVendor":
                 filteredProducts = productRepository.outOfStockProductsCurrentVendor(
@@ -160,11 +165,16 @@ public class ProductService {
                 break;
 
             default:
-                filteredProducts = productRepository.findAll();
+                filteredProducts = productRepository.findAll(BY_ID);
 
         }
 
         return filteredProducts;
+    }
+
+    // Equal values (e.g. same price) would otherwise reorder between pages.
+    private static Sort sortedWithIdTieBreak(Sort.Direction direction, String property) {
+        return Sort.by(direction, property).and(BY_ID);
     }
 
 }
