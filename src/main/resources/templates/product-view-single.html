@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Product Catalog</title>
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
+
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('products')}"></div>
+
+        <main class="container py-4 py-lg-5">
+            <header class="mb-4 mb-lg-5">
+                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">
+                    Catalog <span class="mx-1" aria-hidden="true">/</span>
+                    Product details
+                </p>
+                <h1 class="display-6 fw-semibold mb-0"
+                    th:text="${product.productName}">Product Name</h1>
+            </header>
+
+            <section class="card border-0 shadow-sm overflow-hidden"
+                aria-label="Product details">
+                <div class="row g-0">
+                    <div class="col-md-5 col-lg-4">
+                        <div
+                            class="h-100 min-vh-25 d-flex flex-column justify-content-between p-4 p-lg-5 text-white"
+                            style="min-height: 280px; background: linear-gradient(145deg, #1d3557, #457b9d);">
+                            <span
+                                class="badge rounded-pill bg-white text-primary align-self-start px-3 py-2">Product</span>
+                            <div>
+                                <p
+                                    class="small text-uppercase fw-semibold mb-2 opacity-75">Catalog
+                                    item</p>
+                                <p class="h3 fw-semibold mb-0"
+                                    th:text="${product.productName}">Product
+                                    Name</p>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7 col-lg-8">
+                        <div class="card-body p-4 p-lg-5">
+                            <p
+                                class="text-uppercase small fw-semibold text-secondary mb-2">Product
+                                overview</p>
+                            <h2 class="h3 mb-4"
+                                th:text="${product.productName}">Product
+                                Name</h2>
+
+                            <dl class="row mb-0">
+                                <div>
+                                    <dt
+                                        class="col-sm-3 text-secondary fw-semibold">Vendor</dt>
+                                    <dd class="col-sm-9 mb-0">
+                                        <span
+                                            class="badge rounded-pill text-bg-light border px-3 py-2"
+                                            th:text="${product.vendorName}">Vendor
+                                            Name</span>
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt
+                                        class="col-sm-3 text-secondary fw-semibold">Price</dt>
+                                    <dd class="col-sm-9 mb-0">
+                                        <span
+                                            class="badge rounded-pill text-bg-success border px-3 py-2">$<span
+                                                th:text="${product.productPrice}">Price</span></span>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <form class="product-action-form"
+            sec:authorize="hasRole('USER')"
+            th:if="${product.productQuantity > 0}"
+            th:action="@{/products/purchase/{id}(id=${product.id})}"
+            method="post">
+            <div class="mb-3">
+                <label for class="form-label">Quantity:</label>
+                <input
+                    type="number"
+                    min="1"
+                    class="form-control form-control-sm"
+                    name="quantity"
+                    aria-describedby="helpId"
+                    placeholder />
+                <small id="helpId" class="form-text text-body-secondary">
+                    <span
+                        th:text="${product.productQuantity}"></span>
+                    available.</small><div>
+                    <input
+                        class="btn btn-primary"
+                        type="submit"
+                        value="Add to cart">
+                </div>
+            </div>
+
+        </form>
+
+    </body>
+</html>

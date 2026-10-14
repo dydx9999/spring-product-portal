@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Update Product</title>
+        <title>Add Product</title>
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -12,35 +12,33 @@
 
     <body class="site-page">
         <div
-            th:replace="~{fragments/fragments :: site-navigation('add-product')}"></div>
+            th:replace="~{fragments/fragments :: site-navigation('product-add')}"></div>
 
         <main class="container py-4">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-8 col-xl-7">
-                    <!-- Product update heading -->
+                    <!-- Product creation heading -->
                     <div class="mb-4">
                         <p
-                            class="page-eyebrow text-uppercase small fw-semibold mb-2">Update
-                            inventory</p>
-                        <h1 class="h2 mb-2">Update a product</h1>
-                        <p class="text-secondary mb-0">Edit the details for this
-                            product.</p>
+                            class="page-eyebrow text-uppercase small fw-semibold mb-2">Inventory</p>
+                        <h1 class="h2 mb-2">Add a product</h1>
+                        <p class="text-secondary mb-0">Enter the product details
+                            to add it to your catalog.</p>
                     </div>
 
-                    <!-- Product update status messages -->
+                    <!-- Product form status messages -->
                     <div th:if="${successMessage}" class="alert alert-success"
                         role="status" th:text="${successMessage}">
                     </div>
                     <div th:if="${errorMessage}" class="alert alert-danger"
                         role="alert" th:text="${errorMessage}"></div>
 
-                    <!-- Product editing form -->
+                    <!-- Product details form -->
                     <section class="card border-0 shadow-sm">
                         <div class="card-body p-4 p-md-5">
-                            <form
-                                th:action="@{/products/update/{id}(id=${productForm.id})}"
-                                th:object="${productForm}"
-                                method="post" class="site-form">
+                            <form th:action="@{/products/product-add}"
+                                th:object="${productForm}" method="post"
+                                class="site-form">
                                 <div class="mb-4">
                                     <label for="productName"
                                         class="form-label fw-semibold">Product
@@ -48,7 +46,7 @@
                                     <input id="productName" type="text"
                                         class="form-control form-control-lg"
                                         placeholder="e.g. Everyday tote bag"
-                                        th:field="*{productName}">
+                                        th:field="*{productName}" required>
                                 </div>
 
                                 <div class="row g-3 mb-4">
@@ -63,7 +61,8 @@
                                                 type="number" min="0"
                                                 step="0.01" class="form-control"
                                                 placeholder="0.00"
-                                                th:field="*{productPrice}">
+                                                th:field="*{productPrice}"
+                                                required>
                                         </div>
                                         <div class="form-text">Price per
                                             item.</div>
@@ -75,21 +74,52 @@
                                             type="number" min="0" step="1"
                                             class="form-control form-control-lg"
                                             placeholder="0"
-                                            th:field="*{productQuantity}">
+                                            th:field="*{productQuantity}"
+                                            required>
                                         <div class="form-text">Units in
                                             stock.</div>
+                                    </div>
+                                    <div class="col-12 col-sm-7">
+                                        <label for="lowStockThreshold"
+                                            class="form-label fw-semibold">Low
+                                            stock threshold</label>
+                                        <div class="input-group input-group-lg">
+
+                                            <input id="lowStockThreshold"
+                                                type="number" min="0"
+                                                class="form-control"
+                                                placeholder="5"
+                                                th:field="*{lowStockThreshold}"
+                                                required>
+                                        </div>
+                                        <div class="form-text">Set an alert when
+                                            product stock falls below a certain
+                                            level.</div>
+                                    </div>
+                                    <div class="col-12 col-sm-12">
+                                        <label for="productSKU"
+                                            class="form-label fw-semibold">Product
+                                            SKU</label>
+                                        <input id="productSKU" type="text"
+                                            class="form-control form-control-lg"
+                                            placeholder="Enter a SKU or leave blank to have it randomly generated."
+                                            th:field="*{productSKU}">
+
                                     </div>
                                 </div>
                                 <div class="mb-4">
                                     <label for="warehouseLocation"
                                         class="form-label fw-semibold">Warehouse
                                         Location</label>
-                                    <select id="warehouseLocation"
+                                    <select
+                                        id="warehouseLocation"
                                         class="form-select"
-                                        th:field="*{warehouseId}">
+                                        th:field="*{warehouseId}" required>
+
                                         <option th:value="''">Choose a
                                             warehouse
                                             location...</option>
+
                                         <option
                                             th:each="warehouse : ${warehouses}"
                                             th:value="${warehouse.id}"
@@ -97,19 +127,23 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="vendorNotes">Optional
+                                    <label
+                                        for="vendorNotes">Optional
                                         notes</label>
-                                    <textarea class="form-control"
-                                        id="vendorNotes" rows="3"
+                                    <textarea
+                                        class="form-control"
+                                        id="vendorNotes"
+                                        rows="3"
                                         th:field="*{vendorNotes}"></textarea>
                                 </div>
 
                                 <div
                                     class="d-flex flex-column-reverse flex-sm-row justify-content-sm-end gap-2">
-                                    <a th:href="@{/products}"
+                                    <a
+                                        th:href="@{/products}"
                                         class="btn btn-outline-secondary">Cancel</a>
                                     <button type="submit"
-                                        class="btn btn-primary px-4">Update
+                                        class="btn btn-primary px-4">Add
                                         product</button>
                                 </div>
                             </form>
@@ -120,7 +154,8 @@
         </main>
 
         <footer class="container py-3">
-            <div th:replace="~{fragments/fragments :: site-footer}"></div>
+            <div
+                th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
 
     </body>
