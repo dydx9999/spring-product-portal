@@ -29,8 +29,8 @@ public class SecurityConfig {
                                                                 "/css/**",
                                                                 "/webjars/**",
                                                                 "/products/**",
-                                                                "/add-product/**",
-                                                                "/add-product/**",
+                                                                "/product-add/**",
+                                                                "/product-add/**",
                                                                 "/products/product-search",
                                                                 "/vendor-dashboard/**",
                                                                 "/home/**")
