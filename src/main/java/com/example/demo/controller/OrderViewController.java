@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.model.OrderDetailsDTO;
 import com.example.demo.model.OrderSummaryDTO;
 import com.example.demo.model.ReviewFormDTO;
 import com.example.demo.model.User;
@@ -42,7 +43,9 @@ public class OrderViewController {
     }
 
     @GetMapping("/view/{orderId}")
-    public String showOrderDetails(@PathVariable("orderId") UUID orderId, Model model,
+    public String showOrderDetails(
+            @PathVariable("orderId") UUID orderId,
+            Model model,
             Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         model.addAttribute("orderDetails", orderService.getOrderDetails(orderId, currentUser.getId()));
@@ -54,7 +57,13 @@ public class OrderViewController {
     public String showReviewForm(@RequestParam(required = true) UUID orderId, Model model,
             Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
-        model.addAttribute("orderDetails", orderService.getOrderDetails(orderId, currentUser.getId()));
+        OrderDetailsDTO orderDetails = orderService.getOrderDetails(orderId, currentUser.getId());
+        model.addAttribute("orderDetails", orderDetails);
+        List<Long> orderItemIds = orderDetails.getItems().stream()
+                .map(item -> item.getId())
+                .toList();
+        model.addAttribute("reviewedItemIds",
+                orderService.getReviewedItemIds(currentUser.getId(), orderItemIds));
         ReviewFormDTO reviewForm = new ReviewFormDTO();
         reviewForm.setOrderId(orderId);
         model.addAttribute("reviewForm", reviewForm);
@@ -65,6 +74,7 @@ public class OrderViewController {
     public String handleReviewForm(ReviewFormDTO reviewForm, Authentication authentication,
             RedirectAttributes redirectAttributes) {
         User currentUser = userService.getUserByUsername(authentication.getName());
+
         try {
             orderService.saveReview(reviewForm, currentUser.getId());
             redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully saved!");
@@ -74,5 +84,4 @@ public class OrderViewController {
 
         return "redirect:/orders/view/" + reviewForm.getOrderId();
     }
-
 }
