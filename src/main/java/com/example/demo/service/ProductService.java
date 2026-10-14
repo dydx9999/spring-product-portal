@@ -65,6 +65,7 @@ public class ProductService {
         existingProduct.setProductQuantity(newProduct.getProductQuantity());
         existingProduct.setVendorNotes(newProduct.getVendorNotes());
         existingProduct.setWarehouseId(newProduct.getWarehouseId());
+        existingProduct.setLowStockThreshold(newProduct.getLowStockThreshold());
 
         return productRepository.save(existingProduct);
     }
@@ -152,6 +153,10 @@ public class ProductService {
             case "outOfStockCurrentVendor":
                 filteredProducts = productRepository.outOfStockProductsCurrentVendor(
                         businessName, Sort.by(Sort.Direction.ASC, "productName"));
+                break;
+            case "lowStockCurrentVendor":
+                filteredProducts = productRepository.lowStockCurrentVendor(businessName,
+                        Sort.by(Sort.Direction.ASC, "id"));
                 break;
 
             default:
