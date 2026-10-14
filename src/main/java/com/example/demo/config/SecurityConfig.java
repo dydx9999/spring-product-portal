@@ -22,6 +22,7 @@ public class SecurityConfig {
                                                 "/register/**",
                                                 "/cart/**"))
                                 .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/products/wishlist/**").hasRole("USER")
                                                 .requestMatchers("/users",
                                                                 "/register/**",
                                                                 "/api/**",
