@@ -15,13 +15,23 @@ public class Order {
     private Long buyerId;
     private Long vendorId;
     private LocalDateTime creationDate;
+    private String status;
 
-    public Order(Long id, UUID orderId, Long buyerId, Long vendorId, LocalDateTime creationDate) {
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Order(Long id, UUID orderId, Long buyerId, Long vendorId, LocalDateTime creationDate, String status) {
         this.id = id;
         this.orderId = orderId;
         this.buyerId = buyerId;
         this.vendorId = vendorId;
         this.creationDate = creationDate;
+        this.status = status;
     }
 
     public Long getId() {
