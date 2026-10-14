@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import com.example.demo.model.OrderDetailsDTO;
 import com.example.demo.model.OrderItem;
 import com.example.demo.model.OrderItemDTO;
 import com.example.demo.model.OrderSummaryDTO;
+import com.example.demo.model.BuyerReviewDTO;
 import com.example.demo.model.Review;
 import com.example.demo.model.ReviewFormDTO;
 import com.example.demo.repository.OrderItemRepository;
@@ -185,4 +189,25 @@ public class OrderService {
         reviewRepository.save(new Review(orderItem.getId(), buyerId, reviewForm.getRating()));
     }
 
+    @Transactional
+    public void updateStatus(UUID orderId, Long vendorId, String newStatus) {
+
+        List<String> validStatusList = List.of("Pending", "Completed", "Shipped", "Delivered");
+        if (!validStatusList.contains(newStatus)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order status");
+        }
+
+        Order buyerOrder = orderRepository.findByOrderIdAndVendorId(orderId, vendorId);
+        if (buyerOrder == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to retrieve orders for specified buyer.");
+        }
+
+        String currentStatus = buyerOrder.getStatus();
+        if (currentStatus.equals(newStatus)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No change.");
+        }
+
+        buyerOrder.setStatus(newStatus);
+
+    }
 }
