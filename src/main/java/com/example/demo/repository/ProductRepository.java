@@ -37,4 +37,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.productQuantity > 0")
     List<Product> findInStockProducts();
 
+    @Query("SELECT p FROM Product p WHERE p.productQuantity <= p.lowStockThreshold AND p.vendorName = :businessName")
+    List<Product> lowStockCurrentVendor(@Param("businessName") String businessName, Sort sort);
+
+    @Modifying
+    @Query("UPDATE Product p SET p.productQuantity = p.productQuantity - :quantity WHERE p.id= :productId AND p.productQuantity >= :quantity")
+
+    int decreaseStockIfAvailable(
+            @Param("productId") Long productId,
+            @Param("quantity") int quantity);
+
 }

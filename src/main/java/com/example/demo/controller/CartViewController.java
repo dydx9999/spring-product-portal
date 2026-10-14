@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.repository.CartRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import com.example.demo.model.Product;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,14 +36,24 @@ public class CartViewController {
     private final OrderService orderService;
     private final ProductService productService;
     private final UserService userService;
+    private final BigDecimal salesTaxRate;
 
     public CartViewController(CartService cartService, OrderService orderService, ProductService productService,
-            UserService userService, CartRepository cartRepository) {
+            UserService userService, CartRepository cartRepository,
+            @Value("${app.sales-tax-rate}") BigDecimal salesTaxRate) {
         this.cartService = cartService;
         this.orderService = orderService;
         this.productService = productService;
         this.userService = userService;
         this.cartRepository = cartRepository;
+        this.salesTaxRate = salesTaxRate;
+    }
+
+    private void addCartTotals(Model model, BigDecimal subtotal) {
+        BigDecimal salesTax = subtotal.multiply(salesTaxRate).setScale(2, RoundingMode.HALF_UP);
+        model.addAttribute("cartSubtotal", subtotal);
+        model.addAttribute("salesTax", salesTax);
+        model.addAttribute("cartTotal", subtotal.add(salesTax));
     }
 
     @GetMapping("/view")
@@ -64,19 +76,23 @@ public class CartViewController {
                 .collect(Collectors.toMap(
                         productId -> productId,
                         cartRepository::countDistinctUsersWithProduct));
-
         model.addAttribute("cart", cart);
         model.addAttribute("products", products);
-        model.addAttribute("cartTotal", cartTotal);
+        addCartTotals(model, cartTotal);
         model.addAttribute("distinctCarts", distinctCarts);
+        model.addAttribute("cartSize", cart.size());
         return "cart";
 
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteCartItem(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
+    public String deleteCartItem(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes,
+            Authentication authentication) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        Long userId = currentUser.getId();
         try {
-            cartService.removeCartItem(productId);
+            cartService.removeCartItem(productId, userId);
+            redirectAttributes.addFlashAttribute("successMessage", "Cart item successfully removed!");
         } catch (ResponseStatusException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Cart removal failed");
         }
@@ -91,6 +107,7 @@ public class CartViewController {
 
         try {
             cartService.updateCartQuantity(productId, cartItem.getQuantity(), currentUser.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Item quantity successfully updated!");
         } catch (ResponseStatusException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
         }
@@ -115,8 +132,8 @@ public class CartViewController {
 
         model.addAttribute("cart", cart);
         model.addAttribute("products", products);
-        model.addAttribute("cartTotal", cartTotal);
-        return "checkout";
+        addCartTotals(model, cartTotal);
+        return "cart-checkout";
 
     }
 
