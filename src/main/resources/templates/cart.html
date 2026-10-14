@@ -21,6 +21,9 @@
                 <h1 class="h2 mb-2">Your cart</h1>
                 <p class="text-secondary mb-0">Review the products currently in
                     your cart.</p>
+                <!-- Cart error message -->
+                <div th:if="${errorMessage}" class="alert alert-danger mt-3"
+                    role="alert" th:text="${errorMessage}"></div>
             </header>
 
             <!-- Cart success message -->
@@ -56,11 +59,12 @@
                                 <td>
                                     <span
                                         th:text="${products.get(cartItem.productId).productName}"></span>
-                                    <!-- <span class="badge badge-danger"> In:
-                                    <span th:text=" ${distinctCarts[cartItem.productId]}">
+                                    <span class="badge text-bg-secondary"> In:
+                                        <span
+                                            th:text=" ${distinctCarts[cartItem.productId]}">
+                                        </span>
+                                        user's carts
                                     </span>
-                                    user's carts
-                                </span> -->
 
                                 </td>
                                 <td>
@@ -114,19 +118,22 @@
             <!-- Cart total and checkout action -->
             <div
                 class="d-flex justify-content-end align-items-center gap-3 mt-3">
+                <div class="text-end">
+                    <p class="mb-0">Subtotal: $<span
+                            th:text="${#numbers.formatDecimal(cartSubtotal, 1, 2)}"></span></p>
+                    <p class="mb-0">Sales tax (7%) : $<span
+                            th:text="${#numbers.formatDecimal(salesTax, 1, 2)}"></span></p>
                 <p class="mb-0 fw-semibold">
                     Total: $<span
                         th:text="${#numbers.formatDecimal(cartTotal, 1, 2)}"></span>
                 </p>
+                </div>
 
                 <a th:href="@{/cart/checkout}"> <button type="submit"
                         class="btn btn-primary">Checkout</button> </a>
 
             </div>
 
-            <!-- Cart error message -->
-            <div th:if="${errorMessage}" class="alert alert-danger mt-3"
-                role="alert" th:text="${errorMessage}"></div>
         </main>
         <footer class="container py-3">
             <div th:replace="~{fragments/fragments :: site-footer}"></div>
