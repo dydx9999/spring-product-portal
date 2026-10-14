@@ -8,8 +8,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.example.demo.service.CartService;
+
 @ControllerAdvice(annotations = Controller.class)
 public class GlobalModelAttributes {
+    private final CartService cartService;
+
+    public GlobalModelAttributes(CartService cartService) {
+        this.cartService = cartService;
+    }
+
+    @ModelAttribute("cartSize")
+    public int cartSize(Authentication authentication) {
+        return cartService.getCartSizeForCurrentUser(authentication);
+    }
+
     @ModelAttribute
     public void addSignedInUser(Model model, Authentication authentication) {
         boolean signedIn = authentication != null
@@ -27,4 +40,5 @@ public class GlobalModelAttributes {
                     .orElse("USER"));
         }
     }
+
 }
