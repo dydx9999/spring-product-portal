@@ -60,6 +60,8 @@ public class OrderService {
                     dto.setBuyerId(order.getBuyerId());
                     dto.setVendorId(order.getVendorId());
                     dto.setCreationDate(order.getCreationDate());
+                    dto.setStatus(order.getStatus());
+
                     dto.setTotal(totalsByOrderId.getOrDefault(order.getId(), BigDecimal.ZERO));
                     return dto;
                 })
@@ -79,7 +81,7 @@ public class OrderService {
         return orders.stream().map(order -> {
             List<OrderItem> orderItems = itemsByOrderId.getOrDefault(order.getId(), List.of());
             OrderSummaryDTO dto = new OrderSummaryDTO(order.getOrderId(), order.getBuyerId(),
-                    order.getVendorId(), order.getCreationDate());
+                    order.getVendorId(), order.getCreationDate(), order.getStatus());
             dto.setItems(orderItems.stream()
                     .map(i -> new OrderItemDTO(i.getProductName(), i.getProductQuantity(), i.getProductPrice(), null))
                     .toList());
@@ -117,11 +119,44 @@ public class OrderService {
                 })
                 .toList();
         LocalDateTime creationDate = orders.get(0).getCreationDate();
+        String status = orders.get(0).getStatus();
+
         BigDecimal total = items.stream()
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return new OrderDetailsDTO(orderId, creationDate, items, total);
+        return new OrderDetailsDTO(orderId, creationDate, items, total, status);
+    }
+
+    public Set<Long> getReviewedItemIds(Long buyerId, List<Long> orderItemIds) {
+        if (orderItemIds.isEmpty()) {
+            return Set.of();
+        }
+
+        return reviewRepository.findByBuyerIdAndOrderItemIdIn(buyerId, orderItemIds).stream()
+                .map(Review::getOrderItemId)
+                .collect(Collectors.toSet());
+    }
+
+    public List<BuyerReviewDTO> getReviewedItemsByBuyer(Long buyerId) {
+        List<Review> reviews = reviewRepository.findByBuyerId(buyerId);
+        if (reviews.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, OrderItem> orderItemsById = orderItemRepository.findAllById(reviews.stream()
+                .map(Review::getOrderItemId)
+                .distinct()
+                .toList()).stream()
+                .collect(Collectors.toMap(OrderItem::getId, Function.identity()));
+
+        return reviews.stream()
+                .map(review -> {
+                    OrderItem item = orderItemsById.get(review.getOrderItemId());
+                    String productName = item == null ? "Product unavailable" : item.getProductName();
+                    return new BuyerReviewDTO(productName, review.getRating(), review.getCreatedAt());
+                })
+                .toList();
     }
 
     @Transactional

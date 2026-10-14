@@ -12,14 +12,26 @@ public class OrderSummaryDTO {
     private Long buyerId;
     private Long vendorId;
     private LocalDateTime creationDate;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     private BigDecimal total;
+
     private List<OrderItemDTO> items = new ArrayList<>();
 
-    public OrderSummaryDTO(UUID orderId, Long buyerId, Long vendorId, LocalDateTime creationDate) {
+    public OrderSummaryDTO(UUID orderId, Long buyerId, Long vendorId, LocalDateTime creationDate, String status) {
         this.orderId = orderId;
         this.buyerId = buyerId;
         this.vendorId = vendorId;
         this.creationDate = creationDate;
+        this.status = status;
     }
 
     public OrderSummaryDTO() {

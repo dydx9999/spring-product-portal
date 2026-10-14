@@ -10,12 +10,27 @@ public class OrderDetailsDTO {
     private LocalDateTime creationDate;
     private List<OrderItemDTO> items;
     private BigDecimal total;
+    private String status;
 
-    public OrderDetailsDTO(UUID orderId, LocalDateTime creationDate, List<OrderItemDTO> items, BigDecimal total) {
+    public OrderDetailsDTO(UUID orderId, LocalDateTime creationDate, List<OrderItemDTO> items, BigDecimal total,
+            String status) {
         this.orderId = orderId;
         this.creationDate = creationDate;
         this.items = items;
         this.total = total;
+        this.status = status;
+    }
+
+    public OrderDetailsDTO() {
+
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public BigDecimal getTotal() {

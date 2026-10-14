@@ -8,4 +8,6 @@ import com.example.demo.model.OrderItem;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 	List<OrderItem> findByOrderIdIn(List<Long> orderIds);
+
+	List<OrderItem> findByOrderId(Long orderId);
 }
