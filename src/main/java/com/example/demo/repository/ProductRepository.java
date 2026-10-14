@@ -1,15 +1,18 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.example.demo.model.Product;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findByProductNameContainingIgnoreCase(String productName);
+    List<Product> findByProductNameContainingIgnoreCase(String productName, Sort sort);
 
     List<Product> findByVendorNameIgnoreCase(String vendorName, Sort sort);
 
@@ -26,7 +29,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     long countOutOfStockProducts();
 
     @Query("SELECT p FROM Product p WHERE p.productQuantity <= 0")
-    List<Product> findOutOfStockProducts();
+    List<Product> findOutOfStockProducts(Sort sort);
 
     @Query("SELECT p FROM Product p WHERE p.productQuantity <= 5 AND p.productQuantity > 0")
     List<Product> lowStockAlert();

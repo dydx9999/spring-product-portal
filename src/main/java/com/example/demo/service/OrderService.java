@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +23,7 @@ import com.example.demo.model.OrderItem;
 import com.example.demo.model.OrderItemDTO;
 import com.example.demo.model.OrderSummaryDTO;
 import com.example.demo.model.BuyerReviewDTO;
+import com.example.demo.model.PageView;
 import com.example.demo.model.Review;
 import com.example.demo.model.ReviewFormDTO;
 import com.example.demo.repository.OrderItemRepository;
@@ -31,6 +33,9 @@ import com.example.demo.repository.VendorRepository;
 
 @Service
 public class OrderService {
+
+    private static final Sort NEWEST_ORDERS_FIRST = Sort.by(Sort.Order.desc("creationDate"), Sort.Order.desc("id"));
+    private static final Sort NEWEST_REVIEWS_FIRST = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
@@ -45,11 +50,12 @@ public class OrderService {
         this.reviewRepository = reviewRepository;
     }
 
-    public List<OrderSummaryDTO> displayOrders(Long userId) {
-        List<Order> orders = orderRepository.findByBuyerIdOrderByCreationDateDesc(userId);
+    public PageView<OrderSummaryDTO> displayOrders(Long userId, int page, int size) {
+        PageView<Order> orders = PageView.load(page, size, NEWEST_ORDERS_FIRST,
+                pageable -> orderRepository.findByBuyerId(userId, pageable));
         Map<Long, BigDecimal> totalsByOrderId = new HashMap<>();
-        if (!orders.isEmpty()) {
-            List<Long> orderRowIds = orders.stream().map(Order::getId).toList();
+        if (!orders.getContent().isEmpty()) {
+            List<Long> orderRowIds = orders.getContent().stream().map(Order::getId).toList();
             for (OrderItem item : orderItemRepository.findByOrderIdIn(orderRowIds)) {
                 BigDecimal itemTotal = item.getProductPrice()
                         .multiply(BigDecimal.valueOf(item.getProductQuantity()));
@@ -57,8 +63,7 @@ public class OrderService {
             }
         }
 
-        return orders.stream()
-                .map(order -> {
+        return orders.map(order -> {
                     OrderSummaryDTO dto = new OrderSummaryDTO();
                     dto.setOrderId(order.getOrderId());
                     dto.setBuyerId(order.getBuyerId());
@@ -68,21 +73,21 @@ public class OrderService {
 
                     dto.setTotal(totalsByOrderId.getOrDefault(order.getId(), BigDecimal.ZERO));
                     return dto;
-                })
-                .toList();
+        });
     }
 
-    public List<OrderSummaryDTO> getVendorSales(Long vendorId) {
-        List<Order> orders = orderRepository.findByVendorId(vendorId);
-        if (orders.isEmpty()) {
-            return List.of();
-        }
+    public PageView<OrderSummaryDTO> getVendorSales(Long vendorId, int page, int size) {
+        PageView<Order> orders = PageView.load(page, size, NEWEST_ORDERS_FIRST,
+                pageable -> orderRepository.findByVendorId(vendorId, pageable));
         Map<Long, List<OrderItem>> itemsByOrderId = new HashMap<>();
-        for (OrderItem item : orderItemRepository.findByOrderIdIn(orders.stream().map(Order::getId).toList())) {
+        if (!orders.getContent().isEmpty()) {
+            for (OrderItem item : orderItemRepository
+                    .findByOrderIdIn(orders.getContent().stream().map(Order::getId).toList())) {
             itemsByOrderId.computeIfAbsent(item.getOrderId(), k -> new ArrayList<>()).add(item);
+            }
         }
 
-        return orders.stream().map(order -> {
+        return orders.map(order -> {
             List<OrderItem> orderItems = itemsByOrderId.getOrDefault(order.getId(), List.of());
             OrderSummaryDTO dto = new OrderSummaryDTO(order.getOrderId(), order.getBuyerId(),
                     order.getVendorId(), order.getCreationDate(), order.getStatus());
@@ -93,7 +98,7 @@ public class OrderService {
                     .map(i -> i.getProductPrice().multiply(BigDecimal.valueOf(i.getProductQuantity())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add));
             return dto;
-        }).toList();
+        });
     }
 
     public OrderDetailsDTO getOrderDetails(UUID orderId, Long buyerId) {
@@ -142,25 +147,21 @@ public class OrderService {
                 .collect(Collectors.toSet());
     }
 
-    public List<BuyerReviewDTO> getReviewedItemsByBuyer(Long buyerId) {
-        List<Review> reviews = reviewRepository.findByBuyerId(buyerId);
-        if (reviews.isEmpty()) {
-            return List.of();
-        }
+    public PageView<BuyerReviewDTO> getReviewedItemsByBuyer(Long buyerId, int page, int size) {
+        PageView<Review> reviews = PageView.load(page, size, NEWEST_REVIEWS_FIRST,
+                pageable -> reviewRepository.findByBuyerId(buyerId, pageable));
 
-        Map<Long, OrderItem> orderItemsById = orderItemRepository.findAllById(reviews.stream()
+        Map<Long, OrderItem> orderItemsById = orderItemRepository.findAllById(reviews.getContent().stream()
                 .map(Review::getOrderItemId)
                 .distinct()
                 .toList()).stream()
                 .collect(Collectors.toMap(OrderItem::getId, Function.identity()));
 
-        return reviews.stream()
-                .map(review -> {
+        return reviews.map(review -> {
                     OrderItem item = orderItemsById.get(review.getOrderItemId());
                     String productName = item == null ? "Product unavailable" : item.getProductName();
                     return new BuyerReviewDTO(productName, review.getRating(), review.getCreatedAt());
-                })
-                .toList();
+        });
     }
 
     @Transactional
