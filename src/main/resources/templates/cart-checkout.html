@@ -28,7 +28,7 @@
                 <!-- Order item summary -->
                 <div class="card border-0 shadow-sm">
                     <div class="table-responsive">
-                        <table class="table table-striped site-table mb-0">
+                        <table class="table table-hover site-table mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th scope="col">Product ID</th>
@@ -71,7 +71,7 @@
                                     <td>
                                         <span>$</span>
                                         <span
-                                            th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 2)}"></span>
+                                            th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}"></span>
 
                                     </td>
 
@@ -87,11 +87,11 @@
                 <div class="align-content-center">
                     <div>
                         <p class="mb-0">Subtotal: $<span
-                                th:text="${#numbers.formatDecimal(cartSubtotal, 1, 2)}"></span></p>
+                                th:text="${#numbers.formatDecimal(cartSubtotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
                         <p class="mb-0">Sales tax (7%): $<span
-                                th:text="${#numbers.formatDecimal(salesTax, 1, 2)}"></span></p>
+                                th:text="${#numbers.formatDecimal(salesTax, 1, 'COMMA', 2, 'POINT')}"></span></p>
                         <p>Your total: $<span
-                                th:text="${#numbers.formatDecimal(cartTotal, 1, 2)}"></span></p>
+                                th:text="${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
                     </div>
                 </div>
                 <form th:action=" @{/cart/checkout}" method="post">
