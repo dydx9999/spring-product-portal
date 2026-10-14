@@ -29,8 +29,11 @@ public class Product {
     @Column(name = "warehouseId")
     private Long warehouseId;
 
+    @Column(name = "low_stock_threshold")
+    private int lowStockThreshold;
+
     public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU,
-            String vendorName, String vendorNotes, Long warehouseId) {
+            String vendorName, String vendorNotes, Long warehouseId, int lowStockThreshold) {
         this.id = id;
         this.productName = productName;
         this.productPrice = productPrice;
@@ -39,6 +42,15 @@ public class Product {
         this.vendorName = vendorName;
         this.vendorNotes = vendorNotes;
         this.warehouseId = warehouseId;
+        this.lowStockThreshold = lowStockThreshold;
+    }
+
+    public int getLowStockThreshold() {
+        return lowStockThreshold;
+    }
+
+    public void setLowStockThreshold(int lowStockThreshold) {
+        this.lowStockThreshold = lowStockThreshold;
     }
 
     public Long getWarehouseId() {
