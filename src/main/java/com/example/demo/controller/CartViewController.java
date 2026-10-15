@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/cart")
 public class CartViewController {
