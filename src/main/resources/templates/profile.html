@@ -60,6 +60,59 @@
                 </div>
             </section>
 
+            <!-- Buyer reviews -->
+            <section class="card border-0 shadow-sm"
+                aria-labelledby="account-details-heading">
+                <div class="card-body p-4">
+                    <div
+                        class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
+                        <div>
+                            <h2 id="account-details-heading"
+                                class="h5 mb-1">Your reviews</h2>
+                            <p class="text-secondary small mb-0">Reviews you
+                                previously submitted.</p>
+                        </div>
+
+                    </div>
+                    <div class="table-responsive">
+                        <table
+                            class="table table-hover site-table mb-0 table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Product
+                                        Name</th>
+                                    <th scope="col">Rating</th>
+                                    <th scope="col">Created at</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="review : ${buyerReviews}">
+                                    <td>
+                                        <a th:if="${review.productId != null}"
+                                            th:href="@{/products/view/{productId}(productId=${review.productId})}"
+                                            th:text="${review.productName}">Product
+                                            name</a>
+                                        <span
+                                            th:unless="${review.productId != null}"
+                                            th:text="${review.productName}">Product
+                                            name</span>
+                                    </td>
+                                    <td> <span
+                                            class="badge rounded-pill text-bg-warning"
+                                            th:text="${review.rating}">0.0</span></td>
+
+                                    <td class="text text-secondary fst-italic"
+                                        th:text="${#temporals.format(review.createdAt, 'MMMM dd yyyy HH:mm')}"></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div
+                    th:replace="~{fragments/fragments :: pagination(${reviewPager}, 'Review pages')}"></div>
+            </section>
+
         </main>
     </body>
 </html>
