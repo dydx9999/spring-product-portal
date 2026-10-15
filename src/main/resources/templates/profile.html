@@ -20,6 +20,10 @@
                 <h1 class="h2 mb-2">Your profile</h1>
                 <p class="text-secondary mb-0">Manage your sign-in details.</p>
             </header>
+            <div class="container my-4">
+                <span class="alert alert-success" th:if="${successMessage}"
+                    th:text="${successMessage}">Message</span>
+            </div>
 
             <section class="card border-0 shadow-sm"
                 aria-labelledby="account-details-heading">
