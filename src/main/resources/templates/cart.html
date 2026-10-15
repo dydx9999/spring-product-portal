@@ -8,6 +8,8 @@
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <link rel="icon" type="image/svg+xml"
+            th:href="@{/assets/cart-favicon.svg}">
     </head>
 
     <body class="site-page">
@@ -18,7 +20,7 @@
             <header class="mb-4">
                 <p
                     class="page-eyebrow text-uppercase small fw-semibold mb-2">Shopping</p>
-                <h1 class="h2 mb-2">Your cart</h1>
+                <h1 class="h2 mb-2">Your shopping cart</h1>
                 <p class="text-secondary mb-0">Review the products currently in
                     your cart.</p>
                 <!-- Cart error message -->
@@ -32,7 +34,7 @@
             <!-- Cart item list and actions -->
             <div class="card border-0 shadow-sm">
                 <div class="table-responsive">
-                    <table class="table table-striped site-table mb-0">
+                    <table class="table table-hover site-table mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">Product ID</th>
@@ -59,9 +61,12 @@
                                 <td>
                                     <span
                                         th:text="${products.get(cartItem.productId).productName}"></span>
-                                    <span class="badge text-bg-secondary"> In:
+                                    <span class="badge text-bg-primary"
+                                        th:if="${distinctCarts[cartItem.productId]} > 1">
+                                        In:
                                         <span
-                                            th:text=" ${distinctCarts[cartItem.productId]}">
+                                            th:text="
+                                            ${distinctCarts[cartItem.productId]}">
                                         </span>
                                         user's carts
                                     </span>
@@ -84,7 +89,7 @@
                                 <td>
                                     <span>$</span>
                                     <span
-                                        th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 2)}"></span>
+                                        th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}"></span>
 
                                 </td>
                                 <td>
@@ -120,13 +125,13 @@
                 class="d-flex justify-content-end align-items-center gap-3 mt-3">
                 <div class="text-end">
                     <p class="mb-0">Subtotal: $<span
-                            th:text="${#numbers.formatDecimal(cartSubtotal, 1, 2)}"></span></p>
+                            th:text="${#numbers.formatDecimal(cartSubtotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
                     <p class="mb-0">Sales tax (7%) : $<span
-                            th:text="${#numbers.formatDecimal(salesTax, 1, 2)}"></span></p>
-                <p class="mb-0 fw-semibold">
-                    Total: $<span
-                        th:text="${#numbers.formatDecimal(cartTotal, 1, 2)}"></span>
-                </p>
+                            th:text="${#numbers.formatDecimal(salesTax,1, 'COMMA', 2, 'POINT')}"></span></p>
+                    <p class="mb-0 fw-semibold">
+                        Total: $<span
+                            th:text="${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 2, 'POINT')}"></span>
+                    </p>
                 </div>
 
                 <a th:href="@{/cart/checkout}"> <button type="submit"

@@ -1,26 +1,30 @@
 package com.example.demo.service;
 
-import com.example.demo.repository.OrderRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.ArrayList;
-import java.util.Map;
 import com.example.demo.model.Cart;
 import com.example.demo.model.Order;
-import com.example.demo.model.Product;
 import com.example.demo.model.OrderItem;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.model.Vendor;
 import com.example.demo.repository.CartRepository;
+import com.example.demo.repository.OrderItemRepository;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.VendorRepository;
-import com.example.demo.repository.OrderItemRepository;
-import com.example.demo.model.Vendor;
-import java.time.LocalDateTime;
-import java.util.UUID;
-import java.util.LinkedHashMap;
 
 @Service
 public class CartService {
@@ -30,15 +34,17 @@ public class CartService {
     private final ProductRepository productRepository;
     private final VendorRepository vendorRepository;
     private final OrderItemRepository orderItemRepository;
+    private final UserService userService;
 
     public CartService(CartRepository cartRepository, ProductRepository productRepository,
             OrderRepository orderRepository, VendorRepository vendorRepository,
-            OrderItemRepository orderItemRepository) {
+            OrderItemRepository orderItemRepository, UserService userService) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.vendorRepository = vendorRepository;
         this.orderItemRepository = orderItemRepository;
+        this.userService = userService;
     }
 
     @Transactional
@@ -52,7 +58,10 @@ public class CartService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
         String vendorName = product.getVendorName();
         List<Cart> existingItems = cartRepository.findByProductIdUserId(product.getId(), userId);
-        int combinedQuantity = existingItems.stream().mapToInt(Cart::getQuantity).sum() + quantity;
+        int combinedQuantity = existingItems
+                .stream()
+                .mapToInt(Cart::getQuantity)
+                .sum() + quantity;
         if (product.getProductQuantity() < combinedQuantity) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Insufficient stock");
         }
@@ -96,10 +105,10 @@ public class CartService {
     }
 
     @Transactional
-    public void removeCartItem(Long productId) {
+    public void removeCartItem(Long productId, Long userId) {
 
         try {
-            cartRepository.deleteByProductId(productId);
+            cartRepository.deleteByProductIdAndUserId(productId, userId);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exist!");
         }
@@ -116,19 +125,15 @@ public class CartService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found");
         }
         Cart cart = matchingItems.get(0);
-        int currentQuantity = matchingItems.stream().mapToInt(Cart::getQuantity).sum();
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
-        int quantityDifference = quantity - currentQuantity;
-        if (quantityDifference > product.getProductQuantity()) {
+        if (quantity > product.getProductQuantity()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Insufficient stock");
         }
 
-        product.setProductQuantity(product.getProductQuantity() - quantityDifference);
         cart.setQuantity(quantity);
-        productRepository.save(product);
         cartRepository.save(cart);
         if (matchingItems.size() > 1) {
             cartRepository.deleteAll(matchingItems.subList(1, matchingItems.size()));
@@ -158,15 +163,19 @@ public class CartService {
                         "Could not identify a unique vendor for a cart product");
             }
             Long vendorId = matchingVendors.get(0).getId();
-            OrderItem orderItem = new OrderItem(null, null, product.getProductPrice(),
-                    product.getProductName(), cartItem.getQuantity());
+            OrderItem orderItem = new OrderItem(null,
+                    null,
+                    product.getId(),
+                    product.getProductPrice(),
+                    product.getProductName(),
+                    cartItem.getQuantity());
             orderItemsByVendorId.computeIfAbsent(vendorId, ignored -> new ArrayList<>())
                     .add(orderItem);
         }
 
         LocalDateTime orderCreatedAt = LocalDateTime.now();
         List<Order> orders = orderItemsByVendorId.keySet().stream()
-                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt))
+                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt, "Pending"))
                 .toList();
 
         List<Order> savedOrders = orderRepository.saveAll(orders);
@@ -178,7 +187,38 @@ public class CartService {
             }
             orderItems.addAll(vendorOrderItems);
         }
+        Map<Long, Integer> productQuantitiesToDecrease = cart.stream()
+                .collect(Collectors.toMap(
+                        Cart::getProductId,
+                        Cart::getQuantity,
+                        Integer::sum));
+        for (Map.Entry<Long, Integer> entry : productQuantitiesToDecrease.entrySet()) {
+            int updatedRows = productRepository.decreaseStockIfAvailable(
+                    entry.getKey(), entry.getValue());
+
+            if (updatedRows != 1) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "Insufficient stock");
+            }
+        }
         orderItemRepository.saveAll(orderItems);
         cartRepository.deleteAll(cart);
+    }
+
+    public int getCartSizeForCurrentUser(Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return 0;
+        }
+
+        User currentUser = userService.getUserByUsername(authentication.getName());
+
+        Long userId = currentUser.getId();
+
+        List<Cart> userCart = cartRepository.findByUserId(userId);
+
+        return userCart.size();
+
     }
 }
