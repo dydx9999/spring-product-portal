@@ -3,12 +3,15 @@ package com.example.demo.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.model.Product;
+import com.example.demo.model.ProductDTO;
 import com.example.demo.repository.ProductRepository;
 
 @Service
