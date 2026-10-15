@@ -64,15 +64,15 @@ public class OrderService {
         }
 
         return orders.map(order -> {
-                    OrderSummaryDTO dto = new OrderSummaryDTO();
-                    dto.setOrderId(order.getOrderId());
-                    dto.setBuyerId(order.getBuyerId());
-                    dto.setVendorId(order.getVendorId());
-                    dto.setCreationDate(order.getCreationDate());
-                    dto.setStatus(order.getStatus());
+            OrderSummaryDTO dto = new OrderSummaryDTO();
+            dto.setOrderId(order.getOrderId());
+            dto.setBuyerId(order.getBuyerId());
+            dto.setVendorId(order.getVendorId());
+            dto.setCreationDate(order.getCreationDate());
+            dto.setStatus(order.getStatus());
 
-                    dto.setTotal(totalsByOrderId.getOrDefault(order.getId(), BigDecimal.ZERO));
-                    return dto;
+            dto.setTotal(totalsByOrderId.getOrDefault(order.getId(), BigDecimal.ZERO));
+            return dto;
         });
     }
 
@@ -83,7 +83,7 @@ public class OrderService {
         if (!orders.getContent().isEmpty()) {
             for (OrderItem item : orderItemRepository
                     .findByOrderIdIn(orders.getContent().stream().map(Order::getId).toList())) {
-            itemsByOrderId.computeIfAbsent(item.getOrderId(), k -> new ArrayList<>()).add(item);
+                itemsByOrderId.computeIfAbsent(item.getOrderId(), k -> new ArrayList<>()).add(item);
             }
         }
 
@@ -158,9 +158,10 @@ public class OrderService {
                 .collect(Collectors.toMap(OrderItem::getId, Function.identity()));
 
         return reviews.map(review -> {
-                    OrderItem item = orderItemsById.get(review.getOrderItemId());
-                    String productName = item == null ? "Product unavailable" : item.getProductName();
-                    return new BuyerReviewDTO(productName, review.getRating(), review.getCreatedAt());
+            OrderItem item = orderItemsById.get(review.getOrderItemId());
+            String productName = item == null ? "Product unavailable" : item.getProductName();
+            Long productId = item == null ? null : item.getProductId();
+            return new BuyerReviewDTO(productId, productName, review.getRating(), review.getCreatedAt());
         });
     }
 

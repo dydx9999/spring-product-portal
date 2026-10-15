@@ -9,7 +9,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = { "order_item_id", "buyer_id" }))
 public class Review {
@@ -29,9 +37,6 @@ public class Review {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    protected Review() {
-    }
-
     public Review(Long orderItemId, Long buyerId, int rating) {
         this.orderItemId = orderItemId;
         this.buyerId = buyerId;
@@ -39,23 +44,4 @@ public class Review {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getOrderItemId() {
-        return orderItemId;
-    }
-
-    public Long getBuyerId() {
-        return buyerId;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 }
