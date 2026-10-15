@@ -10,8 +10,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.demo.model.Product;
+import com.example.demo.model.ProductDTO;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    @Query("""
+            select new com.example.demo.model.ProductDTO(
+                p.id, p.productName, p.productPrice, p.vendorName
+            )
+            from Product p
+            """)
+    List<ProductDTO> findAllProducts();
+
     List<Product> findByProductNameContainingIgnoreCase(String productName, Sort sort);
 
     List<Product> findByVendorNameIgnoreCase(String vendorName, Sort sort);
