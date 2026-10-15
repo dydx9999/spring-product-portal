@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.service.UserService;
-import com.example.demo.service.VendorService;
+import com.example.demo.repository.ProductRepository;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -10,42 +9,56 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
+import com.example.demo.model.BuyerReviewDTO;
+import com.example.demo.model.PageView;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
 import com.example.demo.model.VendorFormDTO;
+import com.example.demo.service.OrderService;
+import com.example.demo.service.UserService;
+import com.example.demo.service.VendorService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserViewController {
+    private final ProductRepository productRepository;
+    private final OrderService orderService;
     private final UserService userService;
     private final VendorService vendorService;
 
-    public UserViewController(UserService userService, VendorService vendorService) {
+    public UserViewController(UserService userService, VendorService vendorService, OrderService orderService,
+            ProductRepository productRepository) {
         this.userService = userService;
         this.vendorService = vendorService;
+        this.orderService = orderService;
+        this.productRepository = productRepository;
     }
 
     // Display all user entries
     @GetMapping("/users")
-    public String listUsers(Model model) {
-        model.addAttribute("users", userService.getUsers());
-        return "users";
+    public String listUsers(@RequestParam(defaultValue = "1") int page, HttpServletRequest request, Model model) {
+        PageView<User> userPager = userService.getUsers(page, PageView.DEFAULT_SIZE).withLinks(request, "page");
+        model.addAttribute("users", userPager.getContent());
+        model.addAttribute("userPager", userPager);
+        return "user-list";
     }
 
     // Render user registration page
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("userForm", new User());
-        return "register";
+        return "user-register";
     }
 
     @GetMapping("/register/vendor")
     public String showVendorRegistrationForm(Model model) {
         model.addAttribute("vendorForm", new VendorFormDTO());
-        return "register-vendor";
+        return "vendor-register";
     }
 
     // Render Login Form Page
@@ -85,20 +98,25 @@ public class UserViewController {
     }
 
     @GetMapping("/user/profile")
-    public String displayProfile(Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String displayProfile(@RequestParam(defaultValue = "1") int reviewPage, HttpServletRequest request,
+            Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         String username = currentUser.getUsername();
         String role = currentUser.getRole();
 Long buyerId = currentUser.getId();
-        List<BuyerReviewDTO> buyerReviews = orderService.getReviewedItemsByBuyer(buyerId);
+        PageView<BuyerReviewDTO> reviewPager = orderService
+                .getReviewedItemsByBuyer(buyerId, reviewPage, PageView.DEFAULT_SIZE)
+                .withLinks(request, "reviewPage");
         model.addAttribute("username", username);
         model.addAttribute("role", role);
-        model.addAttribute("buyerReviews", buyerReviews);
+        model.addAttribute("buyerReviews", reviewPager.getContent());
+        model.addAttribute("reviewPager", reviewPager);
         boolean isVendor = authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"));
         model.addAttribute("currentVendor",
                 isVendor ? vendorService.getVendorByUserId(currentUser.getId()) : null);
         model.addAttribute("isVendor", isVendor);
+        model.addAttribute("products", productRepository.findAll());
 
         return "profile";
     }
@@ -135,10 +153,13 @@ Long buyerId = currentUser.getId();
                 userForm.getPassword());
         if (isVendor) {
             vendorService.updateBusinessName(updatedUser.getId(), userForm.getBusinessName());
+            redirectAttributes.addFlashAttribute("successMessage", "Profile successfully updated!");
         }
 
         if (credentialsChanged) {
+            redirectAttributes.addFlashAttribute("successMessage", "Profile successfully updated!");
             new SecurityContextLogoutHandler().logout(request, response, authentication);
+
             return "redirect:/login?profileUpdated";
         }
         return "redirect:/user/profile";
