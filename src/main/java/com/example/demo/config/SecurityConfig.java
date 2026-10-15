@@ -9,11 +9,19 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.demo.repository.UserRepository;
 
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
+
+        @Override
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/assets/**")
+                                .addResourceLocations("classpath:/assets/");
+        }
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -27,6 +35,7 @@ public class SecurityConfig {
                                                                 "/register/**",
                                                                 "/api/**",
                                                                 "/dashboard/**",
+                                                                "/assets/**",
                                                                 "/css/**",
                                                                 "/webjars/**",
                                                                 "/products/**",
