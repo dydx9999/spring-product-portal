@@ -25,17 +25,21 @@
                     <p
                         class="page-eyebrow text-uppercase small fw-semibold mb-2">Inventory</p>
                     <h1 class="h2 mb-2">Product catalog</h1>
-                    <p class="text-secondary mb-0">Signed in as <strong><span
+                    <p class="text-secondary mb-0">Signed in as
+                        <strong><span
                                 th:text="${username}">Username</span></strong>
                         <span class="ms-1"
-                            th:if="${isAdmin}">(Admin)</span><span class="ms-1"
-                            th:if="${isUser}">(User)</span><span class="ms-1"
+                            th:if="${isAdmin}">(Admin)</span><span
+                            class="ms-1"
+                            th:if="${isUser}">(User)</span><span
+                            class="ms-1"
                             th:if="${isVendor}">(Vendor)</span>
                     </p>
                 </div>
                 <div>
 
-                    <a th:if="${isVendor}" th:href="@{/products/add-product}"
+                    <a th:if="${isVendor}"
+                        th:href="@{/products/product-add}"
                         class="btn btn-primary">Add
                         product</a>
                     <a th:unless="${isVendor}" th:href="@{/cart/view}"
@@ -43,15 +47,15 @@
                 </div>
             </header>
 
-            <!-- Product view filter controls -->
             <section
-                class="d-flex flex-wrap align-items-end justify-content-between gap-3 py-3 mb-4 border-top border-bottom"
+                class="d-flex flex-wrap align-items-end justify-content-between gap-3 py-3 mb-3 border-top border-bottom"
                 aria-label="Catalog sorting">
                 <div>
                     <p
                         class="text-uppercase small fw-semibold text-secondary mb-1">Catalog
                         sorting</p>
-                    <p class="text-secondary small mb-0">Choose a price order
+                    <p class="text-secondary small mb-0">Choose a price
+                        order
                         for the product list.</p>
                 </div>
                 <form th:action="@{/products}" method="get"
@@ -62,103 +66,149 @@
                         onchange="this.form.submit()">
                     <label for="inStockProducts">Hide out of stock
                         products</label>
-                    <!-- Filter dropdown -->
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle"
-                            type="button" id="dropdownMenuButton2"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Filter
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-dark"
-                            aria-labelledby="dropdownMenuButton2">
-                            <li><a class="dropdown-item active"
-                                    href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another
-                                    action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else
-                                    here</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Separated
-                                    link</a></li>
-                        </ul>
-                    </div>
                     <div>
-                        <label for="product-sort" class="form-label mb-1">Sort
+                        <label for="product-sort"
+                            class="form-label mb-1">Sort
                             by</label>
                         <select id="product-sort" class="form-select w-auto"
                             name="filter">
-                            <option value="priceAsc">Price: low to high</option>
-                            <option value="priceDesc">Price: high to
-                                low</option>
-                            <option value="SKUAsc">Product SKU: low to
-                                high</option>
-                            <option value="SKUDesc">Product SKU: high to
-                                low</option>
-                            <option value="vendorAsc">Vendor name: A to
-                                Z</option>
-                            <option value="vendorDesc">Vendor name: Z to A
-                            </option>
+                            <option value="priceAsc"
+                                th:selected="${param.filter == 'priceAsc'}">Price:
+                                low to high</option>
+                            <option value="priceDesc"
+                                th:selected="${param.filter == 'priceDesc'}">Price:
+                                high to low</option>
+                            <option value="SKUAsc"
+                                th:selected="${param.filter == 'SKUAsc'}">Product
+                                SKU: low to high</option>
+                            <option value="SKUDesc"
+                                th:selected="${param.filter == 'SKUDesc'}">Product
+                                SKU: high to low</option>
+                            <option value="vendorAsc"
+                                th:selected="${param.filter == 'vendorAsc'}">Vendor
+                                name: A to Z</option>
+                            <option value="vendorDesc"
+                                th:selected="${param.filter == 'vendorDesc'}">Vendor
+                                name: Z to A</option>
                         </select>
                     </div>
                     <button class="btn btn-secondary"
                         type="submit">Apply</button>
-
-                    <a th:href="@{/products}" class="btn btn-primary">Reset</a>
-
+                    <a th:href="@{/products}"
+                        class="btn btn-primary">Reset</a>
                 </form>
             </section>
 
-            <!-- Catalog status messages -->
             <div th:if="${outOfStockMessage}" class="alert alert-warning"
-                role="status" th:text="${outOfStockMessage}">
-            </div>
-            <div th:if="${errorMessage}" class="alert alert-danger" role="alert"
+                role="status" th:text="${outOfStockMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger"
+                role="alert"
                 th:text="${errorMessage}"></div>
             <div th:if="${deleteSuccess}" class="alert alert-success"
-                role="status" th:text="${deleteSuccess}"></div>
+                role="status"
+                th:text="${deleteSuccess}"></div>
             <div th:if="${successMessage}" class="alert alert-success"
-                role="status" th:text="${successMessage}"></div>
+                role="status"
+                th:text="${successMessage}"></div>
 
-            <!-- Product counts and stock filter -->
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <!-- Product catalog count  -->
-                <form action method="get"> <button name="filter" value
-                        type="submit"
-                        class="btn btn-primary shadow-lg">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <form th:action="@{/products}" method="get">
+                    <button name="filter" value type="submit"
+                        class="btn btn-primary">
                         Products <span class="badge text-bg-success"
                             th:text="${productCount}">0</span>
-                    </button></form>
-
-                <!-- Out of stock products alert  -->
+                    </button>
+                </form>
                 <form th:action="@{/products}" method="get">
                     <button type="submit" name="filter"
                         value="outOfStockProductsFilter"
-                        class="btn btn-primary shadow-lg">
+                        class="btn btn-primary">
                         Out of stock <span class="badge text-bg-danger"
                             th:text="${outOfStockProducts}">0</span>
                     </button>
                 </form>
-
             </div>
 
+            <div class="catalog-layout">
+                <aside class="catalog-sidebar"
+                    aria-labelledby="catalog-filter-title">
+                    <form th:action="@{/products}" method="get"
+                        class="catalog-filter-form">
+                        <h2 id="catalog-filter-title" class="h5 mb-3">Filter
+                            products</h2>
+                        <input th:if="${param.filter != null}" type="hidden"
+                            name="filter" th:value="${param.filter}">
+                        <input th:if="${inStockOnly}" type="hidden"
+                            name="inStockOnly" value="true">
+                        <div class="mb-3">
+                            <label for="vendor-filter"
+                                class="form-label">Vendor</label>
+                            <select id="vendor-filter" name="vendor"
+                                class="form-select">
+                                <option value>All vendors</option>
+                                <option th:each="vendorName : ${vendors}"
+                                    th:value="${vendorName}"
+                                    th:text="${vendorName}"
+                                    th:selected="${vendorName == selectedVendor}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="warehouse-filter"
+                                class="form-label">Warehouse</label>
+                            <select id="warehouse-filter" name="warehouseId"
+                                class="form-select">
+                                <option value>All warehouses</option>
+                                <option th:each="warehouse : ${warehouses}"
+                                    th:value="${warehouse.id}"
+                                    th:text="${warehouse.warehouseName}"
+                                    th:selected="${warehouse.id == selectedWarehouseId}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="availability-filter"
+                                class="form-label">Availability</label>
+                            <select id="availability-filter"
+                                name="availability"
+                                class="form-select">
+                                <option value
+                                    th:selected="${selectedAvailability == null or selectedAvailability == ''}">Any
+                                    availability</option>
+                                <option value="inStock"
+                                    th:selected="${selectedAvailability == 'inStock'}">In
+                                    stock</option>
+                                <option value="outOfStock"
+                                    th:selected="${selectedAvailability == 'outOfStock'}">Out
+                                    of stock</option>
+                            </select>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary"
+                                type="submit">Apply
+                                filters</button>
+                            <a class="btn btn-outline-secondary"
+                                th:href="@{/products}">Clear filters</a>
+                        </div>
+                    </form>
+                </aside>
+                <div class="catalog-results">
             <!-- Product catalog table and actions -->
             <section class="card border-0 shadow-sm">
                 <div class="table-responsive">
-                    <table class="table table-hover site-table mb-0">
+                            <table
+                                class="table table-hover site-table mb-0 table-sm">
                         <thead class="table-light">
                             <tr>
                                 <!-- Table headers -->
                                 <th scope="col">ID</th>
                                 <th scope="col">Name</th>
-                                <th scope="col" class="text-end">Price</th>
-                                <th scope="col" class="text-end">Quantity</th>
-                                <th scope="col">Vendor Name</th>
-                                <th scope="col">SKU</th>
-                                <th scope="col" class="text-end"
-                                    sec:authorize="hasRole('VENDOR')">Quantity
-                                    Sold</th>
+                                        <th scope="col"
+                                            class="text-start">Price</th>
 
-                                <th th:if="${isVendor}" scope="col">Notes</th>
+                                <th scope="col">Vendor Name</th>
+                                        <!-- <th scope="col">SKU</th> -->
+
+                                        <th th:if="${isVendor}"
+                                            scope="col">Notes</th>
                                 <th scope="col"
                                     class="actions-column">Actions</th>
                             </tr>
@@ -172,39 +222,48 @@
                                 <td class="text-secondary"
                                     th:text="${product.id}"></td>
                                 <td>
-                                    <span class="fw-semibold"
-                                        th:text="${product.productName}"></span>
+                                            <a class="fw-semibold"
+                                                th:href="@{/products/view/{productId}(productId=${product.id})}"
+                                                th:text="${product.productName}"></a>
+                                            <code>
+                                                <span
+                                                    class="text-secondary fw-normal"
+                                                    th:text="|(${product.productSKU})|"></span></code>
                                     <span
                                         th:if="${product.productQuantity <= 0}"
-                                        class="badge text-bg-danger ms-1">Out of
+                                                class="badge text-bg-danger ms-1">Out
+                                                of
                                         stock</span> <span
                                         th:if="${quantitySoldByProduct[product.productName] > 5}"
                                         class="badge text-bg-success ms-1">Best
                                         seller</span>
+
                                     <span
-                                        th:if="${product.productQuantity > 0 and product.productQuantity <= 5 and isVendor}"
+                                                th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold and isVendor}"
                                         class="badge text-bg-warning ms-1">Low
                                         stock</span>
 
                                 </td><!-- Product row details -->
-                                <td class="text-end"><span>$</span>
+                                        <td class="text-end">
+                                            <span
+                                                th:text="|$${product.productPrice}|"></span>
                                     <span
-                                        th:text="${product.productPrice}"></span></td>
-                                <td class="text-end"
-                                    th:text="${product.productQuantity}"></td>
+                                                class="text-secondary small"
+                                                th:text="|(${product.productQuantity} available)|"></span>
+                                        </td>
+
                                 <td
                                     th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></td>
 
-                                <td><code class="sku-code"
-                                        th:text="${product.productSKU}"></code></td>
-                                <td class="text-end"
-                                    sec:authorize="hasRole('VENDOR')"
-                                    th:text="${quantitySoldByProduct[product.productName] ?: 0}"></td>
+                                        <!-- <td><code class="sku-code"
+                                                th:text="${product.productSKU}"></code></td> -->
+
                                 <td th:if="${isVendor}"><span
                                         th:text="${product.vendorNotes}"></span></td>
                                 <td class="actions-column">
                                     <!-- Admin only row delete button -->
-                                    <span class="product-action-form"
+                                            <span
+                                                class="product-action-form"
                                         sec:authorize="hasRole('ADMIN')">
                                         <button type="button"
                                             class="btn btn-sm btn-outline-danger"
@@ -214,7 +273,8 @@
                                             th:data-product-name="${product.productName}">Delete</button>
                                     </span>
                                     <!-- Vendor only row delete button -->
-                                    <span class="product-action-form"
+                                            <span
+                                                class="product-action-form"
                                         sec:authorize="hasRole('VENDOR')"
                                         th:if="${product.vendorName == businessName}">
                                         <button type="button"
@@ -225,21 +285,39 @@
                                             th:data-product-name="${product.productName}">Delete</button>
                                     </span>
                                     <!-- User only row add to cart button -->
-                                    <form class="product-action-form"
+                                            <form
+                                                class="product-action-form add-to-cart-form"
                                         sec:authorize="hasRole('USER')"
                                         th:if="${product.productQuantity > 0}"
                                         th:action="@{/products/purchase/{id}(id=${product.id})}"
                                         method="post">
-                                        <input type="number" name="quantity"
+                                                <input type="number"
+                                                    name="quantity"
                                             value="1" min="1"
                                             th:attr="max=${product.productQuantity}"
                                             required>
+
+                                                <button
+                                                    class="btn btn-success bi bi-cart4 add-to-cart-button"
+                                                    type="submit"> Add to
+                                                    cart
+                                                </button>
+
+                                            </form>
+                                            <!-- User only add to wishlist button -->
+                                            <form
+                                                sec:authorize="hasRole('USER')"
+                                                th:action="@{/products/wishlist/add/{productId}(productId=${product.id})}"
+                                                method="post">
+
                                         <button
-                                            class="btn btn-sm btn-outline-primary"
-                                            type="submit">Add to cart</button>
+                                                    class="btn btn-outline-warning bi bi-star-fill"
+                                                    type="submit"> Add
+                                                    to wishlist</button>
                                     </form>
                                     <!-- Vendor only row update button -->
-                                    <form class="product-action-form"
+                                            <form
+                                                class="product-action-form"
                                         sec:authorize="hasRole('VENDOR')"
                                         th:if="${product.vendorName == businessName}"
                                         th:action="@{/products/update/{id}(id=${product.id})}"
@@ -255,16 +333,22 @@
                                     </form>
                                 </td>
                             </tr>
-                            <tr th:if="${#lists.isEmpty(products)}">
-                                <td th:colspan="${isVendor ? 9 : 8}"
+                                    <tr
+                                        th:if="${#lists.isEmpty(products)}">
+                                        <td
+                                            th:colspan="${isVendor ? 9 : 8}"
                                     class="text-center text-secondary py-5">No
                                     products found.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                        <div
+                            th:replace="~{fragments/fragments :: pagination(${productPager}, 'Product pages')}"></div>
             </section>
 
+                </div>
+            </div>
         </main>
 
     </body>
@@ -304,6 +388,7 @@
 <script
     th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
 <script>
+    src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
             document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
                 var trigger = event.relatedTarget;
                 document.getElementById('deleteForm').action = trigger.dataset.deleteAction;
