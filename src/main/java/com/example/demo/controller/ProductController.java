@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,23 +15,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
+
 import com.example.demo.model.Product;
+import com.example.demo.model.ProductDTO;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    private final ProductRepository productRepository;
     private final ProductService productService;
-
-    public ProductController(ProductRepository productRepository, ProductService productService) {
-        this.productRepository = productRepository;
-        this.productService = productService;
-    }
+    private final ProductRepository productRepository;
 
     @GetMapping
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public ResponseEntity<?> getProducts() {
+        List<ProductDTO> products = productService.getProductDTO();
+        return ResponseEntity.ok(products);
     }
 
     // @PostMapping
@@ -65,4 +68,5 @@ public class ProductController {
         return productRepository.findAll(Sort.by(Product::getProductPrice));
 
     }
+
 }
