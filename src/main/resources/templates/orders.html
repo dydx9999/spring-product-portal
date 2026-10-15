@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order History</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order History</title>
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-</head>
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
 
-<body class="site-page">
+    <body class="site-page">
         <div
             th:replace="~{fragments/fragments :: site-navigation('orders')}"></div>
-    <main class="container py-4">
-        <header class="mb-4">
+        <main class="container py-4">
+            <header class="mb-4">
                 <p
                     class="page-eyebrow text-uppercase small fw-semibold mb-2">Orders</p>
                 <h1 class="h2 mb-2">Your order history: <strong><span
                             th:text="${username}"></span></strong></h1>
-            <p class="text-secondary mb-0">Review your previous orders.</p>
-        </header>
-        <!-- Order history table -->
+                <p class="text-secondary mb-0">Review your previous orders.</p>
+            </header>
+            <!-- Order history table -->
             <section class="card border-0 shadow-sm">
-        <div class="table-responsive">
+                <div class="table-responsive">
                     <table class="table table-hover site-table mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">Order ID</th>
-                        <th scope="col">Vendor Id</th>
-                        <th scope="col">Date placed</th>
-                        <th scope="col">Total</th>
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Order ID</th>
+                                <th scope="col">Vendor Id</th>
+                                <th scope="col">Date placed</th>
+                                <th scope="col">Total</th>
                                 <th scope="col">Status</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="order : ${orderSummary}">
-                        <td th:text="${order.orderId}"></td>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orderSummary}">
+                                <td th:text="${order.orderId}"></td>
                                 <td><span
                                         th:text="${order.vendorId}"></span></td>
                                 <td
@@ -53,24 +53,24 @@
                                         class="badge text-bg-success"
                                         th:text="${order.status}"></span>
                                 </td>
-                        <td>
-                            <a class="btn btn-outline-primary mt-3"
+                                <td>
+                                    <a class="btn btn-outline-primary mt-3"
                                         th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}">View
                                         details</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div
                     th:replace="~{fragments/fragments :: pagination(${orderPager}, 'Order pages')}"></div>
             </section>
 
-    </main>
-    <footer class="container py-3">
-        <div th:replace="~{fragments/fragments :: site-footer}"></div>
-    </footer>
+        </main>
+        <footer class="container py-3">
+            <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        </footer>
 
-</body>
+    </body>
 
 </html>
