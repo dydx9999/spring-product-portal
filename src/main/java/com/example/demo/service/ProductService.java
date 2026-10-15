@@ -176,4 +176,9 @@ public class ProductService {
         return Sort.by(direction, property).and(BY_ID);
     }
 
+    public List<ProductDTO> getProductDTO() {
+        return productRepository.findAllProducts();
+
+    }
+
 }
