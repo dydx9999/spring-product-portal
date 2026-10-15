@@ -7,8 +7,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.Random;
-import org.springframework.data.domain.Sort;
+
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 
