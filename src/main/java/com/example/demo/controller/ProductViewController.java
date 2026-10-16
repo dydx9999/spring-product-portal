@@ -52,7 +52,11 @@ public class ProductViewController {
 
     @GetMapping
     public String showProductList(@RequestParam(required = false) String filter,
-            @RequestParam(defaultValue = "false") boolean inStockOnly, Model model,
+            @RequestParam(defaultValue = "false") boolean inStockOnly,
+            @RequestParam(name = "vendor", required = false) String vendorNameFilter,
+            @RequestParam(required = false) Long warehouseId,
+            @RequestParam(required = false) String availability,
+            @RequestParam(defaultValue = "1") int page, HttpServletRequest request, Model model,
             Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
 
@@ -86,28 +90,48 @@ public class ProductViewController {
         List<Product> products = filter == null
                 ? productService.getProducts()
                 : productService.getFilteredProducts(filter, vendorBusinessName);
+        products = products.stream()
+                .filter(p -> vendorNameFilter == null || vendorNameFilter.isBlank()
+                        || vendorNameFilter.equals(p.getVendorName()))
+                .filter(p -> warehouseId == null || warehouseId.equals(p.getWarehouseId()))
+                .filter(p -> availability == null || availability.isBlank()
+                        || ("inStock".equals(availability) && p.getProductQuantity() > 0)
+                        || ("outOfStock".equals(availability) && p.getProductQuantity() <= 0))
+                .toList();
         if (inStockOnly) {
             products = products.stream().filter(p -> p.getProductQuantity() > 0).toList();
         }
-        model.addAttribute("products", products);
+        PageView<Product> productPager = PageView.of(products, page, PageView.DEFAULT_SIZE)
+                .withLinks(request, "page");
+        model.addAttribute("products", productPager.getContent());
+        model.addAttribute("productPager", productPager);
         model.addAttribute("inStockOnly", inStockOnly);
-
+        model.addAttribute("vendors", productService.getProducts().stream()
+                .map(Product::getVendorName)
+                .filter(name -> name != null && !name.isBlank())
+                .distinct()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .toList());
+        model.addAttribute("warehouses", warehouseRepository.findAll());
+        model.addAttribute("selectedVendor", vendorNameFilter);
+        model.addAttribute("selectedWarehouseId", warehouseId);
+        model.addAttribute("selectedAvailability", availability);
         return "products";
     }
 
     // ---- Add product ----
 
-    @GetMapping("/add-product")
+    @GetMapping("/product-add")
     public String showAddProductForm(Model model, Authentication authentication) {
         model.addAttribute("productForm", new Product());
         boolean isVendor = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_VENDOR"));
         model.addAttribute("isVendor", isVendor);
         model.addAttribute("warehouses", warehouseRepository.findAll());
-        return "add-product";
+        return "product-add";
     }
 
-    @PostMapping("/add-product")
+    @PostMapping("/product-add")
     public String handleAddProduct(@ModelAttribute("productForm") Product productForm,
             RedirectAttributes redirectAttributes, Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
@@ -119,21 +143,32 @@ public class ProductViewController {
             productService.createProduct(productForm, vendorName);
             redirectAttributes.addFlashAttribute("successMessage", "Product successfully created");
         }
-        return "redirect:/products/add-product";
+        return "redirect:/products/product-add";
     }
 
     // ---- Search products ----
 
     @GetMapping("/product-search")
-    public String showProductSearchForm(Model model) {
-        model.addAttribute("productSearchForm", new Product());
+    public String showProductSearchForm(
+            @RequestParam(required = false) String productName,
+            @RequestParam(defaultValue = "1") int page,
+            HttpServletRequest request,
+            Model model,
+            Authentication authentication) {
+        Product searchForm = new Product();
+        searchForm.setProductName(productName);
+        model.addAttribute("productSearchForm", searchForm);
         model.addAttribute("warehouse", warehouseRepository.findAll());
-        return "product-search";
-    }
-
-    @PostMapping("/product-search")
-    public String handleProductSearch(@ModelAttribute("productSearchForm") Product productSearchForm, Model model) {
-        model.addAttribute("searchResults", productService.searchProductsByName(productSearchForm.getProductName()));
+        if (productName != null) {
+            PageView<Product> searchPager = PageView
+                    .of(productService.searchProductsByName(productName), page, PageView.DEFAULT_SIZE)
+                    .withLinks(request, "page");
+            model.addAttribute("searchResults", searchPager.getContent());
+            model.addAttribute("searchPager", searchPager);
+        }
+        boolean isVendor = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_VENDOR"));
+        model.addAttribute("isVendor", isVendor);
         return "product-search";
     }
 
@@ -148,7 +183,7 @@ public class ProductViewController {
                             "Product not found"));
             model.addAttribute("productForm", product);
             model.addAttribute("warehouses", warehouseRepository.findAll());
-            return "update-product";
+            return "product-update";
         } catch (ResponseStatusException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getReason());
             return "redirect:/products";
@@ -166,7 +201,7 @@ public class ProductViewController {
         } catch (ResponseStatusException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getReason());
         }
-        return "redirect:/products";
+        return "redirect:/vendor";
     }
 
     // ---- Delete product ----
