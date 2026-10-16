@@ -86,7 +86,7 @@
                                     <th scope="col">Product
                                         Name</th>
                                     <th scope="col">Rating</th>
-                                    <th scope="col">Created at</th>
+                                    <th scope="col">Reviewed on</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,7 +106,7 @@
                                             th:text="${review.rating}">0.0</span></td>
 
                                     <td class="text text-secondary fst-italic"
-                                        th:text="${#temporals.format(review.createdAt, 'MMMM dd yyyy HH:mm')}"></td>
+                                        th:text="${#temporals.format(review.createdAt, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></td>
                                 </tr>
 
                             </tbody>
