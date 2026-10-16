@@ -102,4 +102,16 @@ public class VendorViewController {
                 }
                 return "redirect:/vendor";
         }
+        @GetMapping("/discounts")
+        public String showDiscountsManager(
+                        Model model,
+                        Authentication authentication,
+                        RedirectAttributes redirectAttributes) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                var products = productRepository.findByVendorNameIgnoreCase(
+                                currentVendor.getBusinessName(), Sort.by(Sort.Direction.ASC, "id"));
+                model.addAttribute("products", products);
+                return "vendor-discounts-manager";
+        }
 }
