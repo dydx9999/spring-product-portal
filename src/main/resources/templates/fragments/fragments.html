@@ -12,12 +12,33 @@
                 <div
                     class="container py-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
                     <ul class="nav nav-pills gap-2 mb-0">
-                        <li class="nav-item" sec:authorize="hasRole('VENDOR')">
-                            <a class="nav-link"
+                        <!-- Vendor actions dropdown  -->
+                        <div class="dropdown" sec:authorize="hasRole('VENDOR')">
+                            <a class="btn btn-secondary dropdown-toggle"
+                                href="#" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Vendor Dashboard
+                            </a>
+
+                            <ul class="dropdown-menu"
+                                aria-labelledby="dropdownMenuLink">
+                                <li class="nav-item">
+                                    <a class="dropdown-item"
                                 th:classappend="${activePage == 'vendor-dashboard'} ? 'active' : ''"
                                 th:href="@{/vendor}">View vendor
                                 dashboard</a>
                         </li>
+<li><a class="dropdown-item text text-bold"
+                                        th:href="@{/products(vendor=${businessNameVendor})}">Manage
+                                        your products</a></li>
+                                <li><a class="dropdown-item"
+                                        th:href="@{/vendor/orders/view}">View
+                                        your orders</a></li>
+                                <li><a class="dropdown-item"
+                                        th:href="@{/vendor/discounts}">Discounts
+                                        manager</a></li>
+                            </ul>
+                        </div>
                         <li class="nav-item">
                             <a class="nav-link"
                                 th:classappend="${activePage == 'products'} ? 'active' : ''"
