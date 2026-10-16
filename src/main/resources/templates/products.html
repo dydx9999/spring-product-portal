@@ -244,7 +244,7 @@
                                         stock</span>
 
                                 </td><!-- Product row details -->
-                                        <td class="text-end">
+                                        <td class="text-align-center">
                                             <span
                                                 th:text="|$${product.productPrice}|"></span>
                                     <span
@@ -252,7 +252,7 @@
                                                 th:text="|(${product.productQuantity} available)|"></span>
                                         </td>
 
-                                <td
+                                        <td class="text-center"
                                     th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></td>
 
                                         <!-- <td><code class="sku-code"
@@ -284,10 +284,10 @@
                                             th:data-delete-action="@{/products/delete/{id}(id=${product.id})}"
                                             th:data-product-name="${product.productName}">Delete</button>
                                     </span>
-                                    <!-- User only row add to cart button -->
+                                            <div class="catalog-user-actions"
+                                                sec:authorize="hasRole('USER')">
                                             <form
                                                 class="product-action-form add-to-cart-form"
-                                        sec:authorize="hasRole('USER')"
                                         th:if="${product.productQuantity > 0}"
                                         th:action="@{/products/purchase/{id}(id=${product.id})}"
                                         method="post">
@@ -295,26 +295,31 @@
                                                     name="quantity"
                                             value="1" min="1"
                                             th:attr="max=${product.productQuantity}"
+                                                        aria-label="Quantity"
                                             required>
-
                                                 <button
-                                                    class="btn btn-success bi bi-cart4 add-to-cart-button"
-                                                    type="submit"> Add to
-                                                    cart
+                                                        class="btn btn-sm btn-success add-to-cart-button"
+                                                        type="submit">
+                                                        <i class="bi bi-cart4"
+                                                            aria-hidden="true"></i>
+                                                        <span>Add to cart</span>
                                                 </button>
-
                                             </form>
-                                            <!-- User only add to wishlist button -->
                                             <form
-                                                sec:authorize="hasRole('USER')"
+                                                    class="product-action-form wishlist-form"
                                                 th:action="@{/products/wishlist/add/{productId}(productId=${product.id})}"
                                                 method="post">
-
                                         <button
-                                                    class="btn btn-outline-warning bi bi-star-fill"
-                                                    type="submit"> Add
-                                                    to wishlist</button>
+                                                        class="btn btn-sm btn-outline-warning"
+                                                        type="submit">
+                                                        <i
+                                                            class="bi bi-star-fill"
+                                                            aria-hidden="true"></i>
+                                                        <span>Add to
+                                                            wishlist</span>
+                                                    </button>
                                     </form>
+                                            </div>
                                     <!-- Vendor only row update button -->
                                             <form
                                                 class="product-action-form"
@@ -351,9 +356,6 @@
             </div>
         </main>
 
-    </body>
-
-</html>
 <!-- Shared delete confirmation modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1"
     aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -385,13 +387,16 @@
     <div th:replace="~{fragments/fragments :: site-footer}"></div>
 </footer>
 
-<script
-    th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
 <script>
-    src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
-            document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
+            var deleteModal = document.getElementById('deleteModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
                 var trigger = event.relatedTarget;
                 document.getElementById('deleteForm').action = trigger.dataset.deleteAction;
                 document.getElementById('deleteProductName').textContent = trigger.dataset.productName;
             });
+            }
         </script>
+    </body>
+
+</html>
