@@ -1,12 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.repository.WarehouseRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.demo.model.OrderItem;
-import com.example.demo.repository.OrderItemRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,21 +12,33 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.model.OrderItem;
+import com.example.demo.model.PageView;
 import com.example.demo.model.Product;
 import com.example.demo.model.User;
+import com.example.demo.model.Vendor;
+import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.ReviewRepository;
+import com.example.demo.repository.WarehouseRepository;
 import com.example.demo.service.CartService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
-import com.example.demo.model.Vendor;
+import com.example.demo.service.WishlistService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Controller
 @RequestMapping("/products")
 public class ProductViewController {
+    private final WishlistService wishlistService;
     private final WarehouseRepository warehouseRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
@@ -37,18 +46,7 @@ public class ProductViewController {
     private final UserService userService;
     private final CartService cartService;
     private final VendorService vendorService;
-
-    public ProductViewController(ProductService productService, UserService userService,
-            ProductRepository productRepository, CartService cartService, VendorService vendorService,
-            OrderItemRepository orderItemRepository, WarehouseRepository warehouseRepository) {
-        this.productService = productService;
-        this.userService = userService;
-        this.productRepository = productRepository;
-        this.cartService = cartService;
-        this.vendorService = vendorService;
-        this.orderItemRepository = orderItemRepository;
-        this.warehouseRepository = warehouseRepository;
-    }
+    private final ReviewRepository reviewRepository;
 
     // ---- Product list ----
 
