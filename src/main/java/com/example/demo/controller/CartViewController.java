@@ -8,18 +8,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.Cart;
+import com.example.demo.model.Product;
 import com.example.demo.model.User;
 import com.example.demo.service.CartService;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
-import com.example.demo.model.Product;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Controller
 @RequestMapping("/cart")
 public class CartViewController {
