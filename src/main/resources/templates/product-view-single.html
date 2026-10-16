@@ -22,10 +22,18 @@
             <header class="mb-4 mb-lg-5">
                 <p class="page-eyebrow text-uppercase small fw-semibold mb-2">
                     Catalog <span class="mx-1" aria-hidden="true">/</span>
-                    Product details
+                    Product details / <span
+                        th:text="${product.productName}"></span>
                 </p>
-                <h1 class="display-6 fw-semibold mb-0"
-                    th:text="${product.productName}">Product Name</h1>
+                <h1 class="display-6 fw-semibold mb-0">
+                    <span th:text="${product.productName}">Product Name</span>
+                    <span
+                        class="badge rounded-pill text-bg-light border px-3 py-2 text-warning bi bi-star-fill"
+                        aria-label="star"
+                        th:if="${averageRating != null}"
+                        th:text="${averageRating}">
+
+                    </span></h1>
             </header>
 
             <section class="card border-0 shadow-sm overflow-hidden"
@@ -64,7 +72,7 @@
                                         class="col-sm-3 text-secondary fw-semibold">Vendor</dt>
                                     <dd class="col-sm-9 mb-0">
                                         <span
-                                            class="badge rounded-pill text-bg-light border px-3 py-2"
+                                            class="badge  rounded-pill text-bg-primary border px-3 py-2"
                                             th:text="${product.vendorName}">Vendor
                                             Name</span>
                                     </dd>
@@ -77,40 +85,65 @@
                                             class="badge rounded-pill text-bg-success border px-3 py-2">$<span
                                                 th:text="${product.productPrice}">Price</span></span>
                                     </dd>
+                                    <dt
+                                        class="col-sm-3 text-secondary fw-semibold">Average
+                                        Rating:</dt> <div>
+
+                                        <dd class="col-sm-9 mb-0">
+                                            <span
+                                                class="badge rounded-pill text-bg-light border px-3 py-2 text-warning bi bi-star-fill"
+                                                aria-label="star"
+                                                th:if="${averageRating != null}"
+                                                th:text="${averageRating}">
+
+                                            </span>
+                                        </dd>
+                                        <dd class="col-sm-9 mb-0 bi bi-star"
+                                            th:unless="${averageRating != null}">
+                                            No reviews yet
+                                        </dd>
+                                    </div>
+                                    <dd class="col-sm-9 mb-0 text-end">
+                                        <form class="product-action-form"
+                                            sec:authorize="hasRole('USER')"
+                                            th:if="${product.productQuantity > 0}"
+                                            th:action="@{/products/purchase/{id}(id=${product.id})}"
+                                            method="post">
+                                            <div class="mb-3">
+                                                <label for
+                                                    class="form-label">Quantity:</label>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    th:attr="max=${product.productQuantity}"
+                                                    class="form-control form-control-sm"
+                                                    name="quantity"
+                                                    placeholder="1"
+                                                    value="1" />
+                                                <small id="helpId"
+                                                    class="form-text text-body-secondary">
+                                                    <span
+                                                        th:text="${product.productQuantity}"></span>
+                                                    available.</small><div>
+                                                    <button
+                                                        class="btn btn-success bi bi-cart4 add-to-cart-button"
+                                                        type="submit"> Add
+                                                        to
+                                                        cart
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </dd>
                                 </div>
+
                             </dl>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
-
-        <form class="product-action-form"
-            sec:authorize="hasRole('USER')"
-            th:if="${product.productQuantity > 0}"
-            th:action="@{/products/purchase/{id}(id=${product.id})}"
-            method="post">
-            <div class="mb-3">
-                <label for class="form-label">Quantity:</label>
-                <input
-                    type="number"
-                    min="1"
-                    class="form-control form-control-sm"
-                    name="quantity"
-                    aria-describedby="helpId"
-                    placeholder />
-                <small id="helpId" class="form-text text-body-secondary">
-                    <span
-                        th:text="${product.productQuantity}"></span>
-                    available.</small><div>
-                    <input
-                        class="btn btn-primary"
-                        type="submit"
-                        value="Add to cart">
-                </div>
-            </div>
-
-        </form>
 
     </body>
 </html>
