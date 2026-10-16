@@ -19,8 +19,10 @@
                 <p
                     class="page-eyebrow text-uppercase small fw-semibold mb-2">Order
                     confirmed!</p>
-                <h1 class="h2 mb-2">Your order: <span
-                        th:text="${orderDetails.orderId}">orderId</span></h1>
+                <h1 class="h2 mb-2">Your order confirmation number:<strong>
+                        <span
+                            th:text="| #${orderDetails.orderId}|">orderId</span>
+                    </strong></h1>
                 <p class="text-secondary mb-0">Placed at <span
                         th:text="${#temporals.format(orderDetails.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></span>
                 </p>
@@ -28,7 +30,7 @@
 
             <section class="card border-0 shadow-sm">
                 <div class="table-responsive">
-                    <table class="table table-hover site-table mb-0">
+                    <table class="table table-hover site-table mb-0 table-sm">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">Product</th>
