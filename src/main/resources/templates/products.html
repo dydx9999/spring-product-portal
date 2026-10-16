@@ -129,6 +129,34 @@
                 </form>
             </div>
 
+            <form
+                class="product-bulk-action-form d-flex flex-wrap align-items-center gap-2 mb-3"
+                th:action="@{/products/update/bulk}"
+                th:object="${productBulkUpdateForm}">
+                <div class="dropdown open">
+                    <button
+                        class="btn btn-primary dropdown-toggle"
+                        type="button"
+                        id="triggerId"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        Bulk edit
+                    </button>
+                    <div class="dropdown-menu"
+                        aria-labelledby="triggerId">
+                        <button
+                            class="dropdown-item"
+                            href="#">Action</button>
+                        <button
+                            class="dropdown-item disabled"
+                            href="#">
+                            Disabled action
+                        </button>
+                    </div>
+                </div>
+            </form>
+
             <div class="catalog-layout">
                 <aside class="catalog-sidebar"
                     aria-labelledby="catalog-filter-title">
@@ -284,6 +312,7 @@
                                             th:data-delete-action="@{/products/delete/{id}(id=${product.id})}"
                                             th:data-product-name="${product.productName}">Delete</button>
                                     </span>
+                                            <!-- User only add to cart button  -->
                                             <div class="catalog-user-actions"
                                                 sec:authorize="hasRole('USER')">
                                             <form
@@ -305,6 +334,7 @@
                                                         <span>Add to cart</span>
                                                 </button>
                                             </form>
+                                                <!-- User only add to wishlist button  -->
                                             <form
                                                     class="product-action-form wishlist-form"
                                                 th:action="@{/products/wishlist/add/{productId}(productId=${product.id})}"
