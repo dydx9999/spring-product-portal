@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.VendorService;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,19 +9,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.example.demo.model.User;
+import com.example.demo.model.Vendor;
 import com.example.demo.service.CartService;
+import com.example.demo.service.UserService;
 
 @ControllerAdvice(annotations = Controller.class)
 public class GlobalModelAttributes {
+    private final VendorService vendorService;
     private final CartService cartService;
+    private final UserService userService;
 
-    public GlobalModelAttributes(CartService cartService) {
+    public GlobalModelAttributes(CartService cartService, UserService userService, VendorService vendorService) {
         this.cartService = cartService;
+        this.userService = userService;
+        this.vendorService = vendorService;
     }
 
     @ModelAttribute("cartSize")
     public int cartSize(Authentication authentication) {
         return cartService.getCartSizeForCurrentUser(authentication);
+    }
+
+    @ModelAttribute
+    public void checkIfVendor(Model model, Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken
+                || authentication.getAuthorities().stream()
+                        .noneMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"))) {
+            return;
+        }
+
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+        model.addAttribute("businessNameVendor", currentVendor.getBusinessName());
     }
 
     @ModelAttribute
