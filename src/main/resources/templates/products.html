@@ -107,7 +107,7 @@
                 th:text="${successMessage}"></div>
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <form th:action="@{/products}" method="get">
-                    <button name="filter" value type="submit"
+                    <button type="submit"
                         class="btn btn-primary">
                         Products <span class="badge text-bg-success"
                             th:text="${productCount}">0</span>
@@ -122,7 +122,8 @@
                     </button>
                 </form>
             </div>
-
+            <!-- Vendor only bulk edit button -->
+            <div sec:authorize="hasRole('VENDOR')">
             <form
                 class="product-bulk-action-form d-flex flex-wrap align-items-center gap-2 mb-3"
                 th:action="@{/products/update/bulk}"
@@ -141,16 +142,16 @@
                         aria-labelledby="triggerId">
                         <button
                             class="dropdown-item"
-                            href="#">Action</button>
+                                href="#">Select items</button>
                         <button
-                            class="dropdown-item disabled"
+                                class="dropdown-item btn btn-hover"
                             href="#">
-                            Disabled action
+                                Edit all
                         </button>
                     </div>
                 </div>
             </form>
-
+            </div>
             <div class="catalog-layout">
                 <aside class="catalog-sidebar"
                     aria-labelledby="catalog-filter-title">
@@ -225,10 +226,8 @@
                                 <th scope="col">Name</th>
                                         <th scope="col"
                                             class="text-start">Price</th>
-
                                 <th scope="col">Vendor Name</th>
                                         <!-- <th scope="col">SKU</th> -->
-
                                         <th th:if="${isVendor}"
                                             scope="col">Notes</th>
                                 <th scope="col"
@@ -240,7 +239,6 @@
                             <tr
                                 th:classappend="${product.productQuantity <= 0} ? 'table-danger' : ''"
                                 th:each="product : ${products}">
-
                                 <td class="text-secondary"
                                     th:text="${product.id}"></td>
                                 <td>
@@ -259,27 +257,36 @@
                                         th:if="${quantitySoldByProduct[product.productName] > 5}"
                                         class="badge text-bg-success ms-1">Best
                                         seller</span>
-
                                     <span
                                                 th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold and isVendor}"
                                         class="badge text-bg-warning ms-1">Low
                                         stock</span>
-
                                 </td><!-- Product row details -->
-                                        <td class="text-align-center">
+                                        <td>
+
+                                            <form
+                                                sec:authorize="hasRole('VENDOR')"
+                                                th:if="${product.vendorName == businessName}">
+                                                <span>$
+                                                    <input type="number"
+                                                        class="form-control form-control-sm text-end"
+                                                        style="max-width: 7rem"
+                                                        min="0"
+                                                        step="0.01"
+                                                        name="productPrice"
+                                                        th:value="|${product.productPrice}|"
+                                                        aria-label="Product price">
+                                                </span>
+                                            </form>
+
                                             <span
                                                 th:text="|$${product.productPrice}|"></span>
                                     <span
                                                 class="text-secondary small"
                                                 th:text="|(${product.productQuantity} available)|"></span>
                                         </td>
-
                                         <td class="text-center"
                                     th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></td>
-
-                                        <!-- <td><code class="sku-code"
-                                                th:text="${product.productSKU}"></code></td> -->
-
                                 <td th:if="${isVendor}"><span
                                         th:text="${product.vendorNotes}"></span></td>
                                 <td class="actions-column">
@@ -360,6 +367,7 @@
                                             class="btn btn-sm btn-outline-primary"
                                             type="submit">Update</button>
                                     </form>
+
                                 </td>
                             </tr>
                                     <tr
@@ -375,11 +383,9 @@
                         <div
                             th:replace="~{fragments/fragments :: pagination(${productPager}, 'Product pages')}"></div>
             </section>
-
                 </div>
             </div>
         </main>
-
 <!-- Shared delete confirmation modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1"
     aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -406,11 +412,9 @@
         </form>
     </div>
 </div>
-
 <footer class="container py-3">
     <div th:replace="~{fragments/fragments :: site-footer}"></div>
 </footer>
-
 <script>
             var deleteModal = document.getElementById('deleteModal');
             if (deleteModal) {
@@ -422,5 +426,4 @@
             }
         </script>
     </body>
-
 </html>
