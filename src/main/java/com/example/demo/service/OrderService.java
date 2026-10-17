@@ -11,18 +11,18 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.demo.model.BuyerReviewDTO;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderDetailsDTO;
 import com.example.demo.model.OrderItem;
 import com.example.demo.model.OrderItemDTO;
 import com.example.demo.model.OrderSummaryDTO;
-import com.example.demo.model.BuyerReviewDTO;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Review;
 import com.example.demo.model.ReviewFormDTO;
@@ -34,10 +34,8 @@ import com.example.demo.repository.VendorRepository;
 
 @Service
 public class OrderService {
-
     private static final Sort NEWEST_ORDERS_FIRST = Sort.by(Sort.Order.desc("creationDate"), Sort.Order.desc("id"));
     private static final Sort NEWEST_REVIEWS_FIRST = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
-
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final VendorRepository vendorRepository;
@@ -63,7 +61,6 @@ public class OrderService {
                 totalsByOrderId.merge(item.getOrderId(), itemTotal, BigDecimal::add);
             }
         }
-
         return orders.map(order -> {
             OrderSummaryDTO dto = new OrderSummaryDTO();
             dto.setOrderId(order.getOrderId());
@@ -71,7 +68,6 @@ public class OrderService {
             dto.setVendorId(order.getVendorId());
             dto.setCreationDate(order.getCreationDate());
             dto.setStatus(order.getStatus());
-
             dto.setTotal(totalsByOrderId.getOrDefault(order.getId(), BigDecimal.ZERO));
             return dto;
         });
@@ -87,11 +83,12 @@ public class OrderService {
                 itemsByOrderId.computeIfAbsent(item.getOrderId(), k -> new ArrayList<>()).add(item);
             }
         }
-
         return orders.map(order -> {
             List<OrderItem> orderItems = itemsByOrderId.getOrDefault(order.getId(), List.of());
             OrderSummaryDTO dto = new OrderSummaryDTO(order.getOrderId(), order.getBuyerId(),
                     order.getVendorId(), order.getCreationDate(), order.getStatus());
+            dto.setTrackingNumber(order.getTrackingNumber());
+            dto.setCarrier(order.getCarrier());
             dto.setItems(orderItems.stream()
                     .map(i -> new OrderItemDTO(i.getProductName(), i.getProductQuantity(), i.getProductPrice(), null))
                     .toList());
@@ -107,7 +104,6 @@ public class OrderService {
         if (orders.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
         }
-
         List<Long> orderRowIds = orders.stream().map(Order::getId).toList();
         Map<Long, String> vendorBusinessNamesById = new HashMap<>();
         vendorRepository.findAllById(orders.stream()
@@ -130,19 +126,18 @@ public class OrderService {
                 .toList();
         LocalDateTime creationDate = orders.get(0).getCreationDate();
         String status = orders.get(0).getStatus();
-
+        String carrier = orders.get(0).getCarrier();
+        String trackingNumber = orders.get(0).getTrackingNumber();
         BigDecimal total = items.stream()
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return new OrderDetailsDTO(orderId, creationDate, items, total, status);
+        return new OrderDetailsDTO(orderId, creationDate, items, total, status, trackingNumber, carrier);
     }
 
     public Set<Long> getReviewedItemIds(Long buyerId, List<Long> orderItemIds) {
         if (orderItemIds.isEmpty()) {
             return Set.of();
         }
-
         return reviewRepository.findByBuyerIdAndOrderItemIdIn(buyerId, orderItemIds).stream()
                 .map(Review::getOrderItemId)
                 .collect(Collectors.toSet());
@@ -151,13 +146,11 @@ public class OrderService {
     public PageView<BuyerReviewDTO> getReviewedItemsByBuyer(Long buyerId, int page, int size) {
         PageView<Review> reviews = PageView.load(page, size, NEWEST_REVIEWS_FIRST,
                 pageable -> reviewRepository.findByBuyerId(buyerId, pageable));
-
         Map<Long, OrderItem> orderItemsById = orderItemRepository.findAllById(reviews.getContent().stream()
                 .map(Review::getOrderItemId)
                 .distinct()
                 .toList()).stream()
                 .collect(Collectors.toMap(OrderItem::getId, Function.identity()));
-
         return reviews.map(review -> {
             OrderItem item = orderItemsById.get(review.getOrderItemId());
             String productName = item == null ? "Product unavailable" : item.getProductName();
@@ -172,12 +165,10 @@ public class OrderService {
                 || reviewForm.getRating() < 1 || reviewForm.getRating() > 5) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A valid order item and rating are required");
         }
-
         List<Order> buyerOrders = orderRepository.findByOrderIdAndBuyerId(reviewForm.getOrderId(), buyerId);
         if (buyerOrders.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
         }
-
         OrderItem orderItem = orderItemRepository.findById(reviewForm.getOrderItemId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order item not found"));
         boolean itemBelongsToOrder = buyerOrders.stream()
@@ -188,30 +179,24 @@ public class OrderService {
         if (reviewRepository.existsByOrderItemIdAndBuyerId(orderItem.getId(), buyerId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "You have already reviewed this item");
         }
-
         reviewRepository.save(new Review(orderItem.getId(), buyerId, reviewForm.getRating()));
     }
 
     @Transactional
     public void updateStatus(UUID orderId, Long vendorId, String newStatus) {
-
         List<String> validStatusList = List.of("Processing", "Completed", "Shipped", "Delivered", "Accepted");
         if (!validStatusList.contains(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order status");
         }
-
         Order buyerOrder = orderRepository.findByOrderIdAndVendorId(orderId, vendorId);
         if (buyerOrder == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to retrieve orders for specified buyer.");
         }
-
         String currentStatus = buyerOrder.getStatus();
         if (currentStatus.equals(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No change.");
         }
-
         buyerOrder.setStatus(newStatus);
-
     }
 
     @Transactional
@@ -222,9 +207,9 @@ public class OrderService {
                 || shippingDetailsForm.getTrackingNumber().isBlank()
                 || shippingDetailsForm.getCarrier() == null
                 || shippingDetailsForm.getCarrier().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A valid order and tracking details are required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "A valid order and tracking details are required");
         }
-
         Order buyerOrder = orderRepository.findByOrderIdAndVendorId(shippingDetailsForm.getOrderId(), vendorId);
         if (buyerOrder == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
@@ -233,7 +218,6 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Shipping details can only be added to accepted orders");
         }
-
         buyerOrder.setTrackingNumber(shippingDetailsForm.getTrackingNumber().trim());
         buyerOrder.setCarrier(shippingDetailsForm.getCarrier().trim());
         buyerOrder.setStatus("Shipped");

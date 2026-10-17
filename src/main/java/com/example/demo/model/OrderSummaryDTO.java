@@ -13,6 +13,8 @@ public class OrderSummaryDTO {
     private Long vendorId;
     private LocalDateTime creationDate;
     private String status;
+    private String trackingNumber;
+    private String carrier;
 
     public String getStatus() {
         return status;
@@ -20,6 +22,22 @@ public class OrderSummaryDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
+    public String getCarrier() {
+        return carrier;
+    }
+
+    public void setCarrier(String carrier) {
+        this.carrier = carrier;
     }
 
     private BigDecimal total;
