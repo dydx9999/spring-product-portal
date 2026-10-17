@@ -185,7 +185,6 @@
                 <div
                     th:replace="~{fragments/fragments :: pagination(${productPager}, 'Product pages')}"></div>
             </section>
-
             <section class="card border-0 shadow-sm mt-4"
                 aria-labelledby="vendor-sales-heading">
                 <div class="card-body border-bottom">
@@ -221,23 +220,52 @@
                                         items</span>
                                 </td>
                                 <td> <span
-                                        th:text="'$' + ${orderDetail.total}"></span></td>
+                                        th:text="
+                                        |$${#numbers.formatDecimal(orderDetail.total,
+                                        1, 'COMMA', 2, 'POINT')}|"></span></td>
                                 <td th:text="${orderDetail.buyerId}"></td>
-                                <td>
-                                    <span class="badge"
-                                        th:classappend="${#strings.equalsIgnoreCase(orderDetail.status, 'Completed')} ? 'text-bg-success' : 'text-bg-warning'"
-                                        th:text="${orderDetail.status}">Status</span></td>
+                                <td
+                                    th:switch="${#strings.toLowerCase(orderDetail.status)}">
+                                    <span th:case="'processing'"
+                                        class="badge text-bg-secondary"
+                                        th:text="${orderDetail.status}"></span>
+                                    <span th:case="'completed'"
+                                        class="badge text-bg-success"
+                                        th:text="${orderDetail.status}"></span>
+                                    <span th:case="'accepted'"
+                                        class="badge text-bg-primary"
+                                        th:text="${orderDetail.status}"></span>
+                                  
+                                          <span th:case="'shipped'"
+                                        class="badge text-bg-success"
+                                        th:text="${orderDetail.status}"></span>
+                                    <span th:case="*"
+                                        class="badge text-bg-warning"
+                                        th:text="${orderDetail.status}"></span>
+                                </td>
                                 <td>
                                     <a
                                         class="btn btn-sm btn-outline-primary"
                                         th:href="@{/orders/view/{orderId}(orderId=${orderDetail.orderId})}">View</a>
                                     <form
-                                        th:action="@{/vendor/orders/{orderId}/status(orderId=${orderDetail.orderId}, status='Completed')}"
+                                        th:if="${#strings.equals(orderDetail.status, 'Processing')}"
+                                        th:action="@{/vendor/orders/{orderId}/status(orderId=${orderDetail.orderId}, status='Accepted')}"
                                         method="post">
                                         <button
                                             class="badge text-bg-success"
-                                            type="submit">Complete
-                                            Order</button></form>
+                                            type="submit">Accept
+                                            Order</button>
+                                        </form>
+    <!-- Add shipping details (if status = Accepted) -->
+                                    <form
+                                        th:action="@{/vendor/orders/{orderId}/shipping(orderId=${orderDetail.orderId})}"
+                                        th:if="${#strings.equals(orderDetail.status, 'Accepted')}"
+                                        method="get">
+                                        <button class="badge text-bg-info"
+                                            type="submit">
+                                                    Add tracking details 
+                                                </button>
+                                                </form>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(orderDetails)}">
@@ -251,12 +279,9 @@
                 <div
                     th:replace="~{fragments/fragments :: pagination(${salesPager}, 'Sales pages')}"></div>
             </section>
-
         </main>
         <footer class="container py-3">
             <div th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
-
     </body>
-
 </html>

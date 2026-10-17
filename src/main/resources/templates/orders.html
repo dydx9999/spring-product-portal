@@ -46,11 +46,14 @@
                                         th:text="${#numbers.formatDecimal(order.total, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
                                 <td
                                     th:switch="${#strings.toLowerCase(order.status)}">
-                                    <span th:case="'pending'"
-                                        class="badge text-bg-warning"
+                                    <span th:case="'processing'"
+                                        class="badge text-bg-secondary"
                                         th:text="${order.status}"></span>
                                     <span th:case="'completed'"
                                         class="badge text-bg-success"
+                                        th:text="${order.status}"></span>
+                                           <span th:case="'accepted'"
+                                        class="badge text-bg-primary"
                                         th:text="${order.status}"></span>
                                 </td>
                                 <td>
