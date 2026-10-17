@@ -187,10 +187,39 @@
             </section>
             <section class="card border-0 shadow-sm mt-4"
                 aria-labelledby="vendor-sales-heading">
-                <div class="card-body border-bottom">
+                <div
+                    class="card-body border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>
                     <h2 id="vendor-sales-heading" class="h5 mb-1">Your
                         sales</h2>
                     <p class="text-secondary small mb-0">Recent sales</p>
+                    </div>
+                    <form method="get" action>
+                        <input type="hidden" name="productPage"
+                            th:value="${productPage}">
+                        <label class="visually-hidden"
+                            for="sales-status-filter">
+                            Filter sales by status
+                        </label>
+                        <select id="sales-status-filter" name="status"
+                            class="form-select"
+                            style="max-width: 220px"
+                            onchange="this.form.submit()">
+                            <option value
+                                th:selected="${#strings.isEmpty(status)}">All
+                                statuses</option>
+                            <option value="Processing"
+                                th:selected="${status == 'Processing'}">Processing</option>
+                            <option value="Accepted"
+                                th:selected="${status == 'Accepted'}">Accepted</option>
+                            <option value="Shipped"
+                                th:selected="${status == 'Shipped'}">Shipped</option>
+                            <option value="Delivered"
+                                th:selected="${status == 'Delivered'}">Delivered</option>
+                            <option value="Completed"
+                                th:selected="${status == 'Completed'}">Completed</option>
+                        </select>
+                    </form>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover site-table mb-0">
@@ -207,9 +236,11 @@
                         </thead>
                         <tbody>
                             <tr th:each="orderDetail : ${orderDetails}">
-                                <td th:text="${orderDetail.orderId}"></td>
+                                <td>
+                                    <a th:text="${orderDetail.orderId}"
+                                        th:href="@{/orders/view/{orderId}(orderId=${orderDetail.orderId})}"></a></td>
                                 <td
-                                    th:text="${orderDetail.creationDate}"></td>
+                                    th:text="${#temporals.format(orderDetail.creationDate,'MMMM d, yyyy ''at'' h:mm a')}"></td>
                                 <td>
                                     <span
                                         th:if="${!#lists.isEmpty(orderDetail.items)}"
@@ -224,18 +255,18 @@
                                         |$${#numbers.formatDecimal(orderDetail.total,
                                         1, 'COMMA', 2, 'POINT')}|"></span></td>
                                 <td th:text="${orderDetail.buyerId}"></td>
+                                <!-- Conditional status badge color rendering -->
                                 <td
                                     th:switch="${#strings.toLowerCase(orderDetail.status)}">
                                     <span th:case="'processing'"
                                         class="badge text-bg-secondary"
                                         th:text="${orderDetail.status}"></span>
-                                    <span th:case="'completed'"
+                                    <span th:case="'delivered'"
                                         class="badge text-bg-success"
                                         th:text="${orderDetail.status}"></span>
                                     <span th:case="'accepted'"
                                         class="badge text-bg-primary"
                                         th:text="${orderDetail.status}"></span>
-
                                     <span th:case="'shipped'"
                                         class="badge text-bg-success"
                                         th:text="${orderDetail.status}"></span>
@@ -244,9 +275,7 @@
                                         th:text="${orderDetail.status}"></span>
                                 </td>
                                 <td>
-                                    <a
-                                        class="btn btn-sm btn-outline-primary"
-                                        th:href="@{/orders/view/{orderId}(orderId=${orderDetail.orderId})}">View</a>
+                                    <!-- Order accept button  -->
                                     <form
                                         th:if="${#strings.equals(orderDetail.status, 'Processing')}"
                                         th:action="@{/vendor/orders/{orderId}/status(orderId=${orderDetail.orderId}, status='Accepted')}"
@@ -256,18 +285,26 @@
                                             type="submit">Accept
                                             Order</button>
                                     </form>
-                                    <!-- Add shipping details (if status = Accepted) -->
+                                    <!-- Add shipping details button (if status = Accepted) -->
                                     <form
                                         th:action="@{/vendor/orders/{orderId}/shipping(orderId=${orderDetail.orderId})}"
                                         th:if="${#strings.equals(orderDetail.status, 'Accepted')}"
                                         method="get">
-                                        <button class="badge text-bg-info"
+                                        <button
+                                            class="badge text-bg-primary badge-sm"
                                             type="submit">
                                             Add tracking details
                                         </button>
                                     </form>
+                                    <!-- View tracking button (if order status = Shipped) -->
+                                    <a
+                                        th:if="${#strings.equals(orderDetail.status, 'Shipped')}"
+                                        th:href="@{/vendor/tracking/view(trackingNumber=${orderDetail.trackingNumber}, carrier=${orderDetail.carrier})}">
+                                        View tracking
+                                    </a>
                                 </td>
                             </tr>
+                            <!-- If no orders displayed for current vendor  -->
                             <tr th:if="${#lists.isEmpty(orderDetails)}">
                                 <td colspan="6"
                                     class="text-secondary py-4 text-center">No

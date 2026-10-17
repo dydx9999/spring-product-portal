@@ -79,6 +79,7 @@ public class VendorViewController {
                                                 .withLinks(request, "productPage"));
                 model.addAttribute("productsListedCount", products.size());
                 model.addAttribute("businessName", currentVendor.getBusinessName());
+                model.addAttribute("status", status);
                 PageView<OrderSummaryDTO> salesPager = orderService
                                 .getVendorSales(currentVendor.getId(), salesPage, PageView.DEFAULT_SIZE)
                                 .withLinks(request, "salesPage");
