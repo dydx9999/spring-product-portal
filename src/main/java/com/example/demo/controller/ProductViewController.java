@@ -219,6 +219,7 @@ public class ProductViewController {
     public String handleAddToCart(
             @PathVariable("id") Long productId,
             @RequestParam int quantity,
+            @RequestParam(defaultValue = "false") boolean returnToWishlist,
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
         User currentUser = userService.getUserByUsername(authentication.getName());
@@ -229,7 +230,7 @@ public class ProductViewController {
         } catch (ResponseStatusException exception) {
             redirectAttributes.addFlashAttribute("outOfStockMessage", exception.getReason());
         }
-        return "redirect:/products";
+        return returnToWishlist ? "redirect:/products/wishlist/view" : "redirect:/products";
     }
 
     // ---- Misc ----
@@ -237,6 +238,53 @@ public class ProductViewController {
     @GetMapping("/home")
     public String showHome() {
         return "home";
+    }
+
+    @GetMapping("/view/{productId}")
+    public String showProductPage(@PathVariable("productId") Long productId, Model model) {
+        Product requestedProduct = productService.searchProductById(productId);
+        model.addAttribute("product", requestedProduct);
+        model.addAttribute(
+                "averageRating",
+                reviewRepository.findAverageRatingByProductId(productId));
+
+        return "product-view-single";
+
+    }
+
+    @PostMapping("/wishlist/add/{productId}")
+    public String handleWishlistUpdate(@PathVariable("productId") Long productId, Model model,
+            RedirectAttributes redirectAttributes,
+            Authentication authentication) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        Long userId = currentUser.getId();
+
+        try {
+            wishlistService.addProductToWishlist(userId, productId);
+            redirectAttributes.addFlashAttribute("successMessage", "Product successfully added to wishlist!");
+        } catch (ResponseStatusException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
+        }
+
+        return "redirect:/products";
+
+    }
+
+    @GetMapping("/wishlist/view")
+    public String showWishlist(Authentication authentication, Model model) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        model.addAttribute("wishlistItems", wishlistService.getUserWishlist(currentUser.getId()));
+        model.addAttribute("currentUser", currentUser);
+        return "product-wishlist";
+    }
+
+    @PostMapping("/wishlist/remove/{productId}")
+    public String removeWishlistItem(@PathVariable Long productId, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
+        wishlistService.removeProductFromWishlist(currentUser.getId(), productId);
+        redirectAttributes.addFlashAttribute("successMessage", "Product removed from your wishlist.");
+        return "redirect:/products/wishlist/view";
     }
 
 }
