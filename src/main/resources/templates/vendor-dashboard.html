@@ -235,8 +235,8 @@
                                     <span th:case="'accepted'"
                                         class="badge text-bg-primary"
                                         th:text="${orderDetail.status}"></span>
-                                  
-                                          <span th:case="'shipped'"
+
+                                    <span th:case="'shipped'"
                                         class="badge text-bg-success"
                                         th:text="${orderDetail.status}"></span>
                                     <span th:case="*"
@@ -255,17 +255,17 @@
                                             class="badge text-bg-success"
                                             type="submit">Accept
                                             Order</button>
-                                        </form>
-    <!-- Add shipping details (if status = Accepted) -->
+                                    </form>
+                                    <!-- Add shipping details (if status = Accepted) -->
                                     <form
                                         th:action="@{/vendor/orders/{orderId}/shipping(orderId=${orderDetail.orderId})}"
                                         th:if="${#strings.equals(orderDetail.status, 'Accepted')}"
                                         method="get">
                                         <button class="badge text-bg-info"
                                             type="submit">
-                                                    Add tracking details 
-                                                </button>
-                                                </form>
+                                            Add tracking details
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(orderDetails)}">

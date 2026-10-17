@@ -31,6 +31,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                                 "/cart/**"))
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/products/wishlist/**").hasRole("USER")
+                                                .requestMatchers("/api/products/vendor-pick-list/**").hasRole("VENDOR")
                                                 .requestMatchers("/users",
                                                                 "/register/**",
                                                                 "/api/**",

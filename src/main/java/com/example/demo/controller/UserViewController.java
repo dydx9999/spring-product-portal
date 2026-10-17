@@ -88,7 +88,7 @@ public class UserViewController {
         User currentUser = userService.getUserByUsername(authentication.getName());
         String username = currentUser.getUsername();
         String role = currentUser.getRole();
-Long buyerId = currentUser.getId();
+        Long buyerId = currentUser.getId();
         PageView<BuyerReviewDTO> reviewPager = orderService
                 .getReviewedItemsByBuyer(buyerId, reviewPage, PageView.DEFAULT_SIZE)
                 .withLinks(request, "reviewPage");

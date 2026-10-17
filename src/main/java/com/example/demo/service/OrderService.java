@@ -26,6 +26,7 @@ import com.example.demo.model.BuyerReviewDTO;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Review;
 import com.example.demo.model.ReviewFormDTO;
+import com.example.demo.model.ShippingDetailsForm;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ReviewRepository;
@@ -194,7 +195,7 @@ public class OrderService {
     @Transactional
     public void updateStatus(UUID orderId, Long vendorId, String newStatus) {
 
-        List<String> validStatusList = List.of("Pending", "Completed", "Shipped", "Delivered");
+        List<String> validStatusList = List.of("Processing", "Completed", "Shipped", "Delivered", "Accepted");
         if (!validStatusList.contains(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order status");
         }
@@ -211,5 +212,30 @@ public class OrderService {
 
         buyerOrder.setStatus(newStatus);
 
+    }
+
+    @Transactional
+    public void updateTracking(Long vendorId, ShippingDetailsForm shippingDetailsForm) {
+        if (shippingDetailsForm == null
+                || shippingDetailsForm.getOrderId() == null
+                || shippingDetailsForm.getTrackingNumber() == null
+                || shippingDetailsForm.getTrackingNumber().isBlank()
+                || shippingDetailsForm.getCarrier() == null
+                || shippingDetailsForm.getCarrier().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A valid order and tracking details are required");
+        }
+
+        Order buyerOrder = orderRepository.findByOrderIdAndVendorId(shippingDetailsForm.getOrderId(), vendorId);
+        if (buyerOrder == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+        }
+        if (!"Accepted".equalsIgnoreCase(buyerOrder.getStatus())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Shipping details can only be added to accepted orders");
+        }
+
+        buyerOrder.setTrackingNumber(shippingDetailsForm.getTrackingNumber().trim());
+        buyerOrder.setCarrier(shippingDetailsForm.getCarrier().trim());
+        buyerOrder.setStatus("Shipped");
     }
 }

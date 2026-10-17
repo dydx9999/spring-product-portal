@@ -175,7 +175,7 @@ public class CartService {
 
         LocalDateTime orderCreatedAt = LocalDateTime.now();
         List<Order> orders = orderItemsByVendorId.keySet().stream()
-                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt, "Pending"))
+                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt, "Processing"))
                 .toList();
 
         List<Order> savedOrders = orderRepository.saveAll(orders);
