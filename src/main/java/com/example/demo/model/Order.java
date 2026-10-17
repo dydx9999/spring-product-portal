@@ -16,6 +16,9 @@ public class Order {
     private Long vendorId;
     private LocalDateTime creationDate;
     private String status;
+    @Column(name = "tracking_number")
+    private String trackingNumber;
+    private String carrier;
 
     public String getStatus() {
         return status;
@@ -23,6 +26,22 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
+    public String getCarrier() {
+        return carrier;
+    }
+
+    public void setCarrier(String carrier) {
+        this.carrier = carrier;
     }
 
     public Order(Long id, UUID orderId, Long buyerId, Long vendorId, LocalDateTime creationDate, String status) {
