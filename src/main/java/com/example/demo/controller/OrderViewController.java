@@ -22,6 +22,8 @@ import java.util.UUID;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/orders")
 public class OrderViewController {
@@ -34,11 +36,15 @@ public class OrderViewController {
     }
 
     @GetMapping
-    public String showOrders(Model model, Authentication authentication) {
+    public String showOrders(@RequestParam(defaultValue = "1") int page, HttpServletRequest request,
+            Model model, Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         model.addAttribute("username", currentUser.getUsername());
-        List<OrderSummaryDTO> orderSummary = orderService.displayOrders(currentUser.getId());
-        model.addAttribute("orderSummary", orderSummary);
+        PageView<OrderSummaryDTO> orderPager = orderService
+                .displayOrders(currentUser.getId(), page, PageView.DEFAULT_SIZE)
+                .withLinks(request, "page");
+        model.addAttribute("orderSummary", orderPager.getContent());
+        model.addAttribute("orderPager", orderPager);
         return "orders";
     }
 
@@ -48,7 +54,14 @@ public class OrderViewController {
             Model model,
             Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
-        model.addAttribute("orderDetails", orderService.getOrderDetails(orderId, currentUser.getId()));
+
+        OrderDetailsDTO orderDetails = orderService.getOrderDetails(orderId, currentUser.getId());
+        model.addAttribute("orderDetails", orderDetails);
+        List<Long> orderItemIds = orderDetails.getItems().stream()
+                .map(item -> item.getId())
+                .toList();
+        model.addAttribute("reviewedItemIds",
+                orderService.getReviewedItemIds(currentUser.getId(), orderItemIds));
 
         return "order-view-single";
     }
