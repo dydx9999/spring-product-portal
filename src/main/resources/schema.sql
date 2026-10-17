@@ -84,7 +84,9 @@ CREATE TABLE
         order_id UUID NOT NULL,
         buyer_id BIGINT NOT NULL REFERENCES users (id),
         vendor_id BIGINT NOT NULL REFERENCES vendors (id),
-        creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        tracking_number VARCHAR(255),
+        carrier VARCHAR(255)
     );
 
 -- Convert existing date or timestamp columns to timestamp without time zone
