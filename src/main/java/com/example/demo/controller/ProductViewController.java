@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.example.demo.model.OrderItem;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Product;
@@ -30,11 +28,8 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
 import com.example.demo.service.WishlistService;
-
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Controller
 @RequestMapping("/products")
 public class ProductViewController {
@@ -48,8 +43,22 @@ public class ProductViewController {
     private final VendorService vendorService;
     private final ReviewRepository reviewRepository;
 
-    // ---- Product list ----
+    public ProductViewController(WishlistService wishlistService, WarehouseRepository warehouseRepository,
+            OrderItemRepository orderItemRepository, ProductRepository productRepository,
+            ProductService productService, UserService userService, CartService cartService,
+            VendorService vendorService, ReviewRepository reviewRepository) {
+        this.wishlistService = wishlistService;
+        this.warehouseRepository = warehouseRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.productRepository = productRepository;
+        this.productService = productService;
+        this.userService = userService;
+        this.cartService = cartService;
+        this.vendorService = vendorService;
+        this.reviewRepository = reviewRepository;
+    }
 
+    // ---- Product list ----
     @GetMapping
     public String showProductList(@RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "false") boolean inStockOnly,
@@ -59,7 +68,6 @@ public class ProductViewController {
             @RequestParam(defaultValue = "1") int page, HttpServletRequest request, Model model,
             Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
-
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         model.addAttribute("isAdmin", isAdmin);
@@ -73,10 +81,8 @@ public class ProductViewController {
             Vendor vendor = vendorService.getVendorByUserId(currentUser.getId());
             vendorBusinessName = vendor.getBusinessName();
         }
-
         model.addAttribute("isVendor", isVendor);
         model.addAttribute("businessName", vendorBusinessName);
-
         model.addAttribute("username", currentUser.getUsername());
         model.addAttribute("productCount", productRepository.countProducts());
         model.addAttribute("outOfStockProducts", productRepository.countOutOfStockProducts());
@@ -120,7 +126,6 @@ public class ProductViewController {
     }
 
     // ---- Add product ----
-
     @GetMapping("/product-add")
     public String showAddProductForm(Model model, Authentication authentication) {
         model.addAttribute("productForm", new Product());
@@ -147,7 +152,6 @@ public class ProductViewController {
     }
 
     // ---- Search products ----
-
     @GetMapping("/product-search")
     public String showProductSearchForm(
             @RequestParam(required = false) String productName,
@@ -173,7 +177,6 @@ public class ProductViewController {
     }
 
     // ---- Update product ----
-
     @GetMapping("/update/{id}")
     public String showUpdateProductForm(@PathVariable("id") Long productId, Model model,
             RedirectAttributes redirectAttributes) {
@@ -205,7 +208,6 @@ public class ProductViewController {
     }
 
     // ---- Delete product ----
-
     @PostMapping("/delete/{id}")
     public String handleDeleteProduct(@PathVariable("id") Long productId, RedirectAttributes redirectAttributes) {
         productService.deleteProduct(productId);
@@ -214,7 +216,6 @@ public class ProductViewController {
     }
 
     // ---- Cart / purchase ----
-
     @PostMapping("/purchase/{id}")
     public String handleAddToCart(
             @PathVariable("id") Long productId,
@@ -234,7 +235,6 @@ public class ProductViewController {
     }
 
     // ---- Misc ----
-
     @GetMapping("/home")
     public String showHome() {
         return "home";
@@ -247,9 +247,7 @@ public class ProductViewController {
         model.addAttribute(
                 "averageRating",
                 reviewRepository.findAverageRatingByProductId(productId));
-
         return "product-view-single";
-
     }
 
     @PostMapping("/wishlist/add/{productId}")
@@ -258,16 +256,13 @@ public class ProductViewController {
             Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         Long userId = currentUser.getId();
-
         try {
             wishlistService.addProductToWishlist(userId, productId);
             redirectAttributes.addFlashAttribute("successMessage", "Product successfully added to wishlist!");
         } catch (ResponseStatusException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
         }
-
         return "redirect:/products";
-
     }
 
     @GetMapping("/wishlist/view")
@@ -286,5 +281,4 @@ public class ProductViewController {
         redirectAttributes.addFlashAttribute("successMessage", "Product removed from your wishlist.");
         return "redirect:/products/wishlist/view";
     }
-
 }

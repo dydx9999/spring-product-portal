@@ -9,15 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = { "order_item_id", "buyer_id" }))
 public class Review {
@@ -42,6 +34,57 @@ public class Review {
         this.buyerId = buyerId;
         this.rating = rating;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public Review() {
+    }
+
+    public Review(Long id, Long orderItemId, Long buyerId, int rating, LocalDateTime createdAt) {
+        this.id = id;
+        this.orderItemId = orderItemId;
+        this.buyerId = buyerId;
+        this.rating = rating;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(Long orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public Long getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(Long buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
 }

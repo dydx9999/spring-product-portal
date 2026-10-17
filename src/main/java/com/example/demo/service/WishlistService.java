@@ -10,14 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.demo.model.WishlistItem;
 import com.example.demo.model.Product;
+import com.example.demo.model.WishlistItem;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.WishlistRepository;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 @Service
 public class WishlistService {
     public record WishlistEntry(Long wishlistId, Long productId, Product product) {
@@ -25,6 +22,11 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
+
+    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository) {
+        this.wishlistRepository = wishlistRepository;
+        this.productRepository = productRepository;
+    }
 
     public List<WishlistEntry> getUserWishlist(Long userId) {
         List<WishlistItem> items = wishlistRepository.findByUserIdOrderByWishlistIdAsc(userId);
