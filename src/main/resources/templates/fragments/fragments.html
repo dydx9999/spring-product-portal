@@ -24,11 +24,11 @@
                                 aria-labelledby="dropdownMenuLink">
                                 <li class="nav-item">
                                     <a class="dropdown-item"
-                                th:classappend="${activePage == 'vendor-dashboard'} ? 'active' : ''"
-                                th:href="@{/vendor}">View vendor
-                                dashboard</a>
-                        </li>
-<li><a class="dropdown-item text text-bold"
+                                        th:classappend="${activePage == 'vendor-dashboard'} ? 'active' : ''"
+                                        th:href="@{/vendor}">View vendor
+                                        dashboard</a>
+                                </li>
+                                <li><a class="dropdown-item text text-bold"
                                         th:href="@{/products(vendor=${businessNameVendor})}">Manage
                                         your products</a></li>
                                 <li><a class="dropdown-item"

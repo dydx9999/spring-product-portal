@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +13,6 @@
         <link rel="icon" type="image/svg+xml"
             th:href="@{/assets/favicon.svg}">
     </head>
-
     <body class="site-page">
         <div
             th:replace="~{fragments/fragments :: site-navigation('products')}"></div>
@@ -37,7 +35,6 @@
                     </p>
                 </div>
                 <div>
-
                     <a th:if="${isVendor}"
                         th:href="@{/products/product-add}"
                         class="btn btn-primary">Add
@@ -46,7 +43,6 @@
                         class="btn btn-primary">View cart</a>
                 </div>
             </header>
-
             <section
                 class="d-flex flex-wrap align-items-end justify-content-between gap-3 py-3 mb-3 border-top border-bottom"
                 aria-label="Catalog sorting">
@@ -98,7 +94,6 @@
                         class="btn btn-primary">Reset</a>
                 </form>
             </section>
-
             <div th:if="${outOfStockMessage}" class="alert alert-warning"
                 role="status" th:text="${outOfStockMessage}"></div>
             <div th:if="${errorMessage}" class="alert alert-danger"
@@ -110,7 +105,6 @@
             <div th:if="${successMessage}" class="alert alert-success"
                 role="status"
                 th:text="${successMessage}"></div>
-
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <form th:action="@{/products}" method="get">
                     <button name="filter" value type="submit"
