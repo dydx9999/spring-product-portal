@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -18,10 +19,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.OrderSummaryDTO;
 import com.example.demo.model.PageView;
+import com.example.demo.model.Product;
 import com.example.demo.model.ShippingDetailsForm;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
+import com.example.demo.model.VendorPickListDTO;
 import com.example.demo.model.WarehouseDTO;
+import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.UserService;
@@ -38,15 +42,17 @@ public class VendorViewController {
         private final VendorService vendorService;
         private final UserService userService;
         private final ProductRepository productRepository;
+        private final OrderItemRepository orderItemRepository;
 
         public VendorViewController(VendorService vendorService, UserService userService,
                         ProductRepository productRepository, OrderService orderService,
-                        WarehouseService warehouseService) {
+                        WarehouseService warehouseService, OrderItemRepository orderItemRepository) {
                 this.vendorService = vendorService;
                 this.userService = userService;
                 this.productRepository = productRepository;
                 this.orderService = orderService;
                 this.warehouseService = warehouseService;
+                this.orderItemRepository = orderItemRepository;
         }
 
         @GetMapping
@@ -159,31 +165,50 @@ public class VendorViewController {
                 model.addAttribute("ShippingDetailsForm", shippingDetailsForm);
                 return "vendor-shipment-details-form";
         }
-}
-// @PostMapping("/discounts/{productId}")
-// public String handleDiscountsManagerForm(
-// @PathVariable("productId") Long productId,
-// @RequestParam int discountPercent,
-// Authentication authentication,
-// RedirectAttributes redirectAttributes) {
-// User currentUser = userService.getUserByUsername(authentication.getName());
-// Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
-// if (discountPercent < 0 || discountPercent > 100) {
-// redirectAttributes.addFlashAttribute("errorMessage", "Discount must be
-// between 0 and 100%.");
-// return "redirect:/vendor/discounts";
-// }
-// Product product = productRepository.findById(productId)
-// .orElseThrow(() -> new ResponseStatusException(
-// org.springframework.http.HttpStatus.NOT_FOUND, "Product not found"));
-// if (!currentVendor.getBusinessName().equals(product.getVendorName())) {
-// throw new ResponseStatusException(
-// org.springframework.http.HttpStatus.FORBIDDEN,
-// "You can only discount your own products");
-// }
+
+        @PostMapping("/discounts/{productId}")
+        public String handleDiscountsManagerForm(
+                        @PathVariable("productId") Long productId,
+                        @RequestParam int discountPercent,
+                        Authentication authentication,
+                        RedirectAttributes redirectAttributes) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                if (discountPercent < 0 || discountPercent > 100) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Discount must be between 0 and 100%.");
+                        return "redirect:/vendor/discounts";
+                }
+                Product product = productRepository.findById(productId)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                                org.springframework.http.HttpStatus.NOT_FOUND, "Product not found"));
+                if (!currentVendor.getBusinessName().equals(product.getVendorName())) {
+                        throw new ResponseStatusException(
+                                        org.springframework.http.HttpStatus.FORBIDDEN,
+                                        "You can only discount your own products");
+                }
 // product.setDiscountPercent(discountPercent);
-// productRepository.save(product);
-// redirectAttributes.addFlashAttribute("savedProductId", productId);
-// return "redirect:/vendor/discounts";
-// }
-// }
+                productRepository.save(product);
+                redirectAttributes.addFlashAttribute("savedProductId", productId);
+                return "redirect:/vendor/discounts";
+        }
+
+        @GetMapping("/order-pick-list/{orderId}")
+        public String getVendorPickList(
+                        @PathVariable UUID orderId,
+                        Authentication authentication,
+                        Model model) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                List<VendorPickListDTO> pickList = orderItemRepository.findVendorPickListByOrderId(orderId,
+                                currentVendor.getId());
+                model.addAttribute("pickList", pickList);
+                model.addAttribute("orderId", orderId);
+                Map<Long, String> productNamesById = pickList.stream()
+                                .collect(Collectors.toMap(
+                                                VendorPickListDTO::productId,
+                                                VendorPickListDTO::productName,
+                                                (existingName, duplicateName) -> existingName));
+                model.addAttribute("productNamesById", productNamesById);
+                return "order-pick-list";
+        }
+}

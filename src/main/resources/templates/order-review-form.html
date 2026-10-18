@@ -20,7 +20,7 @@
                     order</p>
                 <h1 class="h2 mb-2">Order: <strong>#<span
                             th:text="${orderDetails.orderId}"></span></strong></h1>
-                <p class="text-secondary mb-0">Placed at <span
+                <p class="text-secondary mb-0">Placed on <span
                         th:text="${#temporals.format(orderDetails.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></span>
                 </p>
             </header>
