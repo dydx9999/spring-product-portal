@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ import com.example.demo.service.OrderService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
 import com.example.demo.service.WarehouseService;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
@@ -49,7 +51,8 @@ public class VendorViewController {
 
         @GetMapping
         public String displayVendorDashboard(@RequestParam(defaultValue = "1") int productPage,
-                        @RequestParam(defaultValue = "1") int salesPage, HttpServletRequest request,
+                        @RequestParam(defaultValue = "1") int salesPage, @RequestParam(required = false) String status,
+                        HttpServletRequest request,
                         Model model, Authentication authentication) {
                 User currentUser = userService.getUserByUsername(authentication.getName());
                 boolean isAdmin = authentication.getAuthorities().stream()
@@ -63,6 +66,9 @@ public class VendorViewController {
                 Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
                 currentVendor.setSalesRevenue(vendorService.calculateTotalSalesRevenue(currentVendor.getId()));
                 currentVendor.setSalesCount(vendorService.calculateTotalSales(currentVendor.getId()));
+                VendorRatingDTO vendorRatingStats = vendorService.getVendorStats(currentVendor.getBusinessName());
+                model.addAttribute("vendorRatingStats", vendorRatingStats);
+
                 model.addAttribute("isVendor", isVendor);
                 model.addAttribute("vendorUsername", currentUser.getUsername());
                 model.addAttribute("currentVendor", currentVendor);
@@ -79,9 +85,10 @@ public class VendorViewController {
                                                 .withLinks(request, "productPage"));
                 model.addAttribute("productsListedCount", products.size());
                 model.addAttribute("businessName", currentVendor.getBusinessName());
+                model.addAttribute("productPage", productPage);
                 model.addAttribute("status", status);
                 PageView<OrderSummaryDTO> salesPager = orderService
-                                .getVendorSales(currentVendor.getId(), salesPage, PageView.DEFAULT_SIZE)
+                                .getVendorSales(currentVendor.getId(), status, salesPage, PageView.DEFAULT_SIZE)
                                 .withLinks(request, "salesPage");
                 model.addAttribute("orderDetails", salesPager.getContent());
                 model.addAttribute("salesPager", salesPager);
@@ -146,6 +153,9 @@ public class VendorViewController {
                         RedirectAttributes redirectAttributes,
                         ShippingDetailsForm shippingDetailsForm) {
                 User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                model.addAttribute("currentVendor", currentVendor);
+
                 model.addAttribute("ShippingDetailsForm", shippingDetailsForm);
                 return "vendor-shipment-details-form";
         }

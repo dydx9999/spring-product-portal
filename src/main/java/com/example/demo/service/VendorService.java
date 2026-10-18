@@ -1,17 +1,19 @@
 package com.example.demo.service;
 
-import org.springframework.stereotype.Service;
-
-import com.example.demo.repository.VendorRepository;
-import com.example.demo.repository.OrderItemRepository;
-import com.example.demo.repository.OrderRepository;
-import com.example.demo.model.Vendor;
-import com.example.demo.model.Order;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.example.demo.controller.VendorRatingDTO;
+import com.example.demo.model.Order;
+import com.example.demo.model.Vendor;
+import com.example.demo.repository.OrderItemRepository;
+import com.example.demo.repository.OrderRepository;
+import com.example.demo.repository.VendorRepository;
 
 @Service
 public class VendorService {
@@ -76,6 +78,15 @@ public class VendorService {
         }
 
         return vendorOrders.size();
+    }
+
+    public VendorRatingDTO getVendorStats(String vendorName) {
+        VendorRatingDTO stats = vendorRepository.findVendorStats(vendorName);
+        if (stats == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "No ratings found for listed vendor!");
+        }
+        return stats;
     }
 
 }
