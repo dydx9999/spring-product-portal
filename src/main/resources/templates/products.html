@@ -343,13 +343,24 @@
                                         <button
                                                         class="btn btn-sm btn-outline-warning"
                                                         type="submit">
-                                                        <i
-                                                            class="bi bi-star-fill"
+                                                        <i class="bi bi-star"
                                                             aria-hidden="true"></i>
                                                         <span>Add to
                                                             wishlist</span>
                                                     </button>
+                                                    <button
+                                                        th:if="${#lists.contains(userWishlist, product.id)}"
+                                                        class="btn btn-sm btn-outline-warning"
+                                                        type="button"
+                                                        disabled
+                                                        aria-label="Already in wishlist">
+                                                        <i
+                                                            class="bi bi-star-fill"
+                                                            aria-hidden="true"></i>
+                                                        <span>In wishlist</span>
+                                                    </button>
                                     </form>
+
                                             </div>
                                     <!-- Vendor only row update button -->
                                             <form
