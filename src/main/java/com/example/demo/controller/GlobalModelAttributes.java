@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
-
 import com.example.demo.service.CartService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
@@ -66,6 +66,9 @@ public class GlobalModelAttributes {
         User currentUser = userService.getUserByUsername(authentication.getName());
         List<WishlistEntry> userWishlist = wishlistService.getUserWishlist(currentUser.getId());
         model.addAttribute("wishlistSize", userWishlist.size());
+        model.addAttribute("userWishlist", userWishlist.stream()
+                .map(WishlistEntry::productId)
+                .toList());
     }
 
     @ModelAttribute

@@ -31,8 +31,7 @@
                         class="badge rounded-pill text-bg-light border px-3 py-2 text-warning bi bi-star-fill"
                         aria-label="star"
                         th:if="${averageRating != null}"
-                        th:text="${averageRating}">
-
+                        th:text="${#numbers.formatDecimal(averageRating, 1, 2)}">
                     </span></h1>
             </header>
 
@@ -135,6 +134,13 @@
                                             </div>
 
                                         </form>
+                                        <form
+                                            th:action="@{/products/wishlist/add/{productId}(productId=${product.id})}"
+                                            method="post"><button type="submit"
+                                                class="btn btn-sm
+                                                btn-outline-warning"><span
+                                                    class="bi bi-star-fill text-warning"></span>Add
+                                                to wishlist</button></form>
                                     </dd>
                                 </div>
 

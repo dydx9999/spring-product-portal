@@ -20,10 +20,12 @@
         <main class="container py-4">
             <header
                 class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-                <div>
+                <div
+                    th:with="outOfStockWishlistCount=${#lists.size(wishlistItems.?[product != null and product.productQuantity <= 0])}">
                     <p
                         class="page-eyebrow text-uppercase small fw-semibold mb-2">Saved
                         items</p>
+
                     <h1 class="h2 mb-2">Your wishlist</h1>
                     <p class="text-secondary mb-0">
                         <span th:text="${#lists.size(wishlistItems)}">0</span>
@@ -32,6 +34,16 @@
                         saved for <strong
                             th:text="${currentUser.username}">username</strong>
                     </p>
+                    <div
+                        th:if="${outOfStockWishlistCount > 0}"
+                        class="alert alert-warning"
+                        role="alert">
+                        <strong>
+                            <span
+                                th:text="${outOfStockWishlistCount}">0
+                            </span></strong>
+                        items in your wishlist are out of stock
+                    </div>
                 </div>
                 <a class="btn btn-outline-primary" th:href="@{/products}">Browse
                     products</a>
