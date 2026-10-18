@@ -8,6 +8,8 @@
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
     </head>
 
     <body class="site-page">
@@ -72,8 +74,9 @@
                     <div
                         class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
                         <div>
-                            <h2 id="account-details-heading"
-                                class="h5 mb-1">Your reviews</h2>
+                            <h2 id="review-details-heading"
+                                class="h5 mb-1">Your reviews<strong><span
+                                        th:text="| (${reviewPager.totalItems})|"></span></strong></h2>
                             <p class="text-secondary small mb-0">Reviews you
                                 previously submitted.</p>
                         </div>
@@ -102,9 +105,13 @@
                                             th:text="${review.productName}">Product
                                             name</span>
                                     </td>
-                                    <td> <span
-                                            class="badge rounded-pill text-bg-warning"
-                                            th:text="${review.rating}">0.0</span></td>
+                                    <td>
+                                        <span class="text-warning"
+                                            th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i
+                                                th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                                        </span>
+                                    </td>
 
                                     <td class="text text-secondary fst-italic"
                                         th:text="${#temporals.format(review.createdAt, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></td>
