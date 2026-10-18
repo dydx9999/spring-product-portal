@@ -8,6 +8,8 @@
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
     </head>
     <body class="site-page">
         <div
@@ -71,6 +73,9 @@
                                 <th scope="col">Products listed</th>
                                 <th scope="col">Sales</th>
                                 <th scope="col">Revenue</th>
+                                <th scope="col">Average
+                                    Rating</th>
+                                <th scope="col">Reviews Count</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,11 +98,19 @@
                                         th:unless="${currentVendor.salesRevenue != null}">Not
                                         available</span>
                                 </td>
+                                <td><span
+                                        th:unless="${vendorRatingStats.averageRating == null}"
+                                        th:text="${#numbers.formatDecimal(vendorRatingStats.averageRating, 1, 2)}"
+                                        class="bi bi-star-fill text-warning">0</span></td>
+                                <td><span
+                                        th:unless="${vendorRatingStats.reviewsCount <= 0}"
+                                        th:text="${vendorRatingStats.reviewsCount}">0</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
+
             <div class="container mb-2 mt-4">
                 <span class="alert alert-success" th:if="${successMessage}"
                     th:text="${successMessage}"></span>
@@ -242,9 +255,14 @@
                                 <td
                                     th:text="${#temporals.format(orderDetail.creationDate,'MMMM d, yyyy ''at'' h:mm a')}"></td>
                                 <td>
-                                    <span
+                                    <ul
                                         th:if="${!#lists.isEmpty(orderDetail.items)}"
-                                        th:text="${#strings.listJoin(orderDetail.items.![quantity + ' x ' + productName], ', ')}">item</span>
+                                        class="list-group list-group-horizontal flex-wrap gap-1 border-0 mb-0">
+                                        <li
+                                            class="list-group-item border-0 rounded-pill bg-light-subtle px-2 py-1 small"
+                                            th:each="item : ${orderDetail.items}"
+                                            th:text="${item.quantity + 'x ' + item.productName}">item</li>
+                                    </ul>
                                     <span
                                         th:unless="${!#lists.isEmpty(orderDetail.items)}"
                                         class="text-secondary">No
@@ -286,18 +304,17 @@
                                             Order</button>
                                     </form>
                                     <!-- Add shipping details button (if status = Accepted) -->
-                                    <form
-                                        th:action="@{/vendor/orders/{orderId}/shipping(orderId=${orderDetail.orderId})}"
-                                        th:if="${#strings.equals(orderDetail.status, 'Accepted')}"
-                                        method="get">
-                                        <button
-                                            class="badge text-bg-primary badge-sm"
+                                    <div
+                                        th:if="${#strings.equals(orderDetail.status, 'Accepted')}">
+                                        <a
+                                            th:href="@{/vendor/orders/{orderId}/shipping(orderId=${orderDetail.orderId})}"
+                                            style="font-size: small;"
                                             type="submit">
-                                            Add tracking details
-                                        </button>
-                                    </form>
+                                            + Add tracking details </a>
+
+                                    </div>
                                     <!-- View tracking button (if order status = Shipped) -->
-                                    <a
+                                    <a style="font-size: small;"
                                         th:if="${#strings.equals(orderDetail.status, 'Shipped')}"
                                         th:href="@{/vendor/tracking/view(trackingNumber=${orderDetail.trackingNumber}, carrier=${orderDetail.carrier})}">
                                         View tracking
