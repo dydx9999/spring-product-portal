@@ -311,6 +311,11 @@
                                             style="font-size: small;"
                                             type="submit">
                                             + Add tracking details </a>
+                                        <a
+                                            th:href="@{/vendor/order-pick-list/{orderId}(orderId=${orderDetail.orderId})}"
+                                            style="font-size: small;"
+                                            type="submit" class="bi bi-eye">
+                                            View order picklist </a>
 
                                     </div>
                                     <!-- View tracking button (if order status = Shipped) -->
