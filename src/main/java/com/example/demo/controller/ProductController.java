@@ -18,7 +18,7 @@ import com.example.demo.model.Product;
 import com.example.demo.model.ProductDTO;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
-import com.example.demo.model.VendorPickList;
+import com.example.demo.model.VendorPickListDTO;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
@@ -82,7 +82,7 @@ public class ProductController {
     public ResponseEntity<?> getVendorPickList(@PathVariable UUID orderId, Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
-        List<VendorPickList> pickList = orderItemRepository.findVendorPickListByOrderId(orderId,
+        List<VendorPickListDTO> pickList = orderItemRepository.findVendorPickListByOrderId(orderId,
                 currentVendor.getId());
         return ResponseEntity.ok(pickList);
     }

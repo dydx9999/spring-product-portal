@@ -27,6 +27,7 @@ import com.example.demo.model.PageView;
 import com.example.demo.model.Review;
 import com.example.demo.model.ReviewFormDTO;
 import com.example.demo.model.ShippingDetailsForm;
+import com.example.demo.model.VendorPickListDTO;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ReviewRepository;
@@ -221,5 +222,14 @@ public class OrderService {
         buyerOrder.setTrackingNumber(shippingDetailsForm.getTrackingNumber().trim());
         buyerOrder.setCarrier(shippingDetailsForm.getCarrier().trim());
         buyerOrder.setStatus("Shipped");
+    }
+
+    public List<VendorPickListDTO> getVendorPickList(UUID orderId, Long vendorId) {
+        List<VendorPickListDTO> pickList = orderItemRepository.findVendorPickListByOrderId(orderId, vendorId);
+        if (pickList == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No matching item pick list for provided order!");
+        }
+        return pickList;
+
     }
 }

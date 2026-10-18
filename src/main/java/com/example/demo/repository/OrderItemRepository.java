@@ -20,6 +20,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 		FROM OrderItem oi, Order o
 		WHERE o.id = oi.orderId AND o.orderId = :orderId AND o.vendorId = :vendorId
 		""")
-	List<VendorPickList> findVendorPickListByOrderId(@Param("orderId") UUID orderId,
+	List<VendorPickListDTO> findVendorPickListByOrderId(@Param("orderId") UUID orderId,
 			@Param("vendorId") Long vendorId);
 }
