@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.demo.model.OrderItem;
-import com.example.demo.model.VendorPickList;
+import com.example.demo.model.VendorPickListDTO;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 	List<OrderItem> findByOrderIdIn(List<Long> orderIds);
