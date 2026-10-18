@@ -16,9 +16,12 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 	List<OrderItem> findByOrderId(Long orderId);
 
 	@Query("""
-		SELECT NEW com.example.demo.model.VendorPickList(oi.id, oi.orderId, oi.productId, oi.productQuantity)
-		FROM OrderItem oi, Order o
-		WHERE o.id = oi.orderId AND o.orderId = :orderId AND o.vendorId = :vendorId
+			SELECT NEW com.example.demo.model.VendorPickListDTO(oi.id, oi.orderId, oi.productId, oi.productName, oi.productQuantity, o.creationDate, w.warehouseName)
+				FROM OrderItem oi
+				JOIN Order o ON o.id = oi.orderId
+				LEFT JOIN Product p ON p.id = oi.productId
+				LEFT JOIN Warehouse w ON w.id = p.warehouseId
+				WHERE o.orderId = :orderId AND o.vendorId = :vendorId
 		""")
 	List<VendorPickListDTO> findVendorPickListByOrderId(@Param("orderId") UUID orderId,
 			@Param("vendorId") Long vendorId);

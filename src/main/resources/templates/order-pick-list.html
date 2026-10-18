@@ -18,9 +18,11 @@
                 <div>
                     <p
                         class="page-eyebrow text-uppercase small fw-semibold mb-2">Fulfillment</p>
-                    <h1 class="h2 mb-2">Order pick list</h1>
-                    <p class="text-secondary mb-0">A blank worksheet for
-                        gathering and checking order items.</p>
+                    <h1 class="h2 mb-2">Order pick list: <strong>
+                            <span
+                                th:text="|#${orderId}|">Null</span>
+                        </strong></h1>
+
                 </div>
                 <span class="pick-list-document-label">Warehouse copy</span>
             </header>
@@ -28,11 +30,12 @@
             <section class="pick-list-meta mb-4" aria-label="Order details">
                 <div class="pick-list-meta-item">
                     <span class="pick-list-label">Order number</span>
-                    <span class="pick-list-blank" aria-hidden="true"></span>
+                    <span th:text="|#${orderId}|"></span>
                 </div>
                 <div class="pick-list-meta-item">
                     <span class="pick-list-label">Date</span>
-                    <span class="pick-list-blank" aria-hidden="true"></span>
+                    <span
+                        th:text="${#temporals.format(pickList[0].creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></span>
                 </div>
                 <div class="pick-list-meta-item">
                     <span class="pick-list-label">Warehouse</span>
@@ -54,7 +57,10 @@
                     </div>
                     <div class="pick-list-total">
                         <span class="pick-list-label">Total units</span>
-                        <span class="pick-list-blank" aria-hidden="true"></span>
+                        <strong>
+                            <span class="pick-list-blank"
+                                th:text="|x${#aggregates.sum(pickList.![quantity])}|"></span>
+                        </strong>
                     </div>
                 </div>
 
@@ -67,7 +73,6 @@
                                 <th scope="col">Product Name</th>
                                 <th scope="col" class="text-end">Qty</th>
                                 <th scope="col" class="text-end">Picked</th>
-                                <th scope="col" class="text-center">Check</th>
                             </tr>
                         </thead>
                         <tbody aria-label="Blank item rows">
@@ -76,7 +81,8 @@
                                 aria-hidden="true">
                                 <!--Location-->
                                 <td><span
-                                        class="pick-list-write-line"></span></td>
+                                        class="pick-list-write-line"
+                                        th:text="${product.warehouseName}">0</span></td>
                                 <!--Product ID-->
                                 <td><span
                                         class="pick-list-write-line"
@@ -89,86 +95,18 @@
                                 <td><span
                                         class="pick-list-write-line"
                                         th:text="|x${product.quantity}|">0</span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span class="pick-list-check"></span></td>
+                                <td><input class="pick-list-check"
+                                        type="checkbox"></td>
+
                             </tr>
-                            <tr class="pick-list-writing-row"
-                                aria-hidden="true">
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span class="pick-list-check"></span></td>
-                            </tr>
-                            <tr class="pick-list-writing-row"
-                                aria-hidden="true">
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span class="pick-list-check"></span></td>
-                            </tr>
-                            <tr class="pick-list-writing-row"
-                                aria-hidden="true">
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span class="pick-list-check"></span></td>
-                            </tr>
-                            <tr class="pick-list-writing-row"
-                                aria-hidden="true">
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span class="pick-list-check"></span></td>
-                            </tr>
-                            <tr class="pick-list-writing-row"
-                                aria-hidden="true">
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span
-                                        class="pick-list-write-line"></span></td>
-                                <td><span class="pick-list-check"></span></td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <section class="pick-list-notes mt-4" aria-label="Packing notes">
+            <section class="pick-list-notes mt-4"
+                aria-label="Packing notes">
                 <h2 class="pick-list-label mb-3">Packing notes</h2>
                 <div class="pick-list-notes-lines" aria-hidden="true">
                     <span></span>
