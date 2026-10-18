@@ -75,8 +75,15 @@ public class OrderService {
     }
 
     public PageView<OrderSummaryDTO> getVendorSales(Long vendorId, int page, int size) {
+        return getVendorSales(vendorId, null, page, size);
+    }
+
+    public PageView<OrderSummaryDTO> getVendorSales(Long vendorId, String status, int page, int size) {
+        String statusFilter = status == null || status.isBlank() ? null : status.trim();
         PageView<Order> orders = PageView.load(page, size, NEWEST_ORDERS_FIRST,
-                pageable -> orderRepository.findByVendorId(vendorId, pageable));
+                pageable -> statusFilter == null
+                        ? orderRepository.findByVendorId(vendorId, pageable)
+                        : orderRepository.findByVendorIdAndStatusIgnoreCase(vendorId, statusFilter, pageable));
         Map<Long, List<OrderItem>> itemsByOrderId = new HashMap<>();
         if (!orders.getContent().isEmpty()) {
             for (OrderItem item : orderItemRepository
@@ -185,7 +192,7 @@ public class OrderService {
 
     @Transactional
     public void updateStatus(UUID orderId, Long vendorId, String newStatus) {
-        List<String> validStatusList = List.of("Processing", "Completed", "Shipped", "Delivered", "Accepted");
+        List<String> validStatusList = List.of("Processing", "Delivered", "Shipped", "Delivered", "Accepted");
         if (!validStatusList.contains(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order status");
         }
