@@ -26,7 +26,6 @@ public class Review {
     @Column(nullable = false)
     private int rating;
 
-    @Column(nullable = true)
     private String comment;
 
     public String getComment() {
