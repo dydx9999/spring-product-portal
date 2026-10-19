@@ -91,6 +91,7 @@
                                         Name</th>
                                     <th scope="col">Rating</th>
                                     <th scope="col">Reviewed on</th>
+                                    <th scope="col">Comment</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -110,7 +111,11 @@
                                             th:each="i : ${#numbers.sequence(1, 5)}">
                                             <i
                                                 th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
-                                        </span>
+
+                                        </span><em><span
+                                                th:if="${!#strings.isEmpty(#strings.trim(review.comment))}"
+                                                th:text="|(${review.comment})|"></span></em>
+
                                     </td>
 
                                     <td class="text text-secondary fst-italic"
