@@ -32,6 +32,17 @@ public class Product {
     @Column(name = "low_stock_threshold")
     private int lowStockThreshold;
 
+    @Column(name = "discount_percent")
+    private int discountPercent;
+
+    public int getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public void setDiscountPercent(int discountPercent) {
+        this.discountPercent = discountPercent;
+    }
+
     public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU,
             String vendorName, String vendorNotes, Long warehouseId, int lowStockThreshold) {
         this.id = id;

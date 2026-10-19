@@ -68,4 +68,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 """, nativeQuery = true)
     Long findUnitsSoldByProductId(Long productId);
 
+    @Query(value = """
+            SELECT ROUND(p.product_price * (100 - COALESCE(p.discount_percent, 0)) / 100.0, 2)
+            AS discounted_price
+            FROM products p
+            WHERE p.id = :productId
+            """, nativeQuery = true)
+    BigDecimal calculateDiscountedProductPrice(Long productId);
+
 }
