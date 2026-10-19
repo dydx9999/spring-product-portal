@@ -163,7 +163,8 @@ public class OrderService {
             OrderItem item = orderItemsById.get(review.getOrderItemId());
             String productName = item == null ? "Product unavailable" : item.getProductName();
             Long productId = item == null ? null : item.getProductId();
-            return new BuyerReviewDTO(productId, productName, review.getRating(), review.getCreatedAt());
+            return new BuyerReviewDTO(productId, productName, review.getRating(), review.getComment(),
+                    review.getCreatedAt());
         });
     }
 
@@ -201,6 +202,19 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to retrieve orders for specified buyer.");
         }
         String currentStatus = buyerOrder.getStatus();
+        if (currentStatus.equals("Processing") && !newStatus.equals("Accepted")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Status update failed. Processing orders can only be accepted or cancelled.");
+        }
+        if (currentStatus.equals("Accepted") && !newStatus.equals("Shipped")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Status update failed. Please try again with a valid tracking number.");
+        }
+        if (currentStatus.equals("Shipped") && !newStatus.equals("Delivered")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Status update failed. Unable to update status for shipped order.");
+        }
+
         if (currentStatus.equals(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No change.");
         }
