@@ -1,9 +1,13 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import java.util.List;
-import java.util.Map;
 import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "vendors")
@@ -15,12 +19,6 @@ public class Vendor {
     @Column(name = "user_id")
     private Long userId;
 
-    @ElementCollection
-    @CollectionTable(name = "vendor_products_listed", joinColumns = @JoinColumn(name = "vendor_pk"))
-    @OrderColumn(name = "list_position")
-    @Column(name = "product_sku")
-    private List<String> productsListed;
-
     @Column(name = "total_sales_count")
     private Integer salesCount;
 
@@ -30,11 +28,9 @@ public class Vendor {
     @Column(name = "business_name")
     private String businessName;
 
-    public Vendor(Long id, Long userId, List<String> productsListed, Integer salesCount, BigDecimal salesRevenue,
-            Map<String, Integer> totalFeedback, String businessName) {
+    public Vendor(Long id, Long userId, Integer salesCount, BigDecimal salesRevenue, String businessName) {
         this.id = id;
         this.userId = userId;
-        this.productsListed = productsListed;
         this.salesCount = salesCount;
         this.salesRevenue = salesRevenue;
         this.businessName = businessName;
@@ -62,14 +58,6 @@ public class Vendor {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public List<String> getProductsListed() {
-        return productsListed;
-    }
-
-    public void setProductsListed(List<String> productsListed) {
-        this.productsListed = productsListed;
     }
 
     public Integer getSalesCount() {
