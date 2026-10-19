@@ -25,4 +25,14 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 		""")
 	List<VendorPickListDTO> findVendorPickListByOrderId(@Param("orderId") UUID orderId,
 			@Param("vendorId") Long vendorId);
+
+	@Query(value = """
+			SELECT COALESCE(SUM(oi.product_quantity), 0)
+			FROM orders o
+			JOIN order_items oi ON oi.order_id = o.id
+			WHERE o.vendor_id = :vendorId
+			""", nativeQuery = true)
+
+	Long findUnitsSoldByVendorId(@Param("vendorId") Long vendorId);
+
 }
