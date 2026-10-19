@@ -74,7 +74,9 @@ public class VendorViewController {
                 currentVendor.setSalesCount(vendorService.calculateTotalSales(currentVendor.getId()));
                 VendorRatingDTO vendorRatingStats = vendorService.getVendorStats(currentVendor.getBusinessName());
                 model.addAttribute("vendorRatingStats", vendorRatingStats);
-
+                Long vendorUnitsSold = orderItemRepository
+                                .findUnitsSoldByVendorId(currentVendor.getId());
+                model.addAttribute("vendorUnitsSold", vendorUnitsSold);
                 model.addAttribute("isVendor", isVendor);
                 model.addAttribute("vendorUsername", currentUser.getUsername());
                 model.addAttribute("currentVendor", currentVendor);

@@ -44,8 +44,7 @@ public class VendorService {
     }
 
     public Vendor createVendor(Long userId, String businessName) {
-        Vendor vendor = new Vendor(null, userId, List.of(), 0, BigDecimal.ZERO,
-                new HashMap<>(), businessName);
+        Vendor vendor = new Vendor(null, userId, 0, BigDecimal.ZERO, businessName);
         return vendorRepository.save(vendor);
     }
 
