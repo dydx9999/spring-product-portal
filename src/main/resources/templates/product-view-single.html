@@ -94,6 +94,24 @@
                                             No reviews yet
                                         </dd>
                                     </div>
+                                    <!-- Single product sales history / stats -->
+                                    <dt
+                                        class="col-sm-3 text-secondary fw-semibold">Sales
+                                        History:</dt> <div>
+                                        <dd class="col-sm-9 mb-0">
+                                            <span
+                                                class="badge rounded-pill text-bg-light border px-3 py-2 text-warning bi bi-star-fill"
+                                                aria-label="star"
+                                                th:if="${unitsSold >= 0}"
+                                                th:text="|All time: ${unitsSold}|">
+                                            </span>
+                                        </dd>
+                                        <dd class="col-sm-9 mb-0 bi bi-star"
+                                            th:unless="${unitsSold >= 0}">
+                                            No sales yet
+                                        </dd>
+                                    </div>
+                                    <!--User only add to cart action button-->
                                     <dd class="col-sm-9 mb-0 text-end">
                                         <form class="product-action-form"
                                             sec:authorize="hasRole('USER')"

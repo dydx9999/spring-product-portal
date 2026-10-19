@@ -59,4 +59,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("productId") Long productId,
             @Param("quantity") int quantity);
 
+    @Query(value = """
+            SELECT SUM(oi.product_quantity) AS units_sold
+            FROM order_items oi
+            JOIN products p ON p.product_name = oi.product_name
+            WHERE p.id = :productId
+            GROUP BY oi.product_name
+                """, nativeQuery = true)
+    Long findUnitsSoldByProductId(Long productId);
+
 }

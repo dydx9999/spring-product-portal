@@ -247,6 +247,8 @@ public class ProductViewController {
         model.addAttribute(
                 "averageRating",
                 reviewRepository.findAverageRatingByProductId(productId));
+        Long unitsSold = productRepository.findUnitsSoldByProductId(productId);
+        model.addAttribute("unitsSold", unitsSold);
         return "product-view-single";
     }
 
