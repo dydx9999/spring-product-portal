@@ -26,24 +26,37 @@ public class Review {
     @Column(nullable = false)
     private int rating;
 
+    @Column(nullable = true)
+    private String comment;
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    public Review(Long orderItemId, Long buyerId, int rating) {
+    public Review(Long orderItemId, Long buyerId, int rating, String comment) {
         this.orderItemId = orderItemId;
         this.buyerId = buyerId;
         this.rating = rating;
+        this.comment = comment;
         this.createdAt = LocalDateTime.now();
     }
 
     public Review() {
     }
 
-    public Review(Long id, Long orderItemId, Long buyerId, int rating, LocalDateTime createdAt) {
+    public Review(Long id, Long orderItemId, Long buyerId, int rating, String comment, LocalDateTime createdAt) {
         this.id = id;
         this.orderItemId = orderItemId;
         this.buyerId = buyerId;
         this.rating = rating;
+        this.comment = comment;
         this.createdAt = createdAt;
     }
 

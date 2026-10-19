@@ -6,14 +6,24 @@ public class ReviewFormDTO {
     private UUID orderId;
     private Long orderItemId;
     private int rating;
+    private String comment;
 
-    public ReviewFormDTO() {
-    }
-
-    public ReviewFormDTO(UUID orderId, Long orderItemId, int rating) {
+    public ReviewFormDTO(UUID orderId, Long orderItemId, int rating, String comment) {
         this.orderId = orderId;
         this.orderItemId = orderItemId;
         this.rating = rating;
+        this.comment = comment;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public ReviewFormDTO() {
     }
 
     public UUID getOrderId() {

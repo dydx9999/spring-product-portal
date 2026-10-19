@@ -187,7 +187,7 @@ public class OrderService {
         if (reviewRepository.existsByOrderItemIdAndBuyerId(orderItem.getId(), buyerId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "You have already reviewed this item");
         }
-        reviewRepository.save(new Review(orderItem.getId(), buyerId, reviewForm.getRating()));
+        reviewRepository.save(new Review(orderItem.getId(), buyerId, reviewForm.getRating(), reviewForm.getComment()));
     }
 
     @Transactional

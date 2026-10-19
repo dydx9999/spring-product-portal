@@ -196,6 +196,13 @@ CREATE TABLE
         UNIQUE (order_item_id, buyer_id)
     );
 
+ALTER TABLE reviews
+DROP COLUMN IF EXISTS product_id;
+
+ALTER TABLE reviews
+ADD COLUMN IF NOT EXISTS
+comment VARCHAR(250);
+
 UPDATE order_items oi
 SET
     product_id = review_product.product_id
