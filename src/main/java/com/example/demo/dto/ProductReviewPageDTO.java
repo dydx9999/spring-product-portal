@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
-public record ProductReviewPageDTO(String comment, String username, Integer rating) {
+import java.time.LocalDateTime;
+
+public record ProductReviewPageDTO(String comment, String username, Integer rating, LocalDateTime createdAt) {
 
 }

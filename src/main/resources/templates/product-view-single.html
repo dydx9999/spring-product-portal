@@ -158,15 +158,42 @@
                             </dl>
                         </div>
                     </div>
-                    <h2>Sales History</h2>
-                    <ul>
-                        <li><span>1d:</span></li>
-                        <li><span>30d:</span></li>
-                        <li><span>90d:</span></li>
-                        <li><span>180d:</span></li>
-                        <li><span>1y:</span></li>
+                    <section class="col-12 mt-4"
+                        aria-labelledby="reviews-heading">
+                        <h2 id="reviews-heading">See what buyers are saying</h2>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Buyer</th>
+                                        <th scope="col">Rating</th>
+                                        <th scope="col">Reviewed on</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="review : ${productReviews}">
+                                        <td th:if="${review.comment != ''}"
+                                            th:text="${review.comment}"></td>
+                                        <td th:text="${review.username}"></td>
+                                        <td>
+                                            <span
+                                                th:each="star : ${#numbers.sequence(1, 5)}"
+                                                th:class="${review.rating != null and star <= review.rating}
+                                                      ? 'bi bi-star-fill text-warning'
+                                                      : 'bi bi-star text-secondary'"
+                                                aria-hidden="true"></span>
+                                        </td>
+                                        <td
+                                            th:text="${#temporals.format(review.createdAt,
+                                            'MMMM d, yyyy ''at'' h:mm a')}">
 
-                    </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
                 </div>
             </section>
         </main>

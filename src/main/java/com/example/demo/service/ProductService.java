@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.dto.ProductDTO;
+import com.example.demo.dto.ProductReviewPageDTO;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.ReviewRepository;
 
 @Service
 public class ProductService {
@@ -20,9 +22,11 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final Random rand = new Random();
+    private final ReviewRepository reviewRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ReviewRepository reviewRepository) {
         this.productRepository = productRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public Product createProduct(Product newProduct, String vendorName) {
@@ -182,6 +186,10 @@ public class ProductService {
     public List<ProductDTO> getProductDTO() {
         return productRepository.findAllProducts();
 
+    }
+
+    public List<ProductReviewPageDTO> getReviewsByProductId(Long productId) {
+        return reviewRepository.findReviewsByProductId(productId);
     }
 
 }
