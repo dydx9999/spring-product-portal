@@ -145,6 +145,7 @@
                                             </div>
                                         </form>
                                         <form
+                                            sec:authorize="hasRole('USER')"
                                             th:action="@{/products/wishlist/add/{productId}(productId=${product.id})}"
                                             method="post"><button
                                                 type="submit"
