@@ -69,9 +69,10 @@
                     <table class="table table-hover site-table mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">User ID</th>
-                                <th scope="col">Products listed</th>
+                                <th scope="col">Products
+                                    listed</th>
                                 <th scope="col">Sales</th>
+                                <th scope="col">Units sold</th>
                                 <th scope="col">Revenue</th>
                                 <th scope="col">Average
                                     Rating</th>
@@ -80,8 +81,6 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td th:text="${currentVendor.userId}">User
-                                    ID</td>
                                 <td>
                                     <span
                                         th:text="${productsListedCount}"></span>
@@ -90,6 +89,7 @@
                                     th:text="${currentVendor.salesCount != null ? currentVendor.salesCount : 'Not available'}">
                                     Sales
                                 </td>
+                                <td th:text="${vendorUnitsSold}"></td>
                                 <td>
                                     <span
                                         th:if="${currentVendor.salesRevenue != null}">$<span
@@ -298,10 +298,13 @@
                                         th:if="${#strings.equals(orderDetail.status, 'Processing')}"
                                         th:action="@{/vendor/orders/{orderId}/status(orderId=${orderDetail.orderId}, status='Accepted')}"
                                         method="post">
-                                        <button
-                                            class="badge text-bg-success"
-                                            type="submit">Accept
-                                            Order</button>
+                                        <button type="submit"
+                                            class="btn btn-link p-0 text-decoration-none"
+                                            style="font-size: small; color: var(--portal-accent);">
+                                            <i class="bi bi-check-circle me-1"
+                                                aria-hidden="true"></i>Accept
+                                            order
+                                        </button>
                                     </form>
                                     <!-- Add shipping details button (if status = Accepted) -->
                                     <div
@@ -319,11 +322,13 @@
 
                                     </div>
                                     <!-- View tracking button (if order status = Shipped) -->
-                                    <a style="font-size: small;"
+                                    <a class="bi bi-truck"
+                                        style="font-size: small;"
                                         th:if="${#strings.equals(orderDetail.status, 'Shipped')}"
                                         th:href="@{/vendor/tracking/view(trackingNumber=${orderDetail.trackingNumber}, carrier=${orderDetail.carrier})}">
                                         View tracking
                                     </a>
+
                                 </td>
                             </tr>
                             <!-- If no orders displayed for current vendor  -->
