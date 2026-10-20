@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-import com.example.demo.repository.ProductRepository;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -9,22 +9,27 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.example.demo.model.BuyerReviewDTO;
+
+import com.example.demo.dto.BuyerReviewDTO;
+import com.example.demo.dto.VendorFormDTO;
 import com.example.demo.model.PageView;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
-import com.example.demo.model.VendorFormDTO;
+import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 @Controller
 public class UserViewController {
     private final ProductRepository productRepository;
     private final OrderService orderService;
     private final UserService userService;
     private final VendorService vendorService;
+
     public UserViewController(UserService userService, VendorService vendorService, OrderService orderService,
             ProductRepository productRepository) {
         this.userService = userService;
@@ -32,6 +37,7 @@ public class UserViewController {
         this.orderService = orderService;
         this.productRepository = productRepository;
     }
+
     // Display all user entries
     @GetMapping("/users")
     public String listUsers(@RequestParam(defaultValue = "1") int page, HttpServletRequest request, Model model) {
@@ -40,29 +46,34 @@ public class UserViewController {
         model.addAttribute("userPager", userPager);
         return "user-list";
     }
+
     // Render user registration page
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("userForm", new User());
         return "user-register";
     }
+
     @GetMapping("/register/vendor")
     public String showVendorRegistrationForm(Model model) {
         model.addAttribute("vendorForm", new VendorFormDTO());
         return "vendor-register";
     }
+
     // Render Login Form Page
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("loginForm", new User());
         return "login";
     }
+
     // Register Form Submission
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("userForm") User userForm) {
         userService.setUserDetails(userForm);
         return "redirect:/users";
     }
+
     @PostMapping("/register/vendor")
     public String registerVendor(@ModelAttribute("vendorForm") VendorFormDTO vendorForm) {
         User newUser = new User();
@@ -72,6 +83,7 @@ public class UserViewController {
         vendorService.createVendor(savedUser.getId(), vendorForm.getBusinessName());
         return "redirect:/users";
     }
+
     // Login Form Submission is handled by Spring Security's form login filter (see
     // SecurityConfig)
     @GetMapping("/dashboard")
@@ -82,6 +94,7 @@ public class UserViewController {
         model.addAttribute("role", currentUser.getRole());
         return "dashboard";
     }
+
     @GetMapping("/user/profile")
     public String displayProfile(@RequestParam(defaultValue = "1") int reviewPage, HttpServletRequest request,
             Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
@@ -104,6 +117,7 @@ public class UserViewController {
         model.addAttribute("products", productRepository.findAll());
         return "profile";
     }
+
     @GetMapping("/user/profile/update")
     public String showProfileUpdateForm(Model model, Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
@@ -119,6 +133,7 @@ public class UserViewController {
         }
         return "profile-update";
     }
+
     @PostMapping("/user/profile/update")
     public String updateProfile(@ModelAttribute("userForm") VendorFormDTO userForm,
             Authentication authentication, HttpServletRequest request, HttpServletResponse response,

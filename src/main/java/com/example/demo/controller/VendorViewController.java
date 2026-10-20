@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.model.OrderSummaryDTO;
+import com.example.demo.dto.OrderSummaryDTO;
+import com.example.demo.dto.ShippingDetailsFormDTO;
+import com.example.demo.dto.VendorPickListDTO;
+import com.example.demo.dto.WarehouseDTO;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Product;
-import com.example.demo.model.ShippingDetailsForm;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
-import com.example.demo.model.VendorPickListDTO;
-import com.example.demo.model.WarehouseDTO;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.OrderService;
@@ -138,7 +138,7 @@ public class VendorViewController {
                         Model model,
                         Authentication authentication,
                         RedirectAttributes redirectAttributes,
-                        ShippingDetailsForm shippingDetailsForm) {
+                        ShippingDetailsFormDTO shippingDetailsForm) {
                 User currentUser = userService.getUserByUsername(authentication.getName());
                 Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
                 model.addAttribute("orderId", orderId);
@@ -159,7 +159,7 @@ public class VendorViewController {
                         Model model,
                         Authentication authentication,
                         RedirectAttributes redirectAttributes,
-                        ShippingDetailsForm shippingDetailsForm) {
+                        ShippingDetailsFormDTO shippingDetailsForm) {
                 User currentUser = userService.getUserByUsername(authentication.getName());
                 Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
                 model.addAttribute("currentVendor", currentVendor);
@@ -173,7 +173,8 @@ public class VendorViewController {
                         @PathVariable("productId") Long productId,
                         @RequestParam int discountPercent,
                         Authentication authentication,
-                        RedirectAttributes redirectAttributes) {
+                        RedirectAttributes redirectAttributes,
+                        Model model) {
                 User currentUser = userService.getUserByUsername(authentication.getName());
                 Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
                 if (discountPercent < 0 || discountPercent > 100) {
@@ -188,8 +189,10 @@ public class VendorViewController {
                                         org.springframework.http.HttpStatus.FORBIDDEN,
                                         "You can only discount your own products");
                 }
-// product.setDiscountPercent(discountPercent);
+                product.setDiscountPercent(discountPercent);
+
                 productRepository.save(product);
+                model.addAttribute("newPrice", productRepository.calculateDiscountedProductPrice(productId));
                 redirectAttributes.addFlashAttribute("savedProductId", productId);
                 return "redirect:/vendor/discounts";
         }

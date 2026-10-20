@@ -1,8 +1,8 @@
-package com.example.demo.model;
+package com.example.demo.dto;
 
 import java.util.UUID;
 
-public class ShippingDetailsForm {
+public class ShippingDetailsFormDTO {
     private UUID orderId;
     private String trackingNumber;
     private String carrier;

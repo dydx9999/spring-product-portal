@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.WarehouseDTO;
 import com.example.demo.model.Warehouse;
-import com.example.demo.model.WarehouseDTO;
 import com.example.demo.repository.WarehouseRepository;
 
 @Service

@@ -17,17 +17,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.demo.model.BuyerReviewDTO;
+import com.example.demo.dto.BuyerReviewDTO;
+import com.example.demo.dto.OrderDetailsDTO;
+import com.example.demo.dto.OrderItemDTO;
+import com.example.demo.dto.OrderSummaryDTO;
+import com.example.demo.dto.ReviewFormDTO;
+import com.example.demo.dto.ShippingDetailsFormDTO;
+import com.example.demo.dto.VendorPickListDTO;
 import com.example.demo.model.Order;
-import com.example.demo.model.OrderDetailsDTO;
 import com.example.demo.model.OrderItem;
-import com.example.demo.model.OrderItemDTO;
-import com.example.demo.model.OrderSummaryDTO;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Review;
-import com.example.demo.model.ReviewFormDTO;
-import com.example.demo.model.ShippingDetailsForm;
-import com.example.demo.model.VendorPickListDTO;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ReviewRepository;
@@ -222,7 +222,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void updateTracking(Long vendorId, ShippingDetailsForm shippingDetailsForm) {
+    public void updateTracking(Long vendorId, ShippingDetailsFormDTO shippingDetailsForm) {
         if (shippingDetailsForm == null
                 || shippingDetailsForm.getOrderId() == null
                 || shippingDetailsForm.getTrackingNumber() == null

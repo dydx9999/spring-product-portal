@@ -10,12 +10,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.demo.dto.ProductDTO;
 import com.example.demo.model.Product;
-import com.example.demo.model.ProductDTO;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
-            select new com.example.demo.model.ProductDTO(
+            select new com.example.demo.dto.ProductDTO(
                 p.id, p.productName, p.productPrice, p.vendorName
             )
             from Product p

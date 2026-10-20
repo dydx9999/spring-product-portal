@@ -1,6 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.repository.CartRepository;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -16,17 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.model.Cart;
 import com.example.demo.model.Product;
 import com.example.demo.model.User;
+import com.example.demo.repository.CartRepository;
 import com.example.demo.service.CartService;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/cart")

@@ -1,6 +1,11 @@
 package com.example.demo.controller;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,19 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.model.OrderDetailsDTO;
-import com.example.demo.model.OrderSummaryDTO;
+import com.example.demo.dto.OrderDetailsDTO;
+import com.example.demo.dto.OrderSummaryDTO;
+import com.example.demo.dto.ReviewFormDTO;
 import com.example.demo.model.PageView;
-import com.example.demo.model.ReviewFormDTO;
 import com.example.demo.model.User;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.UserService;
-
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
 
 import jakarta.servlet.http.HttpServletRequest;
 

@@ -1,14 +1,16 @@
 package com.example.demo.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.List;
+
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import com.example.demo.model.PageView;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import java.util.List;
 
 @Service
 public class UserService {

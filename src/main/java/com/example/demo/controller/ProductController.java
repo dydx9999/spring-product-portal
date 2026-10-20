@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ProductDTO;
+import com.example.demo.dto.VendorPickListDTO;
 import com.example.demo.model.Product;
-import com.example.demo.model.ProductDTO;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
-import com.example.demo.model.VendorPickListDTO;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
@@ -85,5 +86,11 @@ public class ProductController {
         List<VendorPickListDTO> pickList = orderItemRepository.findVendorPickListByOrderId(orderId,
                 currentVendor.getId());
         return ResponseEntity.ok(pickList);
+    }
+
+    @PostMapping("/discount/{productId}")
+    public ResponseEntity<?> returnDiscountedPrice(@PathVariable("productId") Long productId) {
+        BigDecimal newPrice = productRepository.calculateDiscountedProductPrice(productId);
+        return ResponseEntity.ok(newPrice);
     }
 }

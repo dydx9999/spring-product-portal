@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.demo.model.OrderItem;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Product;
@@ -28,6 +30,7 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
 import com.example.demo.service.WishlistService;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller

@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.demo.dto.ProductDTO;
 import com.example.demo.model.Product;
-import com.example.demo.model.ProductDTO;
 import com.example.demo.repository.ProductRepository;
 
 @Service
