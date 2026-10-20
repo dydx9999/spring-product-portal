@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vendor Dashboard - Discounts Manager</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
@@ -17,25 +19,28 @@
             th:action="@{/vendor/orders/{orderId}/shipping(orderId=${orderId})}">
             <!-- Tracking number input  -->
             <div class="mb-3 form-floating">
-                <input id="trackingNumber" type="text" class="form-control" placeholder=" " th:field="*{trackingNumber}"
-                    required>
+                    <input id="trackingNumber" type="text" class="form-control"
+                        placeholder=" " th:field="*{trackingNumber}">
                 <label for="trackingNumber">Tracking
                     Number</label>
             </div>
             <div class="mb-3 mt-4 form-floating">
-                <label for="carrier" class="form-label">Select a carrier</label>
-                <select th:field="*{carrier}" class="form-select" id="bootstrapSelect" aria-label="Carrier">
+                    <label for="carrier" class="form-label">Select a
+                        carrier</label>
+                    <select th:field="*{carrier}" class="form-select"
+                        aria-label="Carrier">
                     <option value="USPS">USPS</option>
                     <option value="UPS">UPS</option>
                     <option value="FedEx">FedEx</option>
                 </select>
             </div>
-            <button type="submit" class="btn text-bg-success">Add tracking details</button>
-            <form method="get" th:action="@{/vendor}"><button type="submit" class="btn text-bg-secondary">Go back
-                    </button></form>
+                <button type="submit" class="btn text-bg-success">Add tracking
+                    details</button>
 
         </form>
-
+            <button class="btn btn-bg-primary" type="submit"><a
+                    th:href="@{/vendor}">Go
+                    back</a></button>
     </section>
 </body>
 
