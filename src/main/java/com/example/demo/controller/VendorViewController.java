@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.dto.OrderSummaryDTO;
 import com.example.demo.dto.ShippingDetailsFormDTO;
 import com.example.demo.dto.VendorPickListDTO;
+import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.dto.WarehouseDTO;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Product;
@@ -73,6 +74,9 @@ public class VendorViewController {
                 currentVendor.setSalesRevenue(vendorService.calculateTotalSalesRevenue(currentVendor.getId()));
                 currentVendor.setSalesCount(vendorService.calculateTotalSales(currentVendor.getId()));
                 VendorRatingDTO vendorRatingStats = vendorService.getVendorStats(currentVendor.getBusinessName());
+                VendorSalesRankingDTO vendorRank = vendorService
+                                .getVendorSalesRankings(currentVendor.getId());
+                model.addAttribute("vendorRank", vendorRank);
                 model.addAttribute("vendorRatingStats", vendorRatingStats);
                 Long vendorUnitsSold = orderItemRepository
                                 .findUnitsSoldByVendorId(currentVendor.getId());

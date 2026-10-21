@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.controller.VendorRatingDTO;
+import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.model.Order;
 import com.example.demo.model.Vendor;
 import com.example.demo.repository.OrderItemRepository;
@@ -85,6 +86,11 @@ public class VendorService {
                     HttpStatus.NOT_FOUND, "No ratings found for listed vendor!");
         }
         return stats;
+    }
+
+    public VendorSalesRankingDTO getVendorSalesRankings(Long vendorId) {
+        VendorSalesRankingDTO vendorSalesRankings = vendorRepository.findVendorRankingBySales(vendorId);
+        return vendorSalesRankings;
     }
 
 }

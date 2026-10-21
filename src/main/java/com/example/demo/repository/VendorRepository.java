@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.demo.controller.VendorRatingDTO;
+import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.model.Vendor;
 
 public interface VendorRepository extends JpaRepository<Vendor, Long> {
@@ -27,4 +28,20 @@ public interface VendorRepository extends JpaRepository<Vendor, Long> {
             """, nativeQuery = true)
     <Optional> VendorRatingDTO findVendorStats(@Param("vendorName") String vendorName);
 
+    @Query(value = """
+            WITH ranked_vendors AS (
+                SELECT
+                    v.id AS vendor_id,
+                    v.business_name,
+                    COUNT(o.id) AS sales_count,
+                    RANK() OVER (ORDER BY COUNT(o.id) DESC) AS sales_rank
+                FROM vendors v
+                LEFT JOIN orders o ON o.vendor_id = v.id
+                GROUP BY v.id, v.business_name
+            )
+            SELECT business_name, sales_count, sales_rank
+            FROM ranked_vendors
+            WHERE vendor_id = :vendorId
+            """, nativeQuery = true)
+    VendorSalesRankingDTO findVendorRankingBySales(@Param("vendorId") Long vendorId);
 }
