@@ -180,7 +180,7 @@ public class ProductViewController {
         return "product-search";
     }
 
-    // ---- Update product ----
+    // RENDER UPDATE PRODUCT FORM
     @GetMapping("/update/{id}")
     public String showUpdateProductForm(@PathVariable("id") Long productId, Model model,
             RedirectAttributes redirectAttributes) {
@@ -197,6 +197,7 @@ public class ProductViewController {
         }
     }
 
+    // HANDLE PRODUCT UPDATE FORM
     @PostMapping("/update/{id}")
     public String handleUpdateProduct(@PathVariable("id") Long productId,
             @ModelAttribute("productForm") Product productForm,
@@ -244,6 +245,7 @@ public class ProductViewController {
         return "home";
     }
 
+    // RENDER: product-view-single
     @GetMapping("/view/{productId}")
     public String showProductPage(@PathVariable("productId") Long productId, Model model) {
         Product requestedProduct = productService.searchProductById(productId);
@@ -253,9 +255,12 @@ public class ProductViewController {
                 reviewRepository.findAverageRatingByProductId(productId));
         Long unitsSold = productRepository.findUnitsSoldByProductId(productId);
         model.addAttribute("unitsSold", unitsSold);
+List<ProductReviewPageDTO> productReviews = productService.getReviewsByProductId(productId);
+        model.addAttribute("productReviews", productReviews);
         return "product-view-single";
     }
 
+    // HANDLE WISHLIST FORM SUBMIT
     @PostMapping("/wishlist/add/{productId}")
     public String handleWishlistUpdate(@PathVariable("productId") Long productId, Model model,
             RedirectAttributes redirectAttributes,
@@ -271,6 +276,7 @@ public class ProductViewController {
         return "redirect:/products";
     }
 
+    // RENDER USER WISHLIST PAGE
     @GetMapping("/wishlist/view")
     public String showWishlist(Authentication authentication, Model model) {
         User currentUser = userService.getUserByUsername(authentication.getName());
@@ -279,6 +285,7 @@ public class ProductViewController {
         return "product-wishlist";
     }
 
+    // HANDLE USER WISHLIST ITEM REMOVAL
     @PostMapping("/wishlist/remove/{productId}")
     public String removeWishlistItem(@PathVariable Long productId, Authentication authentication,
             RedirectAttributes redirectAttributes) {
