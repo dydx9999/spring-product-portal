@@ -72,7 +72,7 @@
                                         th:text="${product.productQuantity}"></td>
                                 <td>
                                         <form class="product-action-form"
-                                            sec:authorize="isAuthenticated()"
+                                            sec:authorize="hasRole('USER')"
                                             th:action="@{/products/purchase/{id}(id=${product.id})}"
                                             method="post">
                                             <input type="number" name="quantity"
