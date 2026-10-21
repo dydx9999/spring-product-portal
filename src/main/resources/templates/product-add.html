@@ -8,6 +8,7 @@
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <script th:src="@{/js/product-add.js}" defer></script>
     </head>
 
     <body class="site-page">
@@ -44,9 +45,14 @@
                                         <input id="productName" type="text"
                                             class="form-control"
                                             placeholder=" "
-                                            th:field="*{productName}" required>
+                                            aria-describedby="productNameCharacterCount"
+                                            th:field="*{productName}">
                                         <label for="productName">Product
                                             name</label>
+                                    </div>
+                                    <div id="productNameCharacterCount"
+                                        class="form-text" aria-live="polite">
+                                        250 characters remaining
                                     </div>
                                 </div>
 
@@ -61,8 +67,7 @@
                                                     step="0.01"
                                                     class="form-control"
                                                     placeholder="0.00"
-                                                    th:field="*{productPrice}"
-                                                    required>
+                                                    th:field="*{productPrice}">
                                                 <label for="productPrice">Unit
                                                     price</label>
                                             </div>
@@ -75,14 +80,22 @@
                                             <input id="productQuantity"
                                                 type="number" min="0" step="1"
                                                 class="form-control"
-                                                placeholder=" "
-                                                th:field="*{productQuantity}"
-                                                required>
+                                                placeholder="0"
+                                                th:field="*{productQuantity}">
                                             <label
                                                 for="productQuantity">Quantity</label>
                                         </div>
                                         <div class="form-text">Units in
                                             stock.</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-text"
+                                            aria-live="polite">
+                                            Line total:
+                                            <output id="lineTotal"
+                                                for="productPrice productQuantity">Enter
+                                                price and quantity</output>
+                                        </div>
                                     </div>
                                     <div class="col-12 col-sm-7">
                                         <div class="form-floating">
@@ -90,8 +103,7 @@
                                                 type="number" min="0"
                                                 class="form-control"
                                                 placeholder=" "
-                                                th:field="*{lowStockThreshold}"
-                                                required>
+                                                th:field="*{lowStockThreshold}">
                                             <label for="lowStockThreshold">Low
                                                 stock threshold</label>
                                         </div>
@@ -111,21 +123,35 @@
                                         <div class="form-text">Leave blank to
                                             generate a SKU.</div>
                                     </div>
-                                </div>
-                                <div class="mb-4 form-floating">
+                                    <div class="warehouse-container">
+                                        <div
+                                            class="mb-4 form-floating warehouse-location">
                                     <select
                                         id="warehouseLocation"
                                         class="form-select"
-                                        th:field="*{warehouseId}" required>
-                                        <option th:value disabled>Choose a
+                                                th:field="*{warehouseId}"
+                                                required>
+                                                <option th:value disabled>Choose
+                                                    a
                                             warehouse</option>
                                         <option
                                             th:each="warehouse : ${warehouses}"
                                             th:value="${warehouse.id}"
                                             th:text="${warehouse.warehouseName}">Warehouse</option>
+
                                     </select>
-                                    <label for="warehouseLocation">Warehouse
-                                        location</label>
+
+                                            <label
+                                                for="warehouseLocation">Warehouse
+                                                location
+                                            </label>
+
+                                        </div>
+                                    </div>
+                                    <button
+                                        class="warehouse-add-button btn btn-primary"
+                                        type="button">Add
+                                        warehouse</button>
                                 </div>
                                 <div class="form-group mb-4">
                                     <label
