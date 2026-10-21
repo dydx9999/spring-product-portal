@@ -23,6 +23,7 @@ import com.example.demo.dto.OrderItemDTO;
 import com.example.demo.dto.OrderSummaryDTO;
 import com.example.demo.dto.ReviewFormDTO;
 import com.example.demo.dto.ShippingDetailsFormDTO;
+import com.example.demo.dto.VendorOrderListDTO;
 import com.example.demo.dto.VendorPickListDTO;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderItem;
@@ -252,5 +253,13 @@ public class OrderService {
         }
         return pickList;
 
+    }
+
+    public List<VendorOrderListDTO> findVendorOrderList(Long vendorId) {
+        List<VendorOrderListDTO> vendorOrders = orderRepository.findOrdersByVendorId(vendorId);
+        if (vendorOrders == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No orders found for provided vendor.");
+        }
+        return vendorOrders;
     }
 }
