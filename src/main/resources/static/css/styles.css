@@ -9,6 +9,11 @@
     --portal-line: #dfe7e4;
 }
 
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+}
+
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
@@ -203,9 +208,6 @@ a {
     white-space: nowrap;
 }
 
-@view-transition {
-    navigation: auto;
-}
 
 
 
@@ -325,18 +327,9 @@ a {
     gap: 1rem;
 }
 
-.pick-list-document-label {
-    padding: 0.4rem 0.65rem;
-    border: 1px solid var(--portal-line);
-    color: var(--portal-muted);
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
 .pick-list-meta {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     padding: 1.25rem;
     border: 1px solid var(--portal-line);
@@ -356,12 +349,6 @@ a {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-}
-
-.pick-list-blank {
-    display: block;
-    min-height: 1.5rem;
-    border-bottom: 1px solid #aebbb6;
 }
 
 .pick-list-sheet {
@@ -394,42 +381,6 @@ a {
     padding: 0.5rem 1rem;
 }
 
-.pick-list-write-line {
-    display: block;
-    min-height: 1.5rem;
-    border-bottom: 1px solid #dfe7e4;
-}
-
-.pick-list-check {
-    display: block;
-    width: 1.25rem;
-    aspect-ratio: 1;
-    margin-inline: auto;
-    border: 1px solid #87958f;
-}
-
-.pick-list-notes {
-    padding: 1.25rem;
-    border: 1px solid var(--portal-line);
-    background: #fff;
-}
-
-.pick-list-notes-lines {
-    display: grid;
-    gap: 1.75rem;
-}
-
-.pick-list-notes-lines span {
-    min-height: 1rem;
-    border-bottom: 1px solid #dfe7e4;
-}
-
-@media (max-width: 767.98px) {
-    .pick-list-meta {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
 @media print {
     body {
         background: #fff;
@@ -446,8 +397,7 @@ a {
     }
 
     .pick-list-meta,
-    .pick-list-sheet,
-    .pick-list-notes {
+    .pick-list-sheet {
         break-inside: avoid;
         border-color: #87958f;
         box-shadow: none;
