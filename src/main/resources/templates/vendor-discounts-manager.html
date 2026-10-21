@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Vendor Dashboard - Discounts Manager</title>
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <script th:src="@{/js/vendor-discounts-manager.js}" defer></script>
+    </head>
+
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('vendor-discounts-manager')}"></div>
+        <main class="container py-4">
+            <h1>Discounts Manager</h1>
+            <div
+                class="table-responsive">
+                <table
+                    class="table table-light table-sm container">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product ID</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Current Price</th>
+                            <th scope="col">Discounted price</th>
+
+                            <th scope="col">Actions</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="product-row" th:each="product : ${products}">
+                            <td th:text="${product.id}" scope="row"></td>
+                            <td th:text="${product.productName}"
+                                scope="row"></td>
+                            <td class="text-success product-price"
+                                th:text="|$${product.productPrice}|"
+                                scope="row"></td>
+                            <td>
+                                <output class="discounted-price"
+                                    aria-live="polite"></output>
+                            </td>
+                            <td>
+                                <form
+                                    th:action="@{/vendor/discounts/{productId}(productId=${product.id})}"
+                                    method="post">
+                                    <label class="form-label mb-1"
+                                        th:for="|discount-${product.id}|">
+                                        Discount
+                                    </label>
+                                    <div
+                                        class="d-flex align-items-center gap-2">
+                                        <input class="form-range mb-0"
+                                            type="range"
+                                            name="discountPercent"
+                                            min="0" max="100" value="0" step="1"
+                                            th:id="|discount-${product.id}|"
+                                            oninput="this.nextElementSibling.value = this.value + '%'"
+                                            aria-label="Discount percentage">
+                                        <output
+                                            class="fw-semibold text-nowrap">0%</output><button
+                                            type="submit"
+                                            class="btn btn-primary">
+                                            Submit
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+
+        <footer class="container py-3">
+            <div
+                th:replace="~{fragments/fragments :: site-footer}"></div>
+        </footer>
+    </body>
+
+</html>
