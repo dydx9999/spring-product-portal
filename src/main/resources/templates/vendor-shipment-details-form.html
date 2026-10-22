@@ -19,8 +19,8 @@
             th:action="@{/vendor/orders/{orderId}/shipping(orderId=${orderId})}">
             <!-- Tracking number input  -->
             <div class="mb-3 form-floating">
-                    <input id="trackingNumber" type="text" class="form-control"
-                        placeholder=" " th:field="*{trackingNumber}">
+                    <input th:field="*{trackingNumber}" type="text"
+                        class="form-control" required>
                 <label for="trackingNumber">Tracking
                     Number</label>
             </div>
