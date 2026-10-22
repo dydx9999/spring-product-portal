@@ -193,4 +193,8 @@ public class ProductService {
         return reviewRepository.findReviewsByProductId(productId);
     }
 
+    public List<ProductSalesHistoryDTO> getProductSalesHistory(Long productId) {
+        return productRepository.productSalesHistory(productId);
+    }
+
 }
