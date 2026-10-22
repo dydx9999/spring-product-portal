@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -299,9 +300,14 @@ model.addAttribute("productReviews", productReviews);
     }
 
     @GetMapping("/surprise")
-    public String showRandomProductPage(Model model) {
-        Random rand = new Random();
-        int randomId = rand.nextInt(productRepository.findAll().size());
-        return "redirect:/products/view/" + randomId;
+    public String showRandomProductPage() {
+        List<Long> productIds = productRepository.findAll().stream()
+                .map(Product::getId)
+                .toList();
+        if (productIds.isEmpty()) {
+            return "redirect:/products";
+        }
+        int randomIndex = new Random().nextInt(productIds.size());
+        return "redirect:/products/view/" + productIds.get(randomIndex);
     }
 }
