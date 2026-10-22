@@ -10,6 +10,7 @@
         <link rel="stylesheet" th:href="@{/css/styles.css}">
         <link rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
+        <script th:src="@{/js/products.js}" defer></script>
         <link rel="icon" type="image/svg+xml"
             th:href="@{/assets/favicon.svg}">
     </head>
@@ -42,6 +43,12 @@
                     <a th:unless="${isVendor}" th:href="@{/cart/view}"
                         class="btn btn-primary">View cart</a>
                 </div>
+                <a th:href="@{/products/surprise}"
+                    class="btn surprise-button">
+                    <i class="bi bi-stars surprise-button-icon"
+                        aria-hidden="true"></i>
+                    <span>Surprise me</span>
+                </a>
             </header>
             <section
                 class="d-flex flex-wrap align-items-end justify-content-between gap-3 py-3 mb-3 border-top border-bottom"
