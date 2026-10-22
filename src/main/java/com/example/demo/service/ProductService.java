@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductReviewPageDTO;
+import com.example.demo.dto.ProductSalesHistoryDTO;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ReviewRepository;
