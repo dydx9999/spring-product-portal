@@ -297,4 +297,11 @@ model.addAttribute("productReviews", productReviews);
         redirectAttributes.addFlashAttribute("successMessage", "Product removed from your wishlist.");
         return "redirect:/products/wishlist/view";
     }
+
+    @GetMapping("/surprise")
+    public String showRandomProductPage(Model model) {
+        Random rand = new Random();
+        int randomId = rand.nextInt(productRepository.findAll().size());
+        return "redirect:/products/view/" + randomId;
+    }
 }
