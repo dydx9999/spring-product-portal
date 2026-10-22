@@ -19,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dto.OrderSummaryDTO;
 import com.example.demo.dto.ShippingDetailsFormDTO;
+import com.example.demo.dto.VendorOrderItemsViewDTO;
+import com.example.demo.dto.VendorOrderListDTO;
 import com.example.demo.dto.VendorPickListDTO;
 import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.dto.WarehouseDTO;
@@ -168,7 +170,7 @@ public class VendorViewController {
                 Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
                 model.addAttribute("currentVendor", currentVendor);
 
-                model.addAttribute("ShippingDetailsForm", shippingDetailsForm);
+                model.addAttribute("shippingDetailsForm", shippingDetailsForm);
                 return "vendor-shipment-details-form";
         }
 
@@ -194,10 +196,10 @@ public class VendorViewController {
                                         "You can only discount your own products");
                 }
                 product.setDiscountPercent(discountPercent);
-
                 productRepository.save(product);
                 model.addAttribute("newPrice", productRepository.calculateDiscountedProductPrice(productId));
                 redirectAttributes.addFlashAttribute("savedProductId", productId);
+                redirectAttributes.addFlashAttribute("successMessage", "Discount successfully applied!");
                 return "redirect:/vendor/discounts";
         }
 
@@ -220,4 +222,53 @@ public class VendorViewController {
                 model.addAttribute("productNamesById", productNamesById);
                 return "order-pick-list";
         }
+
+        @GetMapping("/orders/view")
+        public String getVendorOrders(
+                        Model model,
+                        Authentication authentication,
+                        RedirectAttributes redirectAttributes) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                try {
+                        List<VendorOrderListDTO> vendorOrders = orderService.findVendorOrderList(currentVendor.getId());
+                        model.addAttribute("vendorOrders", vendorOrders);
+                        return "vendor-orders-view";
+                } catch (ResponseStatusException e) {
+                        redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
+                        return "vendor-dashboard";
+                }
+        }
+
+        @GetMapping("/orders/view/{orderId}")
+        public String showVendorOrderItems(@PathVariable("orderId") UUID orderId, Model model,
+                        Authentication authentication, RedirectAttributes redirectAttributes) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                Long vendorId = currentVendor.getId();
+                try {
+                        List<VendorOrderItemsViewDTO> orderItems = orderService.findOrderItemsByVendor(orderId,
+                                        vendorId);
+                        model.addAttribute("orderItems", orderItems);
+                        model.addAttribute("orderId", orderId);
+                        return "vendor-order-view-single";
+
+                } catch (ResponseStatusException e) {
+                        redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
+                        return "vendor-dashboard";
+                }
+        }
+
+        @GetMapping("/profile/{vendorId}")
+        public String getVendorProfile(@PathVariable("vendorId") Long vendorId, Authentication authentication,
+                        Model model) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                if (vendorId == currentVendor.getId()) {
+                        return "redirect:/user/profile";
+                }
+
+                return "vendor-profile";
+        }
+
 }
