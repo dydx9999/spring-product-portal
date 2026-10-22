@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.demo.dto.ProductDTO;
+import com.example.demo.dto.ProductSalesHistoryDTO;
 import com.example.demo.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -76,5 +77,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             WHERE p.id = :productId
             """, nativeQuery = true)
     BigDecimal calculateDiscountedProductPrice(Long productId);
+
+        @Query(value = """
+                        SELECT oi.product_quantity, o.creation_date
+                        FROM order_items oi
+                        JOIN orders o ON oi.order_id = o.id
+                        WHERE oi.product_id = :productId
+                        ORDER BY o.creation_date DESC;
+                        """, nativeQuery = true)
+        List<ProductSalesHistoryDTO> productSalesHistory(@Param("productId") Long productId);
 
 }

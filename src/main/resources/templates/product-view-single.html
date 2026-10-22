@@ -162,6 +162,36 @@
                         </div>
                     </div>
                     <section class="col-12 mt-4"
+                        aria-labelledby="sales-history-heading">
+                        <h2 class="h4 fw-semibold mb-3"
+                            id="sales-history-heading">Product sales
+                            history</h2>
+                        <div class="table-responsive">
+                            <table
+                                th:unless="${#lists.isEmpty(productSalesHistory)}"
+                                class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Quantity sold</th>
+                                        <th scope="col">Date sold</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        th:each="sale : ${productSalesHistory}">
+                                        <td
+                                            th:text="${sale.productQuantity}"></td>
+                                        <td
+                                            th:text="${#temporals.format(sale.dateSold, 'MMMM d, yyyy ''at'' h:mm a')}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p th:if="${#lists.isEmpty(productSalesHistory)}"
+                                class="text-body-secondary mb-0">No product
+                                sales yet.</p>
+                        </div>
+                    </section>
+                    <section class="col-12 mt-4"
                         aria-labelledby="reviews-heading">
                         <h2 class="display-7 fw-semibold mb-0"
                             id="reviews-heading">

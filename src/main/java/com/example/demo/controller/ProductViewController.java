@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dto.ProductReviewPageDTO;
+import com.example.demo.dto.ProductSalesHistoryDTO;
 import com.example.demo.model.OrderItem;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Product;
@@ -256,8 +257,10 @@ public class ProductViewController {
         Long unitsSold = productRepository.findUnitsSoldByProductId(productId);
         model.addAttribute("unitsSold", unitsSold);
 List<ProductReviewPageDTO> productReviews = productService.getReviewsByProductId(productId);
-        model.addAttribute("productReviews", productReviews);
-        return "product-view-single";
+model.addAttribute("productReviews", productReviews);
+        List<ProductSalesHistoryDTO> productSalesHistory = productService.getProductSalesHistory(productId);
+        model.addAttribute("productSalesHistory", productSalesHistory);
+                return "product-view-single";
     }
 
     // HANDLE WISHLIST FORM SUBMIT
