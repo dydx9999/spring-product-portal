@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vendor
+            Dashboard - Single Order View</title>
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('vendor-orders-view')}"></div>
+        <h1>Order: <span th:text="|#${orderId}|"></span></h1>
+
+        <table class="table responsive table-sm">
+            <th scope="col">Product Name</th>
+            <th scope="col">Product Price</th>
+            <th scope="col">Product Quantity</th>
+            <th scope="col">Line total</th>
+            <tr th:each="item : ${orderItems}">
+                <td class th:text="${item.productName}"></td>
+                <td th:text="|$${item.productPrice}|"></td>
+                <td th:text="|x${item.productQuantity}|"></td>
+                <td th:text="|$${item.total}|"></td>
+
+            </tr>
+        </table>
+        <a class="btn btn-primary text-decoration-none"
+            th:href="@{/vendor}">Go back</a>
+
+        <footer class="container py-3">
+            <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        </footer>
+    </body>
+</html>

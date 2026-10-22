@@ -10,19 +10,18 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.example.demo.dto.BuyerReviewDTO;
 import com.example.demo.dto.OrderDetailsDTO;
 import com.example.demo.dto.OrderItemDTO;
 import com.example.demo.dto.OrderSummaryDTO;
 import com.example.demo.dto.ReviewFormDTO;
 import com.example.demo.dto.ShippingDetailsFormDTO;
+import com.example.demo.dto.VendorOrderItemsViewDTO;
 import com.example.demo.dto.VendorOrderListDTO;
 import com.example.demo.dto.VendorPickListDTO;
 import com.example.demo.model.Order;
@@ -215,7 +214,6 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Status update failed. Unable to update status for shipped order.");
         }
-
         if (currentStatus.equals(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No change.");
         }
@@ -252,7 +250,6 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No matching item pick list for provided order!");
         }
         return pickList;
-
     }
 
     public List<VendorOrderListDTO> findVendorOrderList(Long vendorId) {
@@ -261,5 +258,15 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No orders found for provided vendor.");
         }
         return vendorOrders;
+    }
+
+    public List<VendorOrderItemsViewDTO> findOrderItemsByVendor(UUID orderId, Long vendorId) {
+        List<VendorOrderItemsViewDTO> vendorOrderItems = orderItemRepository.findOrderItemsByVendorIdAndOrderId(orderId,
+                vendorId);
+        if (vendorOrderItems == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "No order items found for provided order ID & vendor ID");
+        }
+        return vendorOrderItems;
     }
 }

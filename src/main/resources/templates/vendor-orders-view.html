@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vendor Dashboard - Orders</title>
+        <link rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
+    <body class="site-page">
+        <div
+            th:replace="~{fragments/fragments :: site-navigation('vendor-orders-view')}"></div>
+        <table class="table responsive table-sm">
+            <th scope="col">Order ID</th>
+            <th scope="col">Buyer ID</th>
+            <th scope="col">Order placed at</th>
+            <th scope="col">Status</th>
+            <tr th:each="order : ${vendorOrders}">
+                <td class th:text="${order.orderId}"></td>
+                <td th:text="${order.buyerId}"></td>
+                <td
+                    th:text="${#temporals.format(order.creationDate,'MMMM d, yyyy ''at'' h:mm a')}"></td>
+                <td th:text="${order.status}"></td>
+
+            </tr>
+
+        </table>
+        <footer class="container py-3">
+            <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        </footer>
+    </body>
+</html>
