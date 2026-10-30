@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Product Comparison</title>
+        <link rel="stylesheet"
+            href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body class="site-page product-comparison-page">
+        <nav class="comparison-nav" aria-label="Main navigation">
+            <div
+                class="container d-flex align-items-center justify-content-between gap-3 py-3">
+                <a class="comparison-brand"
+                    href="/products">Market<span>place</span></a>
+                <a class="btn btn-outline-secondary btn-sm"
+                    href="/products">Back to catalog</a>
+            </div>
+        </nav>
+
+        <main class="container comparison-main py-4 py-lg-5">
+            <header class="comparison-page-heading">
+                <div>
+                    <h1>Product comparison</h1>
+                    <p class="comparison-intro">Compare products side by
+                        side.</p>
+                </div>
+            </header>
+
+            <section class="comparison-table-wrap"
+                aria-label="Product comparison table">
+                <div class="table-responsive">
+                    <table class="table comparison-table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Features</th>
+                                <th scope="col" th:each="product : ${products}"
+                                    th:text="${product.productName}">Product
+                                    name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Price</th>
+                                <td th:each="product : ${products}"
+                                    th:text="|$${product.productPrice}|">Price</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Vendor</th>
+                                <td th:each="product : ${products}"
+                                    th:text="${product.vendorName}">Vendor</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Availability</th>
+                                <td th:each="product : ${products}"
+                                    class="product-data">
+                                    <span class="badge rounded-pill"
+                                        th:classappend="${product.productQuantity <= 0 ? 'text-bg-danger' : 'text-bg-success'}"
+                                        th:text="${product.productQuantity <= 0 ? 'Out of stock' : 'In stock'}">In
+                                        stock</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Actions</th>
+                                <td th:each="product : ${products}"
+                                    class="product-data">
+                                    <form
+                                        class="product-action-form add-to-cart-form comparison-cart-form"
+                                        th:if="${product.productQuantity > 0}"
+                                        th:action="@{/products/purchase/{id}(id=${product.id}, quantity=1)}"
+                                        method="post">
+                                        <button type="submit"
+                                            class="btn comparison-cart-button">Add
+                                            to cart</button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+        </main>
+    </body>
+</html>

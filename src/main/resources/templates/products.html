@@ -116,7 +116,8 @@
                 <form th:action="@{/products}" method="get">
                     <button type="submit"
                         class="btn btn-primary">
-                        Products <span class="badge text-bg-success"
+                        Products <span id="product-counter"
+                            class="badge text-bg-success"
                             th:text="${productCount}">0</span>
                     </button>
                 </form>
@@ -159,6 +160,7 @@
                 </div>
             </form>
             </div>
+            <!-- Catalog filter sidebar -->
             <div class="catalog-layout">
                 <aside class="catalog-sidebar"
                     aria-labelledby="catalog-filter-title">
@@ -183,6 +185,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
+                            <!-- Filter by warehouse -->
                             <label for="warehouse-filter"
                                 class="form-label">Warehouse</label>
                             <select id="warehouse-filter" name="warehouseId"
@@ -194,6 +197,7 @@
                                     th:selected="${warehouse.id == selectedWarehouseId}"></option>
                             </select>
                         </div>
+                        <!-- Filter by availablility -->
                         <div class="mb-3">
                             <label for="availability-filter"
                                 class="form-label">Availability</label>
@@ -220,10 +224,28 @@
                         </div>
                     </form>
                 </aside>
+
                 <div class="catalog-results">
             <!-- Product catalog table and actions -->
             <section class="card border-0 shadow-sm">
                 <div class="table-responsive">
+                            <div class="output" aria-live="polite"><span
+                                    class="comparison-header" hidden>
+                                    Currently
+                                    selected:
+                                </span>
+
+                            </div>
+                            <span>
+                                <form
+                                    method="post">
+                                    <button
+                                        class="btn btn-success comparison-submit"
+                                        hidden>Compare
+                                        products
+                                    </button>
+                                </form>
+                            </span>
                             <table
                                 class="table table-hover site-table mb-0 table-sm">
                         <thead class="table-light">
@@ -243,13 +265,13 @@
                         </thead>
                         <tbody>
                             <!-- Out of stock product row alert -->
-                            <tr
+                                    <tr class="product-row"
                                 th:classappend="${product.productQuantity <= 0} ? 'table-danger' : ''"
                                 th:each="product : ${products}">
                                 <td class="text-secondary"
                                     th:text="${product.id}"></td>
                                 <td>
-                                            <a class="fw-semibold"
+                                            <a class="fw-semibold product-name"
                                                 th:href="@{/products/view/{productId}(productId=${product.id})}"
                                                 th:text="${product.productName}"></a>
                                             <code>
@@ -292,8 +314,15 @@
                                                 class="text-secondary small"
                                                 th:text="|(${product.productQuantity} available)|"></span>
                                         </td>
-                                        <td class="text-center"
-                                    th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></td>
+                                        <td class="text-center">
+                                            <a
+                                                th:if="${product.vendorName != null and vendorIdsByName[product.vendorName] != null}"
+                                                th:href="@{/vendor/profile/{vendorId}(vendorId=${vendorIdsByName[product.vendorName]})}"
+                                                th:text="${product.vendorName}"></a>
+                                            <span
+                                                th:unless="${product.vendorName != null and vendorIdsByName[product.vendorName] != null}"
+                                                th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></span>
+                                        </td>
                                 <td th:if="${isVendor}"><span
                                         th:text="${product.vendorNotes}"></span></td>
                                 <td class="actions-column">
@@ -321,7 +350,8 @@
                                             th:data-product-name="${product.productName}">Delete</button>
                                     </span>
                                             <!-- User only add to cart button  -->
-                                            <div class="catalog-user-actions"
+                                            <div
+                                                class="catalog-user-actions"
                                                 sec:authorize="hasRole('USER')">
                                             <form
                                                 class="product-action-form add-to-cart-form"
@@ -337,9 +367,11 @@
                                                 <button
                                                         class="btn btn-sm btn-success add-to-cart-button"
                                                         type="submit">
-                                                        <i class="bi bi-cart4"
+                                                        <i
+                                                            class="bi bi-cart4"
                                                             aria-hidden="true"></i>
-                                                        <span>Add to cart</span>
+                                                        <span>Add to
+                                                            cart</span>
                                                 </button>
                                             </form>
                                                 <!-- User only add to wishlist button  -->
@@ -352,7 +384,8 @@
                                                         th:unless="${#lists.contains(userWishlist, product.id)}"
                                                         class="btn btn-sm btn-outline-warning"
                                                         type="submit">
-                                                        <i class="bi bi-star"
+                                                        <i
+                                                            class="bi bi-star"
                                                             aria-hidden="true"></i>
                                                         <span>Add to
                                                             wishlist</span>
@@ -366,7 +399,8 @@
                                                         <i
                                                             class="bi bi-star-fill"
                                                             aria-hidden="true"></i>
-                                                        <span>In wishlist</span>
+                                                        <span>In
+                                                            wishlist</span>
                                                     </button>
                                     </form>
 
@@ -387,7 +421,17 @@
                                             class="btn btn-sm btn-outline-primary"
                                             type="submit">Update</button>
                                     </form>
-
+                                            <form method="post"
+                                                sec:authorize="hasRole('USER')">
+                                                <label
+                                                    th:for="|product-comparison-${product.id}|">Select
+                                                    for
+                                                    comparison</label><input
+                                                    type="checkbox"
+                                                    th:id="|product-comparison-${product.id}|"
+                                                    th:data-product-id="${product.id}"
+                                                    class="product-comparison">
+                                            </form>
                                 </td>
                             </tr>
                                     <tr
@@ -416,7 +460,8 @@
                 <h5 class="modal-title" id="deleteModalLabel">Delete
                     product</h5>
                 <button type="button" class="btn-close"
-                    data-bs-dismiss="modal" aria-label="Close"></button>
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to delete <strong
