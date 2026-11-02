@@ -64,7 +64,7 @@ public class CartService {
                 .mapToInt(Cart::getQuantity)
                 .sum() + quantity;
         if (product.getProductQuantity() < combinedQuantity) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Insufficient stock");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Insufficient stock.");
         }
 
         if (!existingItems.isEmpty()) {
@@ -131,7 +131,7 @@ public class CartService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
         if (quantity > product.getProductQuantity()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Insufficient stock");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Quantity specified is more than available stock.");
         }
 
         cart.setQuantity(quantity);
@@ -199,7 +199,7 @@ public class CartService {
 
             if (updatedRows != 1) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Insufficient stock");
+                        HttpStatus.CONFLICT, "Quantity exceeds amount available.");
             }
         }
         orderItemRepository.saveAll(orderItems);
