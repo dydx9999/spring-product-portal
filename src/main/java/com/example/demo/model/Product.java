@@ -50,7 +50,7 @@ public class Product {
     }
 
     public Product(Long id, String productName, BigDecimal productPrice, int productQuantity, String productSKU,
-            String vendorName, String vendorNotes, Long warehouseId, int lowStockThreshold) {
+            String vendorName, String vendorNotes, Long warehouseId, int lowStockThreshold, int discountPercent) {
         this.id = id;
         this.productName = productName;
         this.productPrice = productPrice;
@@ -60,6 +60,8 @@ public class Product {
         this.vendorNotes = vendorNotes;
         this.warehouseId = warehouseId;
         this.lowStockThreshold = lowStockThreshold;
+        this.discountPercent = discountPercent;
+
     }
 
     public int getLowStockThreshold() {
