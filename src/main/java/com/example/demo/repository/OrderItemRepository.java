@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.demo.dto.VendorOrderItemsViewDTO;
 import com.example.demo.dto.VendorPickListDTO;
 import com.example.demo.model.OrderItem;
 
@@ -34,5 +35,16 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 			""", nativeQuery = true)
 
 	Long findUnitsSoldByVendorId(@Param("vendorId") Long vendorId);
+
+	@Query(value = """
+			SELECT oi.product_price, oi.product_name, oi.product_quantity,(oi.product_quantity * oi.product_price)
+			AS total
+			FROM order_items oi
+			JOIN orders o on oi.order_id = o.id
+			WHERE o.order_id = :orderId
+			AND o.vendor_id = :vendorId
+			""", nativeQuery = true)
+	List<VendorOrderItemsViewDTO> findOrderItemsByVendorIdAndOrderId(@Param("orderId") UUID orderId,
+			@Param("vendorId") Long vendorId);
 
 }
