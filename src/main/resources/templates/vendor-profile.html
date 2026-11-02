@@ -18,8 +18,8 @@
                     <span class="vendor-brand-mark" aria-hidden="true">
                         <i class="bi bi-shop"></i>
                     </span>
-                    <span>Market<span
-                            class="vendor-brand-accent">place</span></span>
+                    <span>Spring<span
+                            class="vendor-brand-accent">Commerce</span></span>
                 </a>
                 <a class="btn btn-outline-dark btn-sm" href="/products">
                     <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>
@@ -34,12 +34,11 @@
                     <div class="vendor-profile-avatar"
                         aria-hidden="true">VN</div>
                     <div class="vendor-profile-identity">
-                        <p class="vendor-profile-eyebrow">Independent vendor</p>
-                        <h1>Vendor name</h1>
-                        <p class="vendor-profile-location">
-                            <i class="bi bi-geo-alt" aria-hidden="true"></i>
-                            City, State
-                        </p>
+                        <h1><span
+                                th:text="${requestedVendor.businessName}"></span>
+                            <span class="bi bi-star-fill text-warning"
+                                th:text="${vendorRatingStats.averageRating}"></span></h1>
+
                     </div>
                     <div class="vendor-profile-actions">
                         <a class="btn btn-vendor-primary" href="#products">
