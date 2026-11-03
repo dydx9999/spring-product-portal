@@ -58,6 +58,14 @@ CREATE TABLE IF NOT EXISTS
         UNIQUE (user_id, product_id)
     );
 
+CREATE TABLE IF NOT EXISTS
+    persistent_logins (
+        username VARCHAR(64) NOT NULL,
+        series VARCHAR(64) PRIMARY KEY,
+        token VARCHAR(64) NOT NULL,
+        last_used TIMESTAMP NOT NULL
+    );
+
 ALTER TABLE users
 ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'USER' NOT NULL;
 
@@ -77,6 +85,9 @@ ADD COLUMN IF NOT EXISTS business_name VARCHAR(255) DEFAULT '' NOT NULL;
 
 ALTER TABLE vendors
 DROP COLUMN IF EXISTS vendor_id;
+
+ALTER TABLE vendors
+ADD COLUMN IF NOT EXISTS bio VARCHAR(255);
 
 -- Orders table 
 CREATE TABLE IF NOT EXISTS
