@@ -27,7 +27,7 @@ function initializeNameEditing() {
         row.querySelector('.name-edit-button')
             .addEventListener('click', () => showEditField(row));
 
-        row.querySelector('.name-edit-cancel')
+        row.querySelector('.edit-cancel')
             .addEventListener('click', () => cancelEditField(row));
     });
 }
