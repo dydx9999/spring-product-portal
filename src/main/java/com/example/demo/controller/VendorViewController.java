@@ -269,9 +269,13 @@ public class VendorViewController {
                 if (vendorId.equals(currentVendor.getId())) {
                         return "redirect:/user/profile";
                 }
+
                 Vendor requestedVendor = vendorService.getVendorById(vendorId);
+                List<Product> products = productRepository.findByVendorNameIgnoreCase(requestedVendor.getBusinessName(),
+                                Sort.by(Product::getId));
                 List<VendorReviewDTO> vendorReviews = vendorService.getReviewsByVendorId(requestedVendor.getId());
                 VendorRatingDTO vendorRatingStats = vendorService.getVendorStats(requestedVendor.getBusinessName());
+                model.addAttribute("products", products);
                 model.addAttribute("requestedVendor", requestedVendor);
                 model.addAttribute("vendorRatingStats", vendorRatingStats);
                 model.addAttribute("vendorReviews", vendorReviews);
