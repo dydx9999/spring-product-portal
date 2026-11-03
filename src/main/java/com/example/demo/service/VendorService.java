@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.controller.VendorRatingDTO;
+import com.example.demo.dto.VendorReviewDTO;
 import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.model.Order;
 import com.example.demo.model.Vendor;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
+import com.example.demo.repository.ReviewRepository;
 import com.example.demo.repository.VendorRepository;
 
 @Service
@@ -20,16 +22,23 @@ public class VendorService {
     private final VendorRepository vendorRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ReviewRepository reviewRepository;
 
     public VendorService(VendorRepository vendorRepository, OrderRepository orderRepository,
-            OrderItemRepository orderItemRepository) {
+            OrderItemRepository orderItemRepository, ReviewRepository reviewRepository) {
         this.vendorRepository = vendorRepository;
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public List<Vendor> listVendors() {
         return vendorRepository.findAll();
+    }
+
+    public Vendor getVendorById(Long vendorId) {
+        return vendorRepository.findById(vendorId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vendor profile not found"));
     }
 
     public Vendor getVendorByUserId(Long userId) {
@@ -44,7 +53,7 @@ public class VendorService {
     }
 
     public Vendor createVendor(Long userId, String businessName) {
-        Vendor vendor = new Vendor(null, userId, 0, BigDecimal.ZERO, businessName);
+        Vendor vendor = new Vendor(null, userId, 0, BigDecimal.ZERO, businessName, null);
         return vendorRepository.save(vendor);
     }
 
@@ -97,6 +106,11 @@ public class VendorService {
     public VendorSalesRankingDTO getVendorSalesRankings(Long vendorId) {
         VendorSalesRankingDTO vendorSalesRankings = vendorRepository.findVendorRankingBySales(vendorId);
         return vendorSalesRankings;
+    }
+
+    public List<VendorReviewDTO> getReviewsByVendorId(Long vendorId) {
+        List<VendorReviewDTO> vendorReviews = reviewRepository.findReviewsByVendorId(vendorId);
+        return vendorReviews;
     }
 
 }
