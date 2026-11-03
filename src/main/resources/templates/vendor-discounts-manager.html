@@ -15,19 +15,24 @@
     <body class="site-page">
         <div
             th:replace="~{fragments/fragments :: site-navigation('vendor-discounts-manager')}"></div>
+
         <main class="container py-4">
-            <h1>Discounts Manager</h1>
+            <h1>Discounts Manager</h1><div class="container mb-3 mt-3">
+                <span th:if="${successMessage}"
+                    th:text="${successMessage}"
+                    class="alert text-bg-success"></span>
+            </div>
             <div
                 class="table-responsive">
                 <table
-                    class="table table-light table-sm container">
+                    class="table table-dark table-sm container">
                     <thead>
                         <tr>
                             <th scope="col">Product ID</th>
                             <th scope="col">Product Name</th>
-                            <th scope="col">Current Price</th>
+                            <th scope="col">Original Price</th>
                             <th scope="col">Discounted price</th>
-
+                            <th scope="col">Current discount</th>
                             <th scope="col">Actions</th>
 
                         </tr>
@@ -37,44 +42,53 @@
                             <td th:text="${product.id}" scope="row"></td>
                             <td th:text="${product.productName}"
                                 scope="row"></td>
-                            <td class="text-success product-price"
+                            <td class="text-success product-price price-tag"
+                                th:classappend="${product.discountPercent > 0 ? 'text-decoration-line-through' : ''}"
                                 th:text="|$${product.productPrice}|"
                                 scope="row"></td>
                             <td>
                                 <output class="discounted-price"
                                     aria-live="polite"></output>
                             </td>
+                            <td class="price-tag"
+                                th:text="|${product.discountPercent ?: 0}%|"></td>
                             <td>
                                 <form
                                     th:action="@{/vendor/discounts/{productId}(productId=${product.id})}"
                                     method="post">
                                     <label class="form-label mb-1"
                                         th:for="|discount-${product.id}|">
-                                        Discount
+                                        New discount
                                     </label>
                                     <div
                                         class="d-flex align-items-center gap-2">
                                         <input class="form-range mb-0"
                                             type="range"
                                             name="discountPercent"
-                                            min="0" max="100" value="0" step="1"
+                                            min="0" max="100"
+                                            th:value="${product.discountPercent}"
+                                            step="1"
                                             th:id="|discount-${product.id}|"
                                             oninput="this.nextElementSibling.value = this.value + '%'"
                                             aria-label="Discount percentage">
                                         <output
-                                            class="fw-semibold text-nowrap">0%</output><button
+                                            class="fw-semibold text-nowrap"
+                                            th:text="|${product.discountPercent}%|">0%</output><button
                                             type="submit"
-                                            class="btn btn-primary">
+                                            class="btn btn-success btn-sm">
                                             Submit
                                         </button>
                                     </div>
 
                                 </form>
+
                             </td>
                         </tr>
 
                     </tbody>
                 </table>
+                <a th:href="@{/vendor}"
+                    class="btn btn-secondary">Go back</a>
             </div>
 
         </main>
