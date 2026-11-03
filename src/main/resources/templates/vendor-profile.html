@@ -96,13 +96,37 @@
 
                     <section id="reviews" class="vendor-profile-section"
                         aria-labelledby="reviews-heading">
-                        <p class="vendor-profile-eyebrow">From the community</p>
+                        <p class="vendor-profile-eyebrow">From the
+                            community</p>
                         <h2 id="reviews-heading">Customer reviews</h2>
-                        <div class="vendor-reviews-empty">
+                        <div th:if="${#lists.isEmpty(vendorReviews)}"
+                            class="vendor-reviews-empty">
                             <i class="bi bi-chat-square-text"
                                 aria-hidden="true"></i>
-                            <span>Customer reviews will appear here.</span>
+                            <span>No reviews yet for this vendor.</span>
                         </div>
+                        <ul th:unless="${#lists.isEmpty(vendorReviews)}"
+                            class="vendor-review-list">
+                            <li class="vendor-review-card"
+                                th:each="review : ${vendorReviews}">
+                                <div class="vendor-review-header">
+                                    <span class="vendor-review-author"
+                                        th:text="${review.username}"></span>
+                                    <time class="vendor-review-date"
+                                        th:text="${#temporals.format(review.createdAt, 'MMM d, yyyy')}"></time>
+                                </div>
+                                <div class="vendor-review-rating"
+                                    th:attr="aria-label=|Rated ${review.rating} out of 5|">
+                                    <i class="bi bi-star-fill"
+                                        th:each="star : ${#numbers.sequence(1, 5)}"
+                                        th:classappend="${star <= review.rating} ? 'text-warning' : 'vendor-review-star-empty'"
+                                        aria-hidden="true"></i>
+                                </div>
+                                <p class="vendor-review-comment"
+                                    th:text="${review.comment ?: ''}"></p>
+                            </li>
+                        </ul>
+
                     </section>
                 </div>
             </div>
@@ -110,7 +134,8 @@
 
         <footer class="vendor-profile-footer">
             <div class="container py-4">
-                <a href="/products" class="text-decoration-none">Marketplace</a>
+                <a href="/products"
+                    class="text-decoration-none">Marketplace</a>
                 <span> · </span>
                 <span>Vendor profile</span>
             </div>
