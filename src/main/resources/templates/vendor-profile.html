@@ -41,7 +41,9 @@
 
                     </div>
                     <div class="vendor-profile-actions">
-                        <a class="btn btn-vendor-primary" href="#products">
+                        <a class="btn btn-vendor-primary"
+                            th:href="@{/products(vendor=${requestedVendor.businessName})}">
+
                             Explore products
                             <i class="bi bi-arrow-down-right ms-1"
                                 aria-hidden="true"></i>
@@ -82,11 +84,13 @@
                 <div class="vendor-profile-details">
                     <section id="about" class="vendor-profile-section"
                         aria-labelledby="about-heading">
-                        <p class="vendor-profile-eyebrow">A little about us</p>
-                        <h2 id="about-heading">About the vendor</h2>
-                        <p class="vendor-about-placeholder">
-                            A short introduction to the business, its story, and
-                            what makes its products special.
+                        <p class="vendor-profile-eyebrow">A little about the
+                            vendor</p>
+                        <h2 id="about-heading">About <span
+                                th:text="${requestedVendor.businessName}"></span></h2>
+                        <p class="vendor-about-placeholder"
+                            th:text="${requestedVendor.bio ?: ''}">
+
                         </p>
                     </section>
 
