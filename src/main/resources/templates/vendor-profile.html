@@ -1,131 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1">
         <title>Vendor Profile</title>
         <link rel="stylesheet"
             href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/css/styles.css">
+        <link rel="stylesheet"
+              href="/css/styles.css">
         <link rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
     </head>
+
     <body class="site-page vendor-profile-page">
-        <nav class="vendor-public-nav" aria-label="Main navigation">
-            <div
-                class="container d-flex align-items-center justify-content-between gap-3 py-3">
-                <a class="vendor-public-brand" href="/products">
-                    <span class="vendor-brand-mark" aria-hidden="true">
+        <nav class="vendor-public-nav"
+             aria-label="Main navigation">
+            <div class="container d-flex align-items-center justify-content-between gap-3 py-3">
+                <a class="vendor-public-brand"
+                   href="/products">
+                    <span class="vendor-brand-mark"
+                          aria-hidden="true">
                         <i class="bi bi-shop"></i>
                     </span>
-                    <span>Spring<span
-                            class="vendor-brand-accent">Commerce</span></span>
+                    <span>Spring<span class="vendor-brand-accent">Commerce</span></span>
                 </a>
-                <a class="btn btn-outline-dark btn-sm" href="/products">
-                    <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>
-                    Browse products
-                </a>
+                <a class="btn btn-outline-dark btn-sm"
+                   href="/products">
+                    <i class="bi bi-arrow-left me-1"
+                       aria-hidden="true"></i> Browse products </a>
             </div>
         </nav>
-
         <main>
             <section class="vendor-profile-masthead">
                 <div class="container vendor-profile-heading">
                     <div class="vendor-profile-avatar"
                         aria-hidden="true">VN</div>
                     <div class="vendor-profile-identity">
-                        <h1><span
-                                th:text="${requestedVendor.businessName}"></span>
+                        <h1><span th:text="${requestedVendor.businessName}"></span>
                             <span class="bi bi-star-fill text-warning"
-                                th:text="${vendorRatingStats.averageRating}"></span></h1>
-
+                                  th:if="${vendorRatingStats.averageRating != null}"
+                                  th:text="${vendorRatingStats.averageRating}"></span>
+                        </h1>
                     </div>
                     <div class="vendor-profile-actions">
                         <a class="btn btn-vendor-primary"
-                            th:href="@{/products(vendor=${requestedVendor.businessName})}">
-
-                            Explore products
-                            <i class="bi bi-arrow-down-right ms-1"
+                           th:href="@{/products(vendor=${requestedVendor.businessName})}"> Explore products <i
+                               class="bi bi-arrow-down-right ms-1"
                                 aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
             </section>
-
-            <nav class="vendor-profile-sections" aria-label="Vendor profile">
+            <nav class="vendor-profile-sections"
+                 aria-label="Vendor profile">
                 <div class="container d-flex gap-4">
                     <a href="#products">Products</a>
                     <a href="#about">About</a>
                     <a href="#reviews">Reviews</a>
                 </div>
             </nav>
-
             <div class="container vendor-profile-content py-4 py-lg-5">
-                <section id="products" class="vendor-profile-section"
+                <section id="products"
+                         class="vendor-profile-section"
                     aria-labelledby="products-heading">
                     <div class="vendor-section-heading">
                         <div>
                             <p class="vendor-profile-eyebrow">The collection</p>
                             <h2 id="products-heading">Products</h2>
                         </div>
-                        <span class="vendor-section-note">Vendor product
-                            listings</span>
+                        <span class="vendor-section-note">Vendor product listings</span>
                     </div>
                     <div class="container">
                         <table class="table">
                             <th scope="col">Product</th>
+                            <th scope="col">Price</th>
                             <th scope="col">Stock</th>
                             <th scope="col">Actions</th>
                             <tr th:each=" product: ${products}">
                                 <td th:text="${product.productName}"></td>
+                                <td
+                                    th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 'COMMA', 2, 'POINT')}|">
+                                </td>
                                 <td th:text="${product.productQuantity}"></td>
                                 <td sec:authorize="hasRole('USER')">
-                                    <form
-                                        class="product-action-form add-to-cart-form"
+                                    <form class="product-action-form add-to-cart-form"
                                         th:if="${product.productQuantity > 0}"
                                         th:action="@{/products/purchase/{id}(id=${product.id})}"
                                         method="post">
                                         <input type="number"
                                             name="quantity"
-                                            value="1" min="1"
+                                               value="1"
+                                               min="1"
                                             th:attr="max=${product.productQuantity}"
                                             aria-label="Quantity"
                                             required>
-                                        <button
-                                            class="btn btn-sm btn-success add-to-cart-button"
+                                        <button class="btn btn-sm btn-success add-to-cart-button"
                                             type="submit">
-                                            <i
-                                                class="bi bi-cart4"
+                                            <i class="bi bi-cart4"
                                                 aria-hidden="true"></i>
-                                            <span>Add to
-                                                cart</span>
+                                            <span>Add to cart</span>
                                         </button>
                                     </form>
                                 </td>
-
                             </tr>
                         </table>
                     </div>
                 </section>
-
                 <div class="vendor-profile-details">
-                    <section id="about" class="vendor-profile-section"
+                    <section id="about"
+                             class="vendor-profile-section"
                         aria-labelledby="about-heading">
-                        <p class="vendor-profile-eyebrow">A little about
-                            the
-                            vendor</p>
-                        <h2 id="about-heading">About <span
-                                th:text="${requestedVendor.businessName}"></span></h2>
+                        <p class="vendor-profile-eyebrow">A little about the vendor</p>
+                        <h2 id="about-heading">About <span th:text="${requestedVendor.businessName}"></span></h2>
                         <p class="vendor-about-placeholder"
                             th:text="${requestedVendor.bio ?: ''}">
-
                         </p>
                     </section>
-
-                    <section id="reviews" class="vendor-profile-section"
+                    <section id="reviews"
+                             class="vendor-profile-section"
                         aria-labelledby="reviews-heading">
-                        <p class="vendor-profile-eyebrow">From the
-                            community</p>
+                        <p class="vendor-profile-eyebrow">From the community</p>
                         <h2 id="reviews-heading">Customer reviews</h2>
                         <div th:if="${#lists.isEmpty(vendorReviews)}"
                             class="vendor-reviews-empty">
@@ -155,18 +151,14 @@
                                     th:text="${review.comment}"></p>
                                 <p class="vendor-review-comment"
                                     th:if="${review.comment == null}">
-                                    <em><span>No comment
-                                            provided</span></em>
+                                    <em><span>No comment provided</span></em>
                                 </p>
-
                             </li>
                         </ul>
-
                     </section>
                 </div>
             </div>
         </main>
-
         <footer class="vendor-profile-footer">
             <div class="container py-4">
                 <a href="/products"
@@ -176,4 +168,5 @@
             </div>
         </footer>
     </body>
+
 </html>
