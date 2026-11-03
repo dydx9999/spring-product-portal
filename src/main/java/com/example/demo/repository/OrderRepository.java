@@ -22,6 +22,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByOrderIdAndBuyerId(UUID orderId, Long buyerId);
 
+    List<Order> findByOrderId(UUID orderId);
+
     Order findByOrderIdAndVendorId(UUID orderId, Long vendorId);
 
     @Query(value = """
