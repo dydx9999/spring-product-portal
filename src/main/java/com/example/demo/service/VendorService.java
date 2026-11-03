@@ -96,11 +96,7 @@ public class VendorService {
 
     public VendorRatingDTO getVendorStats(String vendorName) {
         VendorRatingDTO stats = vendorRepository.findVendorStats(vendorName);
-        if (stats == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "No ratings found for listed vendor!");
-        }
-        return stats;
+        return stats != null ? stats : new VendorRatingDTO(vendorName, null, 0L);
     }
 
     public VendorSalesRankingDTO getVendorSalesRankings(Long vendorId) {
