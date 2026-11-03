@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -312,6 +313,43 @@ public class VendorViewController {
                 productRepository.save(product);
                 redirectAttributes.addFlashAttribute("successMessage", "Product name updated.");
                 return "redirect:/vendor";
+        }
+
+        @PostMapping("/products/{productId}/price")
+        public String updateProductPrice(@PathVariable Long productId,
+                        @RequestParam(required = false) String productPrice,
+                        Authentication authentication, RedirectAttributes redirectAttributes) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                Product product = productRepository.findById(productId).orElse(null);
+                if (product == null) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Product not found.");
+                        return "redirect:/products";
+                }
+                if (currentVendor.getBusinessName() == null
+                                || !currentVendor.getBusinessName().equalsIgnoreCase(product.getVendorName())) {
+                        redirectAttributes.addFlashAttribute("errorMessage",
+                                        "You can only update prices on your own products.");
+                        return "redirect:/products";
+                }
+
+                BigDecimal updatedPrice;
+                try {
+                        updatedPrice = new BigDecimal(productPrice == null ? "" : productPrice.trim());
+                } catch (NumberFormatException e) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Enter a valid price.");
+                        return "redirect:/products";
+                }
+                if (updatedPrice.signum() < 0 || updatedPrice.stripTrailingZeros().scale() > 2) {
+                        redirectAttributes.addFlashAttribute("errorMessage",
+                                        "Price must be zero or more with at most two decimal places.");
+                        return "redirect:/products";
+                }
+
+                product.setProductPrice(updatedPrice.setScale(2));
+                productRepository.save(product);
+                redirectAttributes.addFlashAttribute("successMessage", "Product price updated.");
+                return "redirect:/products";
         }
 
 }
