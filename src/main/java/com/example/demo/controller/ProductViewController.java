@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -62,6 +64,7 @@ public class ProductViewController {
         this.cartService = cartService;
         this.vendorService = vendorService;
         this.reviewRepository = reviewRepository;
+
     }
 
     // ---- Product list ----
@@ -115,6 +118,17 @@ public class ProductViewController {
         }
         PageView<Product> productPager = PageView.of(products, page, PageView.DEFAULT_SIZE)
                 .withLinks(request, "page");
+        Map<String, Long> vendorIdsByName = new HashMap<>();
+        Set<String> duplicateVendorNames = new HashSet<>();
+        for (Vendor vendor : vendorService.listVendors()) {
+            String businessName = vendor.getBusinessName();
+            if (businessName != null && !businessName.isBlank()
+                    && vendorIdsByName.putIfAbsent(businessName, vendor.getId()) != null) {
+                duplicateVendorNames.add(businessName);
+            }
+        }
+        duplicateVendorNames.forEach(vendorIdsByName::remove);
+        model.addAttribute("vendorIdsByName", vendorIdsByName);
         model.addAttribute("products", productPager.getContent());
         model.addAttribute("productPager", productPager);
         model.addAttribute("inStockOnly", inStockOnly);
@@ -309,5 +323,19 @@ model.addAttribute("productReviews", productReviews);
         }
         int randomIndex = new Random().nextInt(productIds.size());
         return "redirect:/products/view/" + productIds.get(randomIndex);
+    }
+
+    @GetMapping("/compare")
+
+    public String showProductComparison(@RequestParam("id") List<Long> productIds, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            List<Product> comparisonProducts = productRepository.findByIdIn(productIds);
+
+            model.addAttribute("products", comparisonProducts);
+        } catch (Exception e) {
+            redirectAttributes.addAttribute("errorMessage", e.getCause());
+        }
+        return "product-comparison";
     }
 }
