@@ -57,6 +57,12 @@ public class VendorService {
         return vendorRepository.save(vendor);
     }
 
+    public Vendor updateBusinessBio(Long userId, String bio) {
+        Vendor vendor = getVendorByUserId(userId);
+        vendor.setBio(bio);
+        return vendorRepository.save(vendor);
+    }
+
     public BigDecimal calculateTotalSalesRevenue(Long vendorId) {
         List<Order> vendorOrders = orderRepository.findByVendorId(vendorId);
         if (vendorOrders.isEmpty()) {
