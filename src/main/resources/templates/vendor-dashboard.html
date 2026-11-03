@@ -34,7 +34,6 @@
                 </div>
                 <a class="btn btn-primary"
                     th:href="@{/products/product-add}">Add product</a>
-
             </header>
             <div class="justify-items-center gap-3">
                 <a href="#vendor-sales-heading">Your
@@ -123,7 +122,6 @@
                     </table>
                 </div>
             </section>
-
             <div class="container mb-2 mt-4">
                 <span class="alert alert-success"
                     th:if="${successMessage}"
@@ -158,11 +156,35 @@
                         <tbody>
                             <tr
                                 th:each="product : ${productPager.content}"
+                                class="product-row"
                                 th:classappend="${product.productQuantity <= 0} ? 'table-danger' : ''">
                                 <td th:text="${product.id}"></td>
                                 <td>
+
+                                    <form class="name-edit-form" hidden
+                                        th:action="@{/vendor/products/{id}/name(id=${product.id})}"
+                                        method="post">
+                                        <label class="visually-hidden"
+                                            th:for="|product-name-${product.id}|">Product
+                                            name</label>
+                                        <input type="text"
+                                            name="productName"
+                                            maxlength="255"
+                                            required
+                                            th:attr="size=${#strings.length(product.productName)}"
+                                            th:id="|product-name-${product.id}|"
+                                            th:value="${product.productName}">
+                                        <button type="submit"
+                                            class="btn btn-success name-edit-submit">Save</button>
+                                        <button type="button"
+                                            class="btn btn-danger name-edit-cancel">Cancel</button>
+                                    </form>
+
                                     <span
+                                        class="product-name"
                                         th:text="${product.productName}"></span>
+                                    <button type="button"
+                                        class="bi bi-pencil-fill btn name-edit-button"></button>
                                     <span
                                         th:if="${product.productQuantity <= 0}"
                                         class="badge text-bg-danger">Out
@@ -345,7 +367,6 @@
                                             type="submit"
                                             class="bi bi-eye">
                                             View order picklist </a>
-
                                     </div>
                                     <!-- View tracking button (if order status = Shipped) -->
                                     <a class="bi bi-truck"
@@ -354,7 +375,6 @@
                                         th:href="@{/vendor/tracking/view(trackingNumber=${orderDetail.trackingNumber}, carrier=${orderDetail.carrier})}">
                                         View tracking
                                     </a>
-
                                 </td>
                             </tr>
                             <!-- If no orders displayed for current vendor  -->

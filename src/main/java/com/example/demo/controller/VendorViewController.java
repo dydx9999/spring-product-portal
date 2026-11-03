@@ -283,4 +283,35 @@ public class VendorViewController {
                 return "vendor-profile";
         }
 
+        @PostMapping("/products/{productId}/name")
+        public String updateProductName(@PathVariable Long productId,
+                        @RequestParam(required = false) String productName,
+                        Authentication authentication, RedirectAttributes redirectAttributes) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                Product product = productRepository.findById(productId).orElse(null);
+                if (product == null) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Product not found.");
+                        return "redirect:/vendor";
+                }
+                if (currentVendor.getBusinessName() == null
+                                || !currentVendor.getBusinessName().equalsIgnoreCase(product.getVendorName())) {
+                        redirectAttributes.addFlashAttribute("errorMessage",
+                                        "You can only rename your own products.");
+                        return "redirect:/vendor";
+                }
+
+                String updatedName = productName == null ? "" : productName.trim();
+                if (updatedName.isEmpty() || updatedName.length() > 255) {
+                        redirectAttributes.addFlashAttribute("errorMessage",
+                                        "Product name must be between 1 and 255 characters.");
+                        return "redirect:/vendor";
+                }
+
+                product.setProductName(updatedName);
+                productRepository.save(product);
+                redirectAttributes.addFlashAttribute("successMessage", "Product name updated.");
+                return "redirect:/vendor";
+        }
+
 }
