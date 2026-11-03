@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1">
+        <title>Shipping Label</title>
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
+    </head>
+
+    <body>
+        <div th:replace="~{fragments/fragments :: site-navigation('shipment-label')}"></div>
+        <main class="container py-4">
+            <div class="alert alert-danger"
+                 th:if="${error}"
+                 th:text="${error}"></div>
+            <th:block th:if="${label}">
+                <h2>Label Purchased</h2>
+                <dl class="row">
+                    <dt class="col-sm-3">Shipment</dt>
+                    <dd class="col-sm-9"
+                        th:text="${label.shipmentId}"></dd>
+                    <dt class="col-sm-3">Reference</dt>
+                    <dd class="col-sm-9"
+                        th:text="${label.reference} ?: '-'">
+                    </dd>
+                    <dt class="col-sm-3">Carrier / Service</dt>
+                    <dd class="col-sm-9"
+                        th:text="|${label.carrier} ${label.service}|"></dd>
+                    <dt class="col-sm-3">Tracking code</dt>
+                    <dd class="col-sm-9">
+                        <a th:href="${label.trackingUrl}"><span th:text="${label.trackingCode}"></span></a>
+                    </dd>
+                </dl>
+                <a th:if="${label.trackingUrl}"
+                   th:href="${label.trackingUrl}"
+                   target="_blank"
+                   rel="noopener"
+                   class="d-block mb-2">Tracking page</a>
+                <th:block th:if="${label.labelUrl}">
+                    <a th:href="${label.labelUrl}"
+                       target="_blank"
+                       rel="noopener">Open label</a>
+                    <img th:src="${label.labelUrl}"
+                         alt="Shipping label"
+                         class="d-block mt-2 border"
+                         style="max-width: 300px">
+                </th:block>
+            </th:block>
+            <a class="d-block mt-3"
+               th:href="@{/vendor(productPage=1, status=Accepted)}">Create another shipment</a>
+        </main>
+        <div th:replace="~{fragments/fragments :: site-footer}"></div>
+    </body>
+
+</html>

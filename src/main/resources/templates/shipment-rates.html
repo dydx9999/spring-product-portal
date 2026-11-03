@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1">
+        <title>Shipment Rates</title>
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
+    </head>
+
+    <body>
+        <div th:replace="~{fragments/fragments :: site-navigation('shipment-rates')}"></div>
+        <main class="container py-4">
+            <h2>Shipping Services</h2>
+            <div><small><span th:text="|EasyPost Shipment ID: ${shipmentRates.shipmentId}|"></span></small></div>
+            <div><small><span th:text="|Reference / Order ID: ${shipmentRates.reference}|"></span></small></div>
+            <div class="alert alert-warning mt-3"
+                 th:if="${#lists.isEmpty(shipmentRates.rates)}"> No USPS / UPS / FedEx rates returned. </div>
+            <table id="rates-table"
+                   class="table table-sm mt-3"
+                   th:unless="${#lists.isEmpty(shipmentRates.rates)}">
+                <thead>
+                    <tr>
+                        <th>Carrier</th>
+                        <th>Service</th>
+                        <th>Rate</th>
+                        <th>Est. days</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="rate : ${shipmentRates.rates}"
+                        th:attr="data-carrier=${rate.carrier == 'FedExDefault' ? 'FedEx' : rate.carrier},data-rate=${rate.rate}">
+                        <td th:text="${rate.carrier == 'FedExDefault' ? 'FedEx' : rate.carrier}"></td>
+                        <td th:text="${rate.service}"></td>
+                        <td th:text="|${rate.rate} ${rate.currency}|"></td>
+                        <td th:text="${rate.estDeliveryDays} ?: '-'"></td>
+                        <td>
+                            <form method="post"
+                                  th:action="@{/shipping/shipments/{id}/buy(id=${shipmentRates.shipmentId})}">
+                                <input type="hidden"
+                                       name="rateId"
+                                       th:value="${rate.id}">
+                                <button type="submit"
+                                        class="btn btn-sm btn-success">Buy</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a th:href="@{/shipping/shipments/new/{orderId}(orderId=${shipmentRates.reference})}">Start over</a>
+        </main>
+        <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        <script>
+            // Display-only: group rows by carrier, cheapest carrier first, cheapest rate first within each
+            (() => {
+                const table = document.getElementById("rates-table");
+                if (!table) return;
+                const rows = [...table.tBodies[0].rows]
+                    .sort((a, b) => Number(a.dataset.rate) - Number(b.dataset.rate));
+
+                const groups = new Map();
+                rows.forEach(row => {
+                    const carrier = row.dataset.carrier;
+                    if (!groups.has(carrier)) groups.set(carrier, []);
+                    groups.get(carrier).push(row);
+                });
+
+                table.tBodies[0].remove();
+                groups.forEach((groupRows, carrier) => {
+                    const tbody = table.createTBody();
+                    const header = tbody.insertRow();
+                    header.className = "table-light";
+                    const cell = header.insertCell();
+                    cell.colSpan = 5;
+                    cell.className = "fw-bold";
+                    cell.textContent = carrier;
+                    groupRows.forEach(row => tbody.appendChild(row));
+                });
+            })();
+        </script>
+    </body>
+
+</html>

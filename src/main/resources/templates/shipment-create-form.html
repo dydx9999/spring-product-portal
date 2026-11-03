@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1">
+        <title>Create Shipment</title>
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
+    </head>
+
+    <body>
+        <div th:replace="~{fragments/fragments :: site-navigation('shipment-create-form')}"></div>
+        <main class="container py-4">
+            <h2>Create Shipment </h2>
+            <span>Order: <a th:href="@{/vendor/orders/view/{orderId}(orderId=${shipmentForm.reference})}"
+                   th:text="${shipmentForm.reference}"></a></span>
+            <form th:action="@{/shipping/shipments}"
+                  th:object="${shipmentForm}"
+                  method="post">
+                <input type="hidden"
+                       th:field="*{reference}">
+                <div class="alert alert-danger"
+                     th:if="${#fields.hasGlobalErrors()}">
+                    <p class="mb-0"
+                       th:each="err : ${#fields.globalErrors()}"
+                       th:text="${err}"></p>
+                </div>
+                <div class="row">
+                    <fieldset class="col-md-6"
+                              th:replace="~{:: address-fields('fromAddress', 'From')}"></fieldset>
+                    <fieldset class="col-md-6"
+                              th:replace="~{:: address-fields('toAddress', 'To')}"></fieldset>
+                </div>
+                <fieldset>
+                    <legend class="fs-5">Parcel (inches / ounces)</legend>
+                    <div class="row g-2">
+                        <div class="col"
+                             th:each="dim : ${ {'length', 'width', 'height', 'weight'} }">
+                            <input class="form-control"
+                                   type="number"
+                                   step="0.1"
+                                   min="0.1"
+                                   th:field="*{parcel.__${dim}__}"
+                                   th:placeholder="${#strings.capitalize(dim)}"
+                                   th:errorclass="is-invalid"
+                                   required>
+                            <div class="invalid-feedback"
+                                 th:errors="*{parcel.__${dim}__}"></div>
+                        </div>
+                    </div>
+                </fieldset>
+                <button type="submit"
+                        class="btn btn-primary mt-3">Get rates</button>
+                <a class="btn btn-secondary mt-3"
+                   href="/vendor#vendor-sales-heading">Go back</a>
+            </form>
+        </main>
+        <div th:replace="~{fragments/fragments :: site-footer}"></div>
+        <div th:remove="all">
+            <fieldset th:fragment="address-fields(prefix, title)"
+                      class="col-md-6">
+                <legend class="fs-5"
+                        th:text="${title}">Address</legend>
+                <div class="mb-2"
+                     th:each="f : ${ {
+                        {'name', 'Name', 'text', true},
+                        {'company', 'Company', 'text', false},
+                        {'street1', 'Street 1', 'text', true},
+                        {'street2', 'Street 2', 'text', false},
+                        {'city', 'City', 'text', true},
+                        {'state', 'State (e.g. CA)', 'text', true},
+                        {'zip', 'Zip', 'text', true},
+                        {'country', 'Country (e.g. US)', 'text', true},
+                        {'phone', 'Phone', 'tel', false},
+                        {'email', 'Email', 'email', false}
+                     } }">
+                    <input class="form-control"
+                           th:type="${f[2]}"
+                           th:field="*{__${prefix}__.__${f[0]}__}"
+                           th:placeholder="${f[1]}"
+                           th:required="${f[3]}"
+                           th:errorclass="is-invalid">
+                    <div class="invalid-feedback"
+                         th:errors="*{__${prefix}__.__${f[0]}__}"></div>
+                </div>
+            </fieldset>
+        </div>
+    </body>
+
+</html>
