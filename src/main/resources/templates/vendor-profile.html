@@ -123,7 +123,13 @@
                                         aria-hidden="true"></i>
                                 </div>
                                 <p class="vendor-review-comment"
-                                    th:text="${review.comment ?: ''}"></p>
+                                    th:if="${review.comment != null}"
+                                    th:text="${review.comment}"></p>
+                                <p class="vendor-review-comment"
+                                    th:if="${review.comment == null}">
+                                    <em><span>No comment provided</span></em>
+                                </p>
+
                             </li>
                         </ul>
 
