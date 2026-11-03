@@ -1,31 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
         <title>Product Cart</title>
         <link rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
-        <link rel="icon" type="image/svg+xml"
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
+        <link rel="icon"
+              type="image/svg+xml"
             th:href="@{/assets/cart-favicon.svg}">
     </head>
 
     <body class="site-page">
-        <div
-            th:replace="~{fragments/fragments :: site-navigation('cart')}"></div>
+        <div th:replace="~{fragments/fragments :: site-navigation('cart')}"></div>
         <main class="container py-4">
             <header class="mb-4">
-                <p
-                    class="page-eyebrow text-uppercase small fw-semibold mb-2">Shopping</p>
+                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Shopping</p>
                 <h1 class="h2 mb-2">Review your cart</h1>
-                <p class="text-secondary mb-0">Review the products currently in
-                    your cart.</p>
+                <p class="text-secondary mb-0">Review the products currently in your cart.</p>
             </header>
             <!-- Checkout error message -->
-            <div th:if="${checkoutError}" class="alert alert-danger"
-                role="alert" th:text="${checkoutError}"></div>
+            <div th:if="${checkoutError}"
+                 class="alert alert-danger"
+                 role="alert"
+                 th:text="${checkoutError}"></div>
             <div>
                 <!-- Order item summary -->
                 <div class="card border-0 shadow-sm">
@@ -38,45 +41,34 @@
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Unit Price</th>
                                     <th scope="col">Total</th>
-
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="cartItem : ${cart}">
-
                                     <td>
-                                        <span
-                                            th:text="${cartItem.productId}"></span>
-                                        <span
-                                            th:if="${products.get(cartItem.productId).productQuantity <= 0}"
-                                            class="badge text-bg-warning">Out of
-                                            stock!</span>
+                                        <span th:text="${cartItem.productId}"></span>
+                                        <span th:if="${products.get(cartItem.productId).productQuantity <= 0}"
+                                              class="badge text-bg-warning">Out of stock!</span>
                                     </td>
                                     <td>
-                                        <span
-                                            th:text="${products.get(cartItem.productId).productName}"></span>
+                                        <span th:text="${products.get(cartItem.productId).productName}"></span>
                                     </td>
                                     <td>
-                                        <strong><span>x</span><span
-                                                th:text="${cartItem.quantity}"></span></strong>
+                                        <strong><span>x</span><span th:text="${cartItem.quantity}"></span></strong>
                                         <span>(</span><span
                                             th:text="${products.get(cartItem.productId).productQuantity}">
                                         </span> <span>available)</span>
                                     </td>
                                     <td>
-                                        <p>$<span
-                                                th:text="${products.get(cartItem.productId).productPrice}"></span>
+                                        <p>$<span th:text="${products.get(cartItem.productId).productPrice}"></span>
                                             <span>/ea</span>
                                         </p>
-
                                     </td>
                                     <td>
                                         <span>$</span>
                                         <span
                                             th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}"></span>
-
                                     </td>
-
                                 </tr>
                             </tbody>
                         </table>
@@ -84,8 +76,7 @@
                 </div>
             </div>
             <!-- Order total and submission controls -->
-            <div
-                class="d-flex justify-content-center align-items-center gap-2 mt-3">
+            <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
                 <div class="align-content-center">
                     <div>
                         <p class="mb-0">Subtotal: $<span
@@ -96,16 +87,15 @@
                                 th:text="${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
                     </div>
                 </div>
-                <form th:action=" @{/cart/checkout}" method="post">
+                <form th:action=" @{/cart/checkout}"
+                      method="post">
                     <button type="submit"
-                        class="btn btn-primary btn-lg btn-block">Place
-                        order (Stripe)</button>
+                            class="btn btn-primary btn-lg btn-block">Place order</button>
                 </form>
                 <a th:href="@{/cart/view}"
                     class="btn btn-secondary btn-lg btn-block">Go back</a>
             </div>
         </main>
-
         <footer class="container py-3">
             <div th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
