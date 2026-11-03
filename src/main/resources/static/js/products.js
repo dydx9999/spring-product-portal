@@ -49,3 +49,47 @@ if (output) {
     });
 }
 
+function showPriceEditField(row) {
+    const form = row.querySelector('.price-edit-form');
+    const price = row.querySelector('.product-price');
+    const editButton = row.querySelector('.price-edit-button');
+    const input = form?.querySelector('input');
+
+    if (!form || !price || !editButton || !input) {
+        return;
+    }
+
+    form.hidden = false;
+    price.hidden = true;
+    editButton.hidden = true;
+    input.focus();
+    input.select();
+}
+
+function hidePriceEditField(row) {
+    const form = row.querySelector('.price-edit-form');
+    const price = row.querySelector('.product-price');
+    const editButton = row.querySelector('.price-edit-button');
+    const input = form?.querySelector('input');
+
+    if (!form || !price || !editButton || !input) {
+        return;
+    }
+
+    input.value = price.textContent.trim().replace(/^\$/, '');
+    form.hidden = true;
+    price.hidden = false;
+    editButton.hidden = false;
+}
+
+function initializePriceEditing() {
+    document.querySelectorAll('.product-row').forEach(row => {
+        row.querySelector('.price-edit-button')
+            ?.addEventListener('click', () => showPriceEditField(row));
+        row.querySelector('.price-edit-cancel')
+            ?.addEventListener('click', () => hidePriceEditField(row));
+    });
+}
+
+initializePriceEditing();
+
