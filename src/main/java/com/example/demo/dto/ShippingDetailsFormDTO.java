@@ -6,6 +6,15 @@ public class ShippingDetailsFormDTO {
     private UUID orderId;
     private String trackingNumber;
     private String carrier;
+    private String shipmentId;
+
+    public String getShipmentId() {
+        return shipmentId;
+    }
+
+    public void setShipmentId(String shipmentId) {
+        this.shipmentId = shipmentId;
+    }
 
     public UUID getOrderId() {
         return orderId;

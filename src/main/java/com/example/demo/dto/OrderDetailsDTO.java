@@ -13,9 +13,63 @@ public class OrderDetailsDTO {
     private String status;
     private String trackingNumber;
     private String carrier;
+    private String paymentMethodType;
+    private String cardBrand;
+    private String cardLast4;
+    private Integer cardExpMonth;
+    private Integer cardExpYear;
+    private String shipmentId;
+
+    public String getShipmentId() {
+        return shipmentId;
+    }
+
+    public void setShipmentId(String shipmentId) {
+        this.shipmentId = shipmentId;
+    }
+
+    public String getPaymentMethodType() {
+        return paymentMethodType;
+    }
+
+    public void setPaymentMethodType(String paymentMethodType) {
+        this.paymentMethodType = paymentMethodType;
+    }
+
+    public String getCardBrand() {
+        return cardBrand;
+    }
+
+    public void setCardBrand(String cardBrand) {
+        this.cardBrand = cardBrand;
+    }
+
+    public String getCardLast4() {
+        return cardLast4;
+    }
+
+    public void setCardLast4(String cardLast4) {
+        this.cardLast4 = cardLast4;
+    }
+
+    public Integer getCardExpMonth() {
+        return cardExpMonth;
+    }
+
+    public void setCardExpMonth(Integer cardExpMonth) {
+        this.cardExpMonth = cardExpMonth;
+    }
+
+    public Integer getCardExpYear() {
+        return cardExpYear;
+    }
+
+    public void setCardExpYear(Integer cardExpYear) {
+        this.cardExpYear = cardExpYear;
+    }
 
     public OrderDetailsDTO(UUID orderId, LocalDateTime creationDate, List<OrderItemDTO> items, BigDecimal total,
-            String status, String trackingNumber, String carrier) {
+            String status, String trackingNumber, String carrier, String shipmentId) {
         this.orderId = orderId;
         this.creationDate = creationDate;
         this.items = items;
@@ -23,6 +77,7 @@ public class OrderDetailsDTO {
         this.status = status;
         this.trackingNumber = trackingNumber;
         this.carrier = carrier;
+        this.shipmentId = shipmentId;
     }
 
     public String getTrackingNumber() {
