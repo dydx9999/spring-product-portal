@@ -16,7 +16,11 @@
         <main class="container py-4">
             <!-- Order confirmation details -->
             <header class="mb-4">
-                <p
+                <div th:if="${orderDetails.status == 'Pending payment'}"
+                    class="alert alert-info" role="alert">Payment processing.
+                    Refresh this page in a moment to see the updated
+                    status.</div>
+                <p th:unless="${orderDetails.status == 'Pending payment'}"
                     class="page-eyebrow text-uppercase small fw-semibold mb-2">Order
                     confirmed!</p>
                 <h1 class="h2 mb-2">Your order confirmation number:<strong>
