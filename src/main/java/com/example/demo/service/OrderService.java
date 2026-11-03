@@ -10,11 +10,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
 import com.example.demo.dto.BuyerReviewDTO;
 import com.example.demo.dto.OrderDetailsDTO;
 import com.example.demo.dto.OrderItemDTO;
@@ -193,7 +195,8 @@ public class OrderService {
 
     @Transactional
     public void updateStatus(UUID orderId, Long vendorId, String newStatus) {
-        List<String> validStatusList = List.of("Processing", "Delivered", "Shipped", "Delivered", "Accepted");
+        List<String> validStatusList = List.of("Processing", "Pending payment", "Delivered", "Shipped", "Delivered",
+                "Accepted");
         if (!validStatusList.contains(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order status");
         }
@@ -218,6 +221,18 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No change.");
         }
         buyerOrder.setStatus(newStatus);
+    }
+
+    @Transactional
+    public int markOrderPaid(UUID orderId) {
+        int updated = 0;
+        for (Order order : orderRepository.findByOrderId(orderId)) {
+            if ("Pending payment".equals(order.getStatus())) {
+                order.setStatus("Processing");
+                updated++;
+            }
+        }
+        return updated;
     }
 
     @Transactional
