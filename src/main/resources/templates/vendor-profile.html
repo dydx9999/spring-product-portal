@@ -71,20 +71,48 @@
                         <span class="vendor-section-note">Vendor product
                             listings</span>
                     </div>
-                    <div class="vendor-profile-empty">
-                        <span class="vendor-empty-icon" aria-hidden="true">
-                            <i class="bi bi-box-seam"></i>
-                        </span>
-                        <h3>Products will appear here</h3>
-                        <p>Items from this vendor will be displayed in this
-                            space.</p>
+                    <div class="container">
+                        <table class="table">
+                            <th scope="col">Product</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Actions</th>
+                            <tr th:each=" product: ${products}">
+                                <td th:text="${product.productName}"></td>
+                                <td th:text="${product.productQuantity}"></td>
+                                <td sec:authorize="hasRole('VENDOR')">
+                                    <form
+                                        class="product-action-form add-to-cart-form"
+                                        th:if="${product.productQuantity > 0}"
+                                        th:action="@{/products/purchase/{id}(id=${product.id})}"
+                                        method="post">
+                                        <input type="number"
+                                            name="quantity"
+                                            value="1" min="1"
+                                            th:attr="max=${product.productQuantity}"
+                                            aria-label="Quantity"
+                                            required>
+                                        <button
+                                            class="btn btn-sm btn-success add-to-cart-button"
+                                            type="submit">
+                                            <i
+                                                class="bi bi-cart4"
+                                                aria-hidden="true"></i>
+                                            <span>Add to
+                                                cart</span>
+                                        </button>
+                                    </form>
+                                </td>
+
+                            </tr>
+                        </table>
                     </div>
                 </section>
 
                 <div class="vendor-profile-details">
                     <section id="about" class="vendor-profile-section"
                         aria-labelledby="about-heading">
-                        <p class="vendor-profile-eyebrow">A little about the
+                        <p class="vendor-profile-eyebrow">A little about
+                            the
                             vendor</p>
                         <h2 id="about-heading">About <span
                                 th:text="${requestedVendor.businessName}"></span></h2>
@@ -127,7 +155,8 @@
                                     th:text="${review.comment}"></p>
                                 <p class="vendor-review-comment"
                                     th:if="${review.comment == null}">
-                                    <em><span>No comment provided</span></em>
+                                    <em><span>No comment
+                                            provided</span></em>
                                 </p>
 
                             </li>
