@@ -139,8 +139,9 @@
                         listed by
                         your business.</p>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover site-table mb-0">
+                <div>
+                    <table
+                        class="table-responsive table table-hover table-striped table-sm site-table mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">ID</th>
@@ -175,9 +176,9 @@
                                             th:id="|product-name-${product.id}|"
                                             th:value="${product.productName}">
                                         <button type="submit"
-                                            class="btn btn-success name-edit-submit">Save</button>
+                                            class="btn btn-success edit-submit">Save</button>
                                         <button type="button"
-                                            class="btn btn-danger name-edit-cancel">Cancel</button>
+                                            class="btn btn-danger edit-cancel">Cancel</button>
                                     </form>
 
                                     <span
