@@ -87,4 +87,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         """, nativeQuery = true)
         List<ProductSalesHistoryDTO> productSalesHistory(@Param("productId") Long productId);
 
+        List<Product> findByIdIn(List<Long> productIds);
+
 }
