@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.service.CartService;
+import com.example.demo.service.CheckoutFulfillmentService;
 import com.stripe.exception.EventDataObjectDeserializationException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
@@ -27,10 +25,10 @@ import com.stripe.net.Webhook;
 public class PaymentController {
     private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
 
-    private final CartService cartService;
+    private final CheckoutFulfillmentService checkoutFulfillmentService;
 
-    public PaymentController(CartService cartService) {
-        this.cartService = cartService;
+    public PaymentController(CheckoutFulfillmentService checkoutFulfillmentService) {
+        this.checkoutFulfillmentService = checkoutFulfillmentService;
     }
 
     @Value("${stripe.webhook.secret}")
@@ -74,7 +72,7 @@ public class PaymentController {
 
         switch (event.getType()) {
             case "checkout.session.completed":
-                handleCheckoutCompleted((Session) stripeObject);
+                checkoutFulfillmentService.fulfill((Session) stripeObject);
                 break;
 
             case "payment_intent.payment_failed":
@@ -87,28 +85,5 @@ public class PaymentController {
         }
 
         return ResponseEntity.ok("Success");
-    }
-
-    private void handleCheckoutCompleted(Session session) {
-        // Delayed payment methods complete the session before funds arrive.
-        if (!"paid".equals(session.getPaymentStatus())) {
-            log.info("Checkout session {} completed but not yet paid", session.getId());
-            return;
-        }
-        String reference = session.getClientReferenceId();
-        if (reference == null) {
-            log.warn("Checkout session {} has no client_reference_id", session.getId());
-            return;
-        }
-        UUID orderId;
-        try {
-            orderId = UUID.fromString(reference);
-        } catch (IllegalArgumentException e) {
-            log.warn("Checkout session {} has invalid client_reference_id {}", session.getId(), reference);
-            return;
-        }
-        int updated = cartService.completePaidOrder(orderId);
-        log.info("Checkout session {} paid; marked {} order row(s) for order {} as Processing",
-                session.getId(), updated, orderId);
     }
 }
