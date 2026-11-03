@@ -28,7 +28,6 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">Order ID</th>
-                                <th scope="col">Vendor Id</th>
                                 <th scope="col">Date placed</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Status</th>
@@ -36,10 +35,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="order : ${orderSummary}">
-                                <td th:text="${order.orderId}"></td>
-                                <td><span
-                                        th:text="${order.vendorId}"></span></td>
+                            <tr class="order-row"
+                                th:each="order : ${orderSummary}">
+                                <td><a
+                                        th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}"><span
+                                            th:text="${order.orderId}"></span></a></td>
+
                                 <td
                                     th:text="${#temporals.format(order.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></td>
                                 <td>$<span
@@ -49,18 +50,25 @@
                                     <span th:case="'processing'"
                                         class="badge text-bg-secondary"
                                         th:text="${order.status}"></span>
+                                    <span th:case="'pending payment'"
+                                        class="badge text-bg-warning"
+                                        th:text="${order.status}"></span>
                                     <span th:case="'delivered'"
                                         class="badge text-bg-success"
                                         th:text="${order.status}"></span>
-                                           <span th:case="'accepted'"
+                                    <span th:case="'shipped'"
+                                        class="badge text-bg-info"
+                                        th:text="${order.status}"></span>
+                                    <span th:case="'accepted'"
                                         class="badge text-bg-primary"
                                         th:text="${order.status}"></span>
                                 </td>
                                 <td>
-                                    <a class="btn btn-outline-primary mt-3"
+                                    <a class="order-single-link"
                                         th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}">View
                                         details</a>
                                 </td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -71,7 +79,8 @@
 
         </main>
         <footer class="container py-3">
-            <div th:replace="~{fragments/fragments :: site-footer}"></div>
+            <div
+                th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
 
     </body>
