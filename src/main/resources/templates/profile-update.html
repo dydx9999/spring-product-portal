@@ -54,6 +54,14 @@
                                 class="form-control form-control-lg"
                                 autocomplete="organization" required>
                         </div>
+                        <div class="mb-4" sec:authorize="hasRole('VENDOR')">
+                            <label for="bio"
+                                class="form-label fw-semibold">About your
+                                business</label>
+                            <input id="bio" th:field="*{bio}"
+                                type="text"
+                                class="form-control form-control-lg">
+                        </div>
                         <div class="d-flex flex-wrap gap-2">
                             <button class="btn btn-primary" type="submit">Save
                                 changes</button>
