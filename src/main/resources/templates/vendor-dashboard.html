@@ -155,19 +155,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
-                                th:each="product : ${productPager.content}"
+                            <tr th:each="product : ${productPager.content}"
                                 class="product-row"
                                 th:classappend="${product.productQuantity <= 0} ? 'table-danger' : ''">
                                 <td th:text="${product.id}"></td>
                                 <td>
-
-                                    <form class="name-edit-form" hidden
+                                    <form class="name-edit-form"
+                                          hidden
                                         th:action="@{/vendor/products/{id}/name(id=${product.id})}"
                                         method="post">
                                         <label class="visually-hidden"
-                                            th:for="|product-name-${product.id}|">Product
-                                            name</label>
+                                               th:for="|product-name-${product.id}|">Product name</label>
                                         <input type="text"
                                             name="productName"
                                             maxlength="255"
@@ -180,33 +178,25 @@
                                         <button type="button"
                                             class="btn btn-danger edit-cancel">Cancel</button>
                                     </form>
-
-                                    <span
-                                        class="product-name"
+                                    <span class="product-name"
                                         th:text="${product.productName}"></span>
                                     <button type="button"
                                         class="bi bi-pencil-fill btn name-edit-button"></button>
-                                    <span
-                                        th:if="${product.productQuantity <= 0}"
-                                        class="badge text-bg-danger">Out
-                                        of
-                                        stock</span>
-                                    <span
-                                        th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold}"
-                                        class="badge text-bg-warning">Low
-                                        stock</span>
+                                    <span th:if="${product.productQuantity <= 0}"
+                                          class="badge text-bg-danger">Out of stock</span>
+                                    <span th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold}"
+                                          class="badge text-bg-warning">Low stock</span>
                                 </td>
-                                <td>$<span
-                                        th:text="${#numbers.formatDecimal(product.productPrice,
+                                <td>$<span th:text="${#numbers.formatDecimal(product.productPrice,
                                         1, 'COMMA', 2, 'POINT')}"></span></td>
-                                <td
-                                    th:text="${product.productQuantity}"></td>
-                                <td
-                                    th:text="${product.productSKU}"></td>
-                                <td
-                                    th:text="${product.vendorNotes}"></td>
-                                <td
-                                    th:text="${warehouseNamesById[product.warehouseId] ?: 'Unknown warehouse'}"></td>
+                                <td th:text="${product.productQuantity}"></td>
+                                <td th:text="${product.productSKU}"></td>
+                                <td th:text="${product.vendorNotes}"></td>
+                                <td>
+                                    <span
+                                          th:text="${product.warehouseId} == null ? 'No warehouse found for product' : ${warehouseNamesById[product.warehouseId]}">
+                                    </span>
+                                </td>
                                 <td class="actions-column">
                                     <form class="product-action-form"
                                         sec:authorize="hasRole('VENDOR')"
