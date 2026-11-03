@@ -15,6 +15,15 @@ public class OrderSummaryDTO {
     private String status;
     private String trackingNumber;
     private String carrier;
+    private String shipmentId;
+
+    public String getShipmentId() {
+        return shipmentId;
+    }
+
+    public void setShipmentId(String shipmentId) {
+        this.shipmentId = shipmentId;
+    }
 
     public String getStatus() {
         return status;
@@ -50,6 +59,7 @@ public class OrderSummaryDTO {
         this.vendorId = vendorId;
         this.creationDate = creationDate;
         this.status = status;
+
     }
 
     public OrderSummaryDTO() {
