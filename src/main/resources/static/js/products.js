@@ -1,6 +1,7 @@
 const output = document.querySelector(".output");
 const comparisonHeader = document.querySelector(".comparison-header");
 const comparisonSubmitButton = document.querySelector(".comparison-submit");
+const searchbar = document.getElementById('searchbar');
 if (output) {
     const comparisonList = document.createElement("ul");
     comparisonList.className = "comparison-list";
@@ -85,11 +86,22 @@ function hidePriceEditField(row) {
 function initializePriceEditing() {
     document.querySelectorAll('.product-row').forEach(row => {
         row.querySelector('.price-edit-button')
-            ?.addEventListener('click', () => showPriceEditField(row));
+        ?.addEventListener('click', () => showPriceEditField(row));
         row.querySelector('.price-edit-cancel')
-            ?.addEventListener('click', () => hidePriceEditField(row));
+        ?.addEventListener('click', () => hidePriceEditField(row));
     });
 }
+function searchProducts() {
+    const query = searchbar.value.trim().toLowerCase();
+    document.querySelectorAll('.product-row').forEach(row => {
+        const productName = row.querySelector('.product-name')?.textContent.toLowerCase() ?? '';
+        row.hidden = !productName.includes(query);
+    });
+}
+
+searchbar?.addEventListener('input', searchProducts);
+
+
 
 initializePriceEditing();
 

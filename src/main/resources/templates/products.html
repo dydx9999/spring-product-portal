@@ -40,8 +40,7 @@
                         th:href="@{/products/product-add}"
                         class="btn btn-primary">Add
                         product</a>
-                    <a th:unless="${isVendor}" th:href="@{/cart/view}"
-                        class="btn btn-primary">View cart</a>
+
                 </div>
                 <a th:href="@{/products/surprise}"
                     class="btn surprise-button">
@@ -96,24 +95,41 @@
                                 name: Z to A</option>
                         </select>
                     </div>
-                    <button class="btn btn-secondary"
+                    <button class="btn btn-primary"
                         type="submit">Apply</button>
                     <a th:href="@{/products}"
-                        class="btn btn-primary">Reset</a>
+                        class="btn btn-secondary">Reset</a>
                 </form>
+                <form>
+
+                    <label for="searchbar" class="searchbar"><small>Search
+                            products </small></label>
+                    <input type="text" name="searchbar" id="searchbar"
+                        size="50"
+                        placeholder="Start typing to search the product catalog..."
+                        class="form-control">
+
+                </form>
+
+                <section class="alerts w-100">
+                    <output th:if="${outOfStockMessage}"
+                        class="alert alert-warning w-100"
+                        th:text="${outOfStockMessage}"></output>
+                    <div th:if="${errorMessage}" class="alert alert-danger"
+                        role="alert"
+                        th:text="${errorMessage}"></div>
+                    <strong>
+                        <output th:if="${deleteSuccess}"
+                            class="alert alert-success w-100"
+                            th:text="${deleteSuccess}"></output>
+                    </strong>
+                    <output th:if="${successMessage}"
+                        class="alert alert-success w-100"
+                        th:text="${successMessage}"></output>
+                </section>
+
             </section>
-            <div th:if="${outOfStockMessage}"
-                class="alert alert-warning"
-                role="status" th:text="${outOfStockMessage}"></div>
-            <div th:if="${errorMessage}" class="alert alert-danger"
-                role="alert"
-                th:text="${errorMessage}"></div>
-            <div th:if="${deleteSuccess}" class="alert alert-success"
-                role="status"
-                th:text="${deleteSuccess}"></div>
-            <div th:if="${successMessage}" class="alert alert-success"
-                role="status"
-                th:text="${successMessage}"></div>
+
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <form th:action="@{/products}" method="get">
                     <button type="submit"
