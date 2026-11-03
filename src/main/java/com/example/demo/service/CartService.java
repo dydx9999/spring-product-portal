@@ -176,7 +176,7 @@ public class CartService {
 
         LocalDateTime orderCreatedAt = LocalDateTime.now();
         List<Order> orders = orderItemsByVendorId.keySet().stream()
-                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt, "Processing"))
+                .map(vendorId -> new Order(null, orderId, userId, vendorId, orderCreatedAt, "Pending payment"))
                 .toList();
 
         List<Order> savedOrders = orderRepository.saveAll(orders);
@@ -188,10 +188,24 @@ public class CartService {
             }
             orderItems.addAll(vendorOrderItems);
         }
-        Map<Long, Integer> productQuantitiesToDecrease = cart.stream()
+        orderItemRepository.saveAll(orderItems);
+    }
+
+    @Transactional
+    public int completePaidOrder(UUID orderId) {
+        // Only pending rows move forward, so a redelivered webhook is a no-op.
+        List<Order> pendingOrders = orderRepository.findByOrderId(orderId).stream()
+                .filter(order -> "Pending payment".equals(order.getStatus()))
+                .toList();
+        if (pendingOrders.isEmpty()) {
+            return 0;
+        }
+
+        List<Long> orderRowIds = pendingOrders.stream().map(Order::getId).toList();
+        Map<Long, Integer> productQuantitiesToDecrease = orderItemRepository.findByOrderIdIn(orderRowIds).stream()
                 .collect(Collectors.toMap(
-                        Cart::getProductId,
-                        Cart::getQuantity,
+                        OrderItem::getProductId,
+                        OrderItem::getProductQuantity,
                         Integer::sum));
         for (Map.Entry<Long, Integer> entry : productQuantitiesToDecrease.entrySet()) {
             int updatedRows = productRepository.decreaseStockIfAvailable(
@@ -202,8 +216,12 @@ public class CartService {
                         HttpStatus.CONFLICT, "Quantity exceeds amount available.");
             }
         }
-        orderItemRepository.saveAll(orderItems);
-        cartRepository.deleteAll(cart);
+
+        for (Order order : pendingOrders) {
+            order.setStatus("Processing");
+        }
+        cartRepository.deleteAll(cartRepository.findByUserId(pendingOrders.get(0).getBuyerId()));
+        return pendingOrders.size();
     }
 
     public int getCartSizeForCurrentUser(Authentication authentication) {
