@@ -265,10 +265,14 @@ public class VendorViewController {
         public String getVendorProfile(@PathVariable("vendorId") Long vendorId, Authentication authentication,
                         Model model) {
 
-                User currentUser = userService.getUserByUsername(authentication.getName());
-                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
-                if (vendorId.equals(currentVendor.getId())) {
-                        return "redirect:/user/profile";
+                boolean isVendor = authentication.getAuthorities().stream()
+                                .anyMatch(a -> a.getAuthority().equals("ROLE_VENDOR"));
+                if (isVendor) {
+                        User currentUser = userService.getUserByUsername(authentication.getName());
+                        Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                        if (vendorId.equals(currentVendor.getId())) {
+                                return "redirect:/user/profile";
+                        }
                 }
 
                 Vendor requestedVendor = vendorService.getVendorById(vendorId);
