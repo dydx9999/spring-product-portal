@@ -28,12 +28,24 @@ public class Vendor {
     @Column(name = "business_name")
     private String businessName;
 
-    public Vendor(Long id, Long userId, Integer salesCount, BigDecimal salesRevenue, String businessName) {
+    @Column(name = "bio")
+    private String bio;
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public Vendor(Long id, Long userId, Integer salesCount, BigDecimal salesRevenue, String businessName, String bio) {
         this.id = id;
         this.userId = userId;
         this.salesCount = salesCount;
         this.salesRevenue = salesRevenue;
         this.businessName = businessName;
+        this.bio = bio;
     }
 
     public String getBusinessName() {

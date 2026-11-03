@@ -22,6 +22,7 @@ import com.example.demo.dto.ShippingDetailsFormDTO;
 import com.example.demo.dto.VendorOrderItemsViewDTO;
 import com.example.demo.dto.VendorOrderListDTO;
 import com.example.demo.dto.VendorPickListDTO;
+import com.example.demo.dto.VendorReviewDTO;
 import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.dto.WarehouseDTO;
 import com.example.demo.model.PageView;
@@ -262,11 +263,18 @@ public class VendorViewController {
         @GetMapping("/profile/{vendorId}")
         public String getVendorProfile(@PathVariable("vendorId") Long vendorId, Authentication authentication,
                         Model model) {
+
                 User currentUser = userService.getUserByUsername(authentication.getName());
                 Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
-                if (vendorId == currentVendor.getId()) {
+                if (vendorId.equals(currentVendor.getId())) {
                         return "redirect:/user/profile";
                 }
+                Vendor requestedVendor = vendorService.getVendorById(vendorId);
+                List<VendorReviewDTO> vendorReviews = vendorService.getReviewsByVendorId(requestedVendor.getId());
+                VendorRatingDTO vendorRatingStats = vendorService.getVendorStats(requestedVendor.getBusinessName());
+                model.addAttribute("requestedVendor", requestedVendor);
+                model.addAttribute("vendorRatingStats", vendorRatingStats);
+                model.addAttribute("vendorReviews", vendorReviews);
 
                 return "vendor-profile";
         }

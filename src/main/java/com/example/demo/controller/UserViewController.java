@@ -147,6 +147,7 @@ public class UserViewController {
                 userForm.getPassword());
         if (isVendor) {
             vendorService.updateBusinessName(updatedUser.getId(), userForm.getBusinessName());
+            vendorService.updateBusinessBio(updatedUser.getId(), userForm.getBio());
             redirectAttributes.addFlashAttribute("successMessage", "Profile successfully updated!");
         }
         if (credentialsChanged) {
