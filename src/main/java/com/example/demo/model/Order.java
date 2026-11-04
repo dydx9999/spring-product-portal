@@ -32,6 +32,16 @@ public class Order {
     private Integer cardExpMonth;
     private Integer cardExpYear;
     private String shipmentId;
+    @Column(name = "tracking_url")
+    private String trackingUrl;
+
+    public String getTrackingUrl() {
+        return trackingUrl;
+    }
+
+    public void setTrackingUrl(String trackingUrl) {
+        this.trackingUrl = trackingUrl;
+    }
 
     public String getShipmentId() {
         return shipmentId;
