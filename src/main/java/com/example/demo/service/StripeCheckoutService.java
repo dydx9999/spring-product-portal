@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.OrderDetailsDTO;
 import com.example.demo.dto.OrderItemDTO;
+import com.example.demo.dto.PaymentDetails;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.PaymentIntentRetrieveParams;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import jakarta.annotation.PostConstruct;
@@ -55,6 +59,30 @@ public class StripeCheckoutService {
                 }
 
                 return Session.create(params.build()).getUrl();
+        }
+
+        public PaymentDetails getPaymentDetails(Session session) throws StripeException {
+                String paymentIntentId = session.getPaymentIntent();
+                if (paymentIntentId == null) {
+                        return null;
+                }
+                PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId,
+                                PaymentIntentRetrieveParams.builder().addExpand("latest_charge").build(), null);
+                Charge charge = paymentIntent.getLatestChargeObject();
+                if (charge == null || charge.getPaymentMethodDetails() == null) {
+                        return new PaymentDetails(paymentIntentId, null, null, null, null, null);
+                }
+                Charge.PaymentMethodDetails methodDetails = charge.getPaymentMethodDetails();
+                Charge.PaymentMethodDetails.Card card = methodDetails.getCard();
+                if (card == null) {
+                        return new PaymentDetails(paymentIntentId, methodDetails.getType(), null, null, null, null);
+                }
+                return new PaymentDetails(paymentIntentId, methodDetails.getType(), card.getBrand(), card.getLast4(),
+                                toInteger(card.getExpMonth()), toInteger(card.getExpYear()));
+        }
+
+        private Integer toInteger(Long value) {
+                return value == null ? null : Math.toIntExact(value);
         }
 
         private SessionCreateParams.LineItem lineItem(String name, BigDecimal unitPrice, long quantity) {
