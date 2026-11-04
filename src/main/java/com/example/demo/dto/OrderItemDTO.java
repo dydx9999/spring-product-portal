@@ -8,6 +8,15 @@ public class OrderItemDTO {
     private int quantity;
     private BigDecimal unitPrice;
     private String vendorBusinessName;
+    private Long productId;
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 
     public OrderItemDTO() {
     }
