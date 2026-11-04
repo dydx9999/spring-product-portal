@@ -1,131 +1,162 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
         <title>Account Profile</title>
         <link rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
-        <script th:src="@{/js/profile.js}" defer></script>
+              th:href="@{/css/styles.css}">
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
+        <script th:src="@{/js/profile.js}"
+                defer></script>
     </head>
+
     <body class="site-page">
-        <div
-            th:replace="~{fragments/fragments :: site-navigation('profile')}"></div>
+        <div th:replace="~{fragments/fragments :: site-navigation('profile')}"></div>
         <main class="container py-4">
             <header class="mb-4">
-                <p
-                    class="page-eyebrow text-uppercase small fw-semibold mb-2">Account</p>
+                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Account</p>
                 <h1 class="h2 mb-2">Your profile</h1>
                 <p class="text-secondary mb-0">Manage your sign-in details.</p>
             </header>
             <div class="container my-4">
-                <span class="alert alert-success" th:if="${successMessage}"
-                    th:text="${successMessage}">Message</span>
+                <span class="alert alert-success"
+                      th:if="${successMessage}"
+                      th:text="${successMessage}">Message</span>
             </div>
             <section class="card border-0 shadow-sm"
-                aria-labelledby="account-details-heading">
+                     aria-labelledby="account-details-heading">
                 <div class="card-body p-4">
                     <div
-                        class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
+                         class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
                         <div>
                             <h2 id="account-details-heading"
                                 class="h5 mb-1">Account details</h2>
-                            <p class="text-secondary small mb-0">Your account
-                                credentials</p>
+                            <p class="text-secondary small mb-0">Your account credentials</p>
                         </div>
-                        <form th:action="@{/user/profile/update}" method="get"
-                            class="site-form">
-                            <button class="btn btn-primary" type="submit">Edit
-                                profile</button>
+                        <form th:action="@{/user/profile/update}"
+                              method="get"
+                              class="site-form">
+                            <button class="btn btn-primary"
+                                    type="submit">Edit profile</button>
                         </form>
                     </div>
                     <dl class="row mb-0 border-top">
-                        <dt
-                            class="col-sm-3 py-3 text-secondary fw-medium">Username</dt>
+                        <dt class="col-sm-3 py-3 text-secondary fw-medium">Username</dt>
                         <dd class="col-sm-9 py-3 mb-0 border-bottom"
                             th:text="${username}">Username</dd>
-                        <dt
-                            class="col-sm-3 py-3 text-secondary fw-medium">Password</dt>
+                        <dt class="col-sm-3 py-3 text-secondary fw-medium">Password</dt>
                         <dd class="col-sm-9 py-3 mb-0">••••••••</dd>
-                        <dt
-                            class="col-sm-3 py-3 text-secondary fw-medium"
-                            th:if="${isVendor}">Business
-                            Name</dt>
+                        <dt class="col-sm-3 py-3 text-secondary fw-medium"
+                            th:if="${isVendor}">Business Name</dt>
                         <dd class="col-sm-9 py-3 mb-0"
                             th:if="${isVendor}"
-                            th:text="${currentVendor.businessName}">Business
-                            Name</dd>
-                        <dt
-                            class="col-sm-3 py-3 text-secondary fw-medium"
-                            th:if="${isVendor}">About your business
-                        </dt>
+                            th:text="${currentVendor.businessName}">Business Name</dd>
+                        <dt class="col-sm-3 py-3 text-secondary fw-medium"
+                            th:if="${isVendor}">About your business </dt>
                         <dd class="col-sm-9 py-3 mb-0"
-                            th:if="${isVendor}"> <em><span
-                                    th:text="${currentVendor.bio}"></span></em></dd>
-
+                            th:if="${isVendor}"> <em><span th:text="${currentVendor.bio}"></span></em></dd>
                     </dl>
                 </div>
-            </section>
-            <!-- Buyer reviews -->
-            <section class="card border-0 shadow-sm"
-                aria-labelledby="account-details-heading"
-                sec:authorize="hasRole('USER')">
-                <div class="card-body p-4">
-                    <div
-                        class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
-                        <div>
-                            <h2 id="review-details-heading"
-                                class="h5 mb-1">Your reviews<strong><span
-                                        th:text="| (${reviewPager.totalItems})|"></span></strong></h2>
-                            <p class="text-secondary small mb-0">Reviews you
-                                previously submitted.</p>
+                <section class="card border-0 shadow-sm"
+                         aria-labelledby="account-details-heading">
+                    <div class="card-body p-4">
+                        <div
+                             class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
+                            <div>
+                                <h2 id="saved-addresses-heading"
+                                    class="h5 mb-1">Address Book</h2>
+                                <p class="text-secondary small mb-0">Your saved addresses</p>
+                            </div>
+                            <form th:action="@{/user/profile/update}"
+                                  method="get"
+                                  class="site-form">
+                                <button class="btn btn-primary"
+                                        type="submit">Add address</button>
+                            </form>
+                        </div>
+                        <p class="text-secondary small mb-0"
+                           th:if="${#lists.isEmpty(addresses)}">No saved addresses yet.</p>
+                        <div class="row g-3"
+                             th:unless="${#lists.isEmpty(addresses)}">
+                            <div class="col-md-6"
+                                 th:each="address, stat : ${addresses}">
+                                <address class="h-100 border rounded p-3 small">
+                                    <span class="text-secondary d-block mb-1"
+                                          th:text="|Address #${stat.count}|">Address #1</span>
+                                    <strong th:text="${address.name}">Name</strong><br>
+                                    <th:block th:if="${address.company}"><span th:text="${address.company}"></span><br>
+                                    </th:block>
+                                    <span th:text="${address.street1}"></span><br>
+                                    <th:block th:if="${address.street2}"><span th:text="${address.street2}"></span><br>
+                                    </th:block>
+                                    <span th:text="|${address.city}, ${address.state} ${address.zip}|"></span><br>
+                                    <span th:text="${address.country}"></span>
+                                    <th:block th:if="${address.phone}"><br><span th:text="${address.phone}"></span>
+                                    </th:block>
+                                </address>
+                            </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table
-                            class="table table-hover site-table mb-0 table-sm">
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">Product
-                                        Name</th>
-                                    <th scope="col">Rating</th>
-                                    <th scope="col">Comment</th>
-                                    <th scope="col">Reviewed on</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="review : ${buyerReviews}">
-                                    <td>
-                                        <a th:if="${review.productId != null}"
-                                            th:href="@{/products/view/{productId}(productId=${review.productId})}"
-                                            th:text="${review.productName}">Product
-                                            name</a>
-                                        <span
-                                            th:unless="${review.productId != null}"
-                                            th:text="${review.productName}">Product
-                                            name</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-warning"
-                                            th:each="i : ${#numbers.sequence(1, 5)}">
-                                            <i
-                                                th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
-                                        </span>
-                                    </td>
-                                    <td th:text="${review.comment}"></td>
-                                    <td class="text text-secondary fst-italic"
-                                        th:text="${#temporals.format(review.createdAt, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                </section>
+                <!-- Buyer reviews -->
+                <section class="card border-0 shadow-sm"
+                         aria-labelledby="account-details-heading"
+                         sec:authorize="hasRole('USER')">
+                    <div class="card-body p-4">
+                        <div
+                             class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
+                            <div>
+                                <h2 id="review-details-heading"
+                                    class="h5 mb-1">Your reviews<strong><span
+                                              th:text="| (${reviewPager.totalItems})|"></span></strong></h2>
+                                <p class="text-secondary small mb-0">Reviews you previously submitted.</p>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover site-table mb-0 table-sm">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Rating</th>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Reviewed on</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="review : ${buyerReviews}">
+                                        <td>
+                                            <a th:if="${review.productId != null}"
+                                               th:href="@{/products/view/{productId}(productId=${review.productId})}"
+                                               th:text="${review.productName}">Product name</a>
+                                            <span th:unless="${review.productId != null}"
+                                                  th:text="${review.productName}">Product name</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-warning"
+                                                  th:each="i : ${#numbers.sequence(1, 5)}">
+                                                <i
+                                                   th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                                            </span>
+                                        </td>
+                                        <td th:text="${review.comment}"></td>
+                                        <td class="text text-secondary fst-italic"
+                                            th:text="${#temporals.format(review.createdAt, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div
-                    th:replace="~{fragments/fragments :: pagination(${reviewPager}, 'Review pages')}"></div>
-            </section>
+                    <div th:replace="~{fragments/fragments :: pagination(${reviewPager}, 'Review pages')}"></div>
+                </section>
         </main>
     </body>
+
 </html>

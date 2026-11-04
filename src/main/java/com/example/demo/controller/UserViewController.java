@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dto.BuyerReviewDTO;
@@ -16,6 +17,7 @@ import com.example.demo.model.PageView;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.service.AddressService;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VendorService;
@@ -29,13 +31,15 @@ public class UserViewController {
     private final OrderService orderService;
     private final UserService userService;
     private final VendorService vendorService;
+    private final AddressService addressService;
 
     public UserViewController(UserService userService, VendorService vendorService, OrderService orderService,
-            ProductRepository productRepository) {
+            ProductRepository productRepository, AddressService addressService) {
         this.userService = userService;
         this.vendorService = vendorService;
         this.orderService = orderService;
         this.productRepository = productRepository;
+        this.addressService = addressService;
     }
 
     // Display all user entries
@@ -115,6 +119,7 @@ public class UserViewController {
                 isVendor ? vendorService.getVendorByUserId(currentUser.getId()) : null);
         model.addAttribute("isVendor", isVendor);
         model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("addresses", addressService.getAddresses(currentUser.getId()));
         return "profile";
     }
 
@@ -141,6 +146,14 @@ public class UserViewController {
         User currentUser = userService.getUserByUsername(authentication.getName());
         boolean isVendor = authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_VENDOR"));
+        try {
+            if (addressService.addAddress(currentUser.getId(), userForm.getAddress())) {
+                redirectAttributes.addFlashAttribute("successMessage", "Address saved!");
+            }
+        } catch (ResponseStatusException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
+            return "redirect:/user/profile/update";
+        }
         boolean credentialsChanged = !currentUser.getUsername().equals(userForm.getUsername())
                 || (userForm.getPassword() != null && !userForm.getPassword().isBlank());
         User updatedUser = userService.updateAccount(currentUser.getUsername(), userForm.getUsername(),
