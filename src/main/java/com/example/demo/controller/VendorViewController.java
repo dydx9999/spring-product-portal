@@ -23,6 +23,7 @@ import com.example.demo.dto.ShippingDetailsFormDTO;
 import com.example.demo.dto.VendorOrderItemsViewDTO;
 import com.example.demo.dto.VendorOrderListDTO;
 import com.example.demo.dto.VendorPickListDTO;
+import com.example.demo.dto.VendorRatingDTO;
 import com.example.demo.dto.VendorReviewDTO;
 import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.dto.WarehouseDTO;
