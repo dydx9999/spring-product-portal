@@ -6,6 +6,15 @@ public class VendorFormDTO {
     private String password;
     private String businessName;
     private String bio;
+    private ShipmentAddressDTO address = new ShipmentAddressDTO();
+
+    public ShipmentAddressDTO getAddress() {
+        return address;
+    }
+
+    public void setAddress(ShipmentAddressDTO address) {
+        this.address = address;
+    }
 
     public String getBio() {
         return bio;
