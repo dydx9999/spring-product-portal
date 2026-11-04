@@ -21,7 +21,9 @@ import com.example.demo.dto.BuyerReviewDTO;
 import com.example.demo.dto.OrderDetailsDTO;
 import com.example.demo.dto.OrderItemDTO;
 import com.example.demo.dto.OrderSummaryDTO;
+import com.example.demo.dto.PaymentDetails;
 import com.example.demo.dto.ReviewFormDTO;
+import com.example.demo.dto.ShipmentTrackingDTO;
 import com.example.demo.dto.ShippingDetailsFormDTO;
 import com.example.demo.dto.VendorOrderItemsViewDTO;
 import com.example.demo.dto.VendorOrderListDTO;
@@ -99,6 +101,7 @@ public class OrderService {
                     order.getVendorId(), order.getCreationDate(), order.getStatus());
             dto.setTrackingNumber(order.getTrackingNumber());
             dto.setCarrier(order.getCarrier());
+            dto.setShipmentId(order.getShipmentId());
             dto.setItems(orderItems.stream()
                     .map(i -> new OrderItemDTO(i.getProductName(), i.getProductQuantity(), i.getProductPrice(), null))
                     .toList());
@@ -131,6 +134,7 @@ public class OrderService {
                     OrderItemDTO itemDTO = new OrderItemDTO(item.getProductName(), item.getProductQuantity(),
                             item.getProductPrice(), vendorBusinessNamesByOrderRowId.get(item.getOrderId()));
                     itemDTO.setId(item.getId());
+                    itemDTO.setProductId(item.getProductId());
                     return itemDTO;
                 })
                 .toList();
@@ -141,7 +145,19 @@ public class OrderService {
         BigDecimal total = items.stream()
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return new OrderDetailsDTO(orderId, creationDate, items, total, status, trackingNumber, carrier);
+        OrderDetailsDTO details = new OrderDetailsDTO(orderId, creationDate, items, total, status, trackingNumber,
+                carrier, null);
+        Order firstOrder = orders.get(0);
+        details.setPaymentMethodType(firstOrder.getPaymentMethodType());
+        details.setCardBrand(firstOrder.getCardBrand());
+        details.setCardLast4(firstOrder.getCardLast4());
+        details.setCardExpMonth(firstOrder.getCardExpMonth());
+        details.setCardExpYear(firstOrder.getCardExpYear());
+        return details;
+    }
+
+    public List<ShipmentTrackingDTO> getShipmentTracking(UUID orderId, Long buyerId) {
+        return orderRepository.findShipmentTrackingByOrderIdAndBuyerId(orderId, buyerId);
     }
 
     public Set<Long> getReviewedItemIds(Long buyerId, List<Long> orderItemIds) {
@@ -224,6 +240,18 @@ public class OrderService {
     }
 
     @Transactional
+    public void recordPaymentDetails(UUID orderId, PaymentDetails paymentDetails) {
+        for (Order order : orderRepository.findByOrderId(orderId)) {
+            order.setStripePaymentIntentId(paymentDetails.paymentIntentId());
+            order.setPaymentMethodType(paymentDetails.paymentMethodType());
+            order.setCardBrand(paymentDetails.cardBrand());
+            order.setCardLast4(paymentDetails.cardLast4());
+            order.setCardExpMonth(paymentDetails.cardExpMonth());
+            order.setCardExpYear(paymentDetails.cardExpYear());
+        }
+    }
+
+    @Transactional
     public int markOrderPaid(UUID orderId) {
         int updated = 0;
         for (Order order : orderRepository.findByOrderId(orderId)) {
@@ -237,6 +265,12 @@ public class OrderService {
 
     @Transactional
     public void updateTracking(Long vendorId, ShippingDetailsFormDTO shippingDetailsForm) {
+        updateTracking(vendorId, shippingDetailsForm, null);
+    }
+
+    // trackingUrl is a separate argument so vendor form input can never supply it
+    @Transactional
+    public void updateTracking(Long vendorId, ShippingDetailsFormDTO shippingDetailsForm, String trackingUrl) {
         if (shippingDetailsForm == null
                 || shippingDetailsForm.getOrderId() == null
                 || shippingDetailsForm.getTrackingNumber() == null
@@ -257,6 +291,8 @@ public class OrderService {
         buyerOrder.setTrackingNumber(shippingDetailsForm.getTrackingNumber().trim());
         buyerOrder.setCarrier(shippingDetailsForm.getCarrier().trim());
         buyerOrder.setStatus("Shipped");
+        buyerOrder.setShipmentId(shippingDetailsForm.getShipmentId());
+        buyerOrder.setTrackingUrl(trackingUrl);
     }
 
     public List<VendorPickListDTO> getVendorPickList(UUID orderId, Long vendorId) {
