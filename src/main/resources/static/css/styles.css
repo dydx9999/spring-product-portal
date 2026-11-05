@@ -1,19 +1,77 @@
-*
+*,
+*::before,
+*::after
 {
     box-sizing: border-box;
 }
 
 :root
 {
-    --portal-ink: #20302f;
-    --portal-accent: #256b62;
-    --portal-muted: #66736f;
-    --portal-line: #dfe7e4;
+    --portal-ink: #1e1b3a;
+    --portal-accent: #5b3fd6;
+    --portal-accent-hover: #4a2fc0;
+    --portal-accent-soft: #efebff;
+    --portal-cta: #d9480f;
+    --portal-cta-hover: #b93c0b;
+    --portal-sun: #ffc93c;
+    --portal-muted: #66617f;
+    --portal-line: #e6e1f5;
+    --portal-bg: #f8f6fd;
+    --portal-gradient: linear-gradient(90deg, #5b3fd6, #e64980, #ff922b);
+
+    --bs-primary: var(--portal-accent);
+    --bs-primary-rgb: 91, 63, 214;
+    --bs-link-color: var(--portal-accent);
+    --bs-link-color-rgb: 91, 63, 214;
+    --bs-link-hover-color: var(--portal-accent-hover);
+    --bs-link-hover-color-rgb: 74, 47, 192;
+    --bs-focus-ring-color: rgba(91, 63, 214, 0.3);
+}
+
+.btn-primary
+{
+    --bs-btn-bg: var(--portal-accent);
+    --bs-btn-border-color: var(--portal-accent);
+    --bs-btn-hover-bg: var(--portal-accent-hover);
+    --bs-btn-hover-border-color: var(--portal-accent-hover);
+    --bs-btn-active-bg: var(--portal-accent-hover);
+    --bs-btn-active-border-color: var(--portal-accent-hover);
+    --bs-btn-disabled-bg: var(--portal-accent);
+    --bs-btn-disabled-border-color: var(--portal-accent);
+    --bs-btn-focus-shadow-rgb: 91, 63, 214;
+    box-shadow: 0 2px 6px rgba(91, 63, 214, 0.25);
+}
+
+.btn-outline-primary
+{
+    --bs-btn-color: var(--portal-accent);
+    --bs-btn-border-color: var(--portal-accent);
+    --bs-btn-hover-bg: var(--portal-accent);
+    --bs-btn-hover-border-color: var(--portal-accent);
+    --bs-btn-active-bg: var(--portal-accent-hover);
+    --bs-btn-active-border-color: var(--portal-accent-hover);
+    --bs-btn-focus-shadow-rgb: 91, 63, 214;
+}
+
+/* Purchase actions use the warm CTA colour so they stand out from other buttons */
+.add-to-cart-button,
+.comparison-submit
+{
+    --bs-btn-bg: var(--portal-cta);
+    --bs-btn-border-color: var(--portal-cta);
+    --bs-btn-hover-bg: var(--portal-cta-hover);
+    --bs-btn-hover-border-color: var(--portal-cta-hover);
+    --bs-btn-active-bg: var(--portal-cta-hover);
+    --bs-btn-active-border-color: var(--portal-cta-hover);
+    --bs-btn-focus-shadow-rgb: 217, 72, 15;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(217, 72, 15, 0.3);
 }
 
 .highlight
 {
-    background-color: yellow;
+    background-color: #fff1bf;
+    box-shadow: inset 0 -0.3em 0 var(--portal-sun);
     font-weight: bold;
 }
 
@@ -33,7 +91,7 @@ body
 {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
-    background-color: #f4f6f8;
+    background-color: var(--portal-bg);
     color: var(--portal-ink);
 }
 
@@ -45,6 +103,29 @@ h1
 p
 {
     line-height: 1.5;
+}
+
+.action-buttons
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Restock and Update have different label widths; a shared width keeps Delete in the same column */
+.action-buttons .btn
+{
+    min-width: 4.75rem;
+}
+
+.action-buttons .product-action-form+.product-action-form
+{
+    margin-left: 0;
+}
+
+.shipment-details-list
+{
+    list-style-type: none;
 }
 
 a
@@ -112,8 +193,11 @@ a
 
 .site-navigation
 {
-    border-bottom: 1px solid var(--portal-line);
+    border-top: 4px solid transparent;
+    border-image: var(--portal-gradient) 1;
+    border-bottom: 0;
     background-color: #fff;
+    box-shadow: 0 2px 10px rgba(30, 27, 58, 0.06);
 }
 
 .site-navigation .nav-link
@@ -126,14 +210,15 @@ a
 .site-navigation .nav-link:focus-visible:not(.active)
 {
     color: var(--portal-accent);
-    background-color: #e7f0ed;
+    background-color: var(--portal-accent-soft);
     transform: translateY(-1px);
 }
 
 .site-navigation .nav-link.active
 {
     color: #fff;
-    background-color: var(--portal-accent);
+    background: linear-gradient(135deg, var(--portal-accent), #8b5cf6);
+    box-shadow: 0 2px 8px rgba(91, 63, 214, 0.3);
 }
 
 @media (prefers-reduced-motion: reduce)
@@ -157,7 +242,7 @@ a
     flex: 0 0 40px;
     place-items: center;
     color: var(--portal-accent);
-    background-color: #e7f0ed;
+    background-color: var(--portal-accent-soft);
 }
 
 .avatar-image svg
@@ -168,17 +253,24 @@ a
 
 .page-eyebrow
 {
-    color: var(--portal-accent);
+    color: #d6336c;
+    letter-spacing: 0.06em;
+}
+
+.card
+{
+    border-color: var(--portal-line);
+    border-radius: 0.75rem;
 }
 
 .product-comparison-page
 {
-    --comparison-ink: #263b35;
-    --comparison-muted: #687873;
-    --comparison-green: #2f6654;
-    --comparison-coral: #d98765;
-    --comparison-line: #dce5df;
-    background: #f7f9f6;
+    --comparison-ink: var(--portal-ink);
+    --comparison-muted: var(--portal-muted);
+    --comparison-green: var(--portal-accent);
+    --comparison-coral: #ff922b;
+    --comparison-line: var(--portal-line);
+    background: var(--portal-bg);
     color: var(--comparison-ink);
 }
 
@@ -275,7 +367,7 @@ a
 .comparison-table thead th
 {
     height: 7rem;
-    background: #edf3ee;
+    background: var(--portal-accent-soft);
     color: var(--comparison-ink);
     font-size: 0.9rem;
 }
@@ -313,10 +405,10 @@ a
     width: 2.5rem;
     aspect-ratio: 1;
     place-items: center;
-    border: 1px solid #e8c3b3;
+    border: 1px solid #ffc078;
     border-radius: 0.65rem;
-    background: #fbede7;
-    color: #8e5039;
+    background: #fff4e6;
+    color: #a3460d;
     font-size: 0.75rem;
     font-weight: 750;
 }
@@ -327,7 +419,7 @@ a
     width: min(75%, 8rem);
     height: 0.65rem;
     border-radius: 1rem;
-    background: #eef2ee;
+    background: #f1eef9;
 }
 
 .comparison-value-space-long
@@ -369,15 +461,15 @@ a
 
 .comparison-cart-button:hover
 {
-    border-color: #244b3d;
-    background: #244b3d;
+    border-color: var(--portal-accent-hover);
+    background: var(--portal-accent-hover);
     color: #fff;
     transform: translateY(-1px);
 }
 
 .comparison-cart-button:focus-visible
 {
-    outline: 3px solid #e4b15a;
+    outline: 3px solid var(--portal-sun);
     outline-offset: 2px;
 }
 
@@ -410,12 +502,12 @@ a
 
 .vendor-profile-page
 {
-    --vendor-profile-ink: #263a34;
-    --vendor-profile-muted: #68766f;
-    --vendor-profile-leaf: #315c4d;
-    --vendor-profile-citrus: #e3ae4e;
-    --vendor-profile-line: #dce5de;
-    background: #fbfcf8;
+    --vendor-profile-ink: var(--portal-ink);
+    --vendor-profile-muted: var(--portal-muted);
+    --vendor-profile-leaf: var(--portal-accent);
+    --vendor-profile-citrus: var(--portal-sun);
+    --vendor-profile-line: var(--portal-line);
+    background: var(--portal-bg);
     color: var(--vendor-profile-ink);
 }
 
@@ -461,12 +553,15 @@ a
 {
     position: relative;
     overflow: hidden;
-    background-color: #e6eee4;
-    background-image: repeating-linear-gradient(135deg,
+    background-color: #efe9ff;
+    background-image:
+        radial-gradient(circle at 85% 20%, rgba(255, 146, 43, 0.25), transparent 40%),
+        radial-gradient(circle at 10% 90%, rgba(230, 73, 128, 0.18), transparent 45%),
+        repeating-linear-gradient(135deg,
             transparent 0,
             transparent 34px,
-            rgba(49, 92, 77, 0.045) 35px,
-            rgba(49, 92, 77, 0.045) 36px);
+            rgba(91, 63, 214, 0.05) 35px,
+            rgba(91, 63, 214, 0.05) 36px);
 }
 
 .vendor-profile-heading
@@ -485,10 +580,10 @@ a
     width: 6rem;
     aspect-ratio: 1;
     place-items: center;
-    border: 5px solid #fbfcf8;
+    border: 5px solid #fff;
     border-radius: 1.5rem;
     background: var(--vendor-profile-citrus);
-    color: #3a3020;
+    color: #3d2c00;
     font-size: 1.6rem;
     font-weight: 750;
     box-shadow: 0 4px 16px rgba(38, 58, 52, 0.12);
@@ -531,8 +626,8 @@ a
 .btn-vendor-primary:hover,
 .btn-vendor-primary:focus-visible
 {
-    border-color: #24483b;
-    background: #24483b;
+    border-color: var(--portal-accent-hover);
+    background: var(--portal-accent-hover);
     color: #fff;
 }
 
@@ -597,8 +692,8 @@ a
     justify-items: center;
     align-content: center;
     padding: 2rem;
-    border: 1px dashed #aebfb3;
-    background: #f3f6f0;
+    border: 1px dashed #c4b8f0;
+    background: #f6f3ff;
     text-align: center;
 }
 
@@ -610,7 +705,7 @@ a
     place-items: center;
     margin-bottom: 0.85rem;
     border-radius: 50%;
-    background: #e3ebdf;
+    background: var(--portal-accent-soft);
     color: var(--vendor-profile-leaf);
     font-size: 1.2rem;
 }
@@ -709,7 +804,7 @@ a
 
 .vendor-review-star-empty
 {
-    color: #cdd6cf;
+    color: #d9d4ea;
 }
 
 .vendor-review-comment
@@ -796,7 +891,7 @@ a
 
 .surprise-button:focus-visible
 {
-    outline: 3px solid #256b62;
+    outline: 3px solid var(--portal-accent);
     outline-offset: 3px;
 }
 
@@ -850,6 +945,7 @@ a
 
 .site-table thead th
 {
+    --bs-table-bg: var(--portal-accent-soft);
     font-size: 0.75rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -988,7 +1084,7 @@ a
 .star-rating label:hover,
 .star-rating label:hover~label
 {
-    color: #b36b00;
+    color: #f59f00;
 }
 
 .star-rating input:focus-visible+label
@@ -1011,11 +1107,11 @@ a
     --bs-pagination-border-color: var(--portal-line);
     --bs-pagination-color: var(--portal-accent);
     --bs-pagination-hover-color: var(--portal-accent);
-    --bs-pagination-hover-bg: #e7f0ed;
+    --bs-pagination-hover-bg: var(--portal-accent-soft);
     --bs-pagination-hover-border-color: var(--portal-line);
     --bs-pagination-focus-color: var(--portal-accent);
-    --bs-pagination-focus-bg: #e7f0ed;
-    --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(37, 107, 98, 0.25);
+    --bs-pagination-focus-bg: var(--portal-accent-soft);
+    --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(91, 63, 214, 0.25);
     --bs-pagination-active-bg: var(--portal-accent);
     --bs-pagination-active-border-color: var(--portal-accent);
     --bs-pagination-disabled-color: var(--portal-muted);
@@ -1029,7 +1125,7 @@ a
     border-radius: var(--bs-pagination-border-radius);
 }
 
-/* Bootstrap overlaps joined page buttons; these are spaced apart instead. */
+
 .pager-controls .page-item:not(:first-child) .page-link
 {
     margin-left: 0;
@@ -1104,7 +1200,7 @@ a
 .pick-list-table thead th
 {
     padding: 0.8rem 1rem;
-    background: #f2f6f4;
+    background: var(--portal-accent-soft);
 }
 
 .pick-list-table tbody td
