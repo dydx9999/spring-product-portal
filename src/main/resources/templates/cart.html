@@ -64,8 +64,11 @@
 
                                 </td>
                                 <td>
+                                    <a
+                                        th:href="@{/products/view/{productId}(productId=${cartItem.productId})}">
                                     <span
                                         th:text="${products.get(cartItem.productId).productName}"></span>
+                                    </a>
                                     <span class="badge text-bg-primary"
                                         th:if="${distinctCarts[cartItem.productId]} > 1">
                                         In:
@@ -107,7 +110,7 @@
                                         th:action="@{/cart/delete/{id}(id=${cartItem.productId})}"
                                         method="post">
                                         <button type="submit"
-                                            class="btn btn-primary">Remove
+                                            class="btn btn-danger item-delete-button w-50">Delete
                                         </button>
                                     </form>
                                     <form class="d-flex gap-2 mt-2"
@@ -144,9 +147,8 @@
                     </p>
                 </div>
 
-                <a th:href="@{/cart/checkout}"> <button
-                        type="submit"
-                        class="btn btn-primary">Checkout</button> </a>
+                <a th:href="@{/cart/checkout}"
+                    class="btn btn-primary">Checkout</a>
 
             </div>
         </main>
