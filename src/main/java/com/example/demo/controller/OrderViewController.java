@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,9 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.dto.OrderDetailsDTO;
 import com.example.demo.dto.OrderSummaryDTO;
 import com.example.demo.dto.ReviewFormDTO;
+import com.example.demo.dto.ShipmentTrackingDTO;
 import com.example.demo.model.PageView;
 import com.example.demo.model.User;
 import com.example.demo.service.OrderService;
+import com.example.demo.service.ShippingService;
 import com.example.demo.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +32,12 @@ import jakarta.servlet.http.HttpServletRequest;
 public class OrderViewController {
     private final UserService userService;
     private final OrderService orderService;
+    private final ShippingService shippingService;
 
-    public OrderViewController(UserService userService, OrderService orderService) {
+    public OrderViewController(UserService userService, OrderService orderService, ShippingService shippingService) {
         this.userService = userService;
         this.orderService = orderService;
+        this.shippingService = shippingService;
     }
 
     @GetMapping
@@ -55,11 +60,20 @@ public class OrderViewController {
             Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
 
+        shippingService.syncDeliveredShipments(orderId, currentUser.getId());
         OrderDetailsDTO orderDetails = orderService.getOrderDetails(orderId, currentUser.getId());
-        model.addAttribute("orderDetails", orderDetails);
         List<Long> orderItemIds = orderDetails.getItems().stream()
                 .map(item -> item.getId())
                 .toList();
+
+        List<ShipmentTrackingDTO> shipments = orderService.getShipmentTracking(orderId, currentUser.getId());
+
+        LocalDateTime estimatedDeliveryDate = shippingService
+                .calculateDeliveryDate(orderDetails.getShipmentId());
+
+        model.addAttribute("estimatedDeliveryDate", estimatedDeliveryDate);
+        model.addAttribute("orderDetails", orderDetails);
+        model.addAttribute("shipments", shipments);
         model.addAttribute("reviewedItemIds",
                 orderService.getReviewedItemIds(currentUser.getId(), orderItemIds));
 
