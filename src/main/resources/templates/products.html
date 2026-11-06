@@ -1,179 +1,159 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
         <title>Product Catalog</title>
         <link rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
-        <script th:src="@{/js/products.js}" defer></script>
-        <link rel="icon" type="image/svg+xml"
-            th:href="@{/assets/favicon.svg}">
+              th:href="@{/css/styles.css}">
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
+        <script th:src="@{/js/products.js}"
+                defer></script>
+        <link rel="icon"
+              type="image/svg+xml"
+              th:href="@{/assets/favicon.svg}">
     </head>
+
     <body class="site-page">
-        <div
-            th:replace="~{fragments/fragments :: site-navigation('products')}"></div>
+        <div th:replace="~{fragments/fragments :: site-navigation('products')}"></div>
         <main class="container py-4">
-            <header
-                class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <header class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
                 <div>
-                    <p
-                        class="page-eyebrow text-uppercase small fw-semibold mb-2">Inventory</p>
+                    <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Inventory</p>
                     <h1 class="h2 mb-2">Product catalog</h1>
-                    <p class="text-secondary mb-0">Signed in as
-                        <strong><span
-                                th:text="${username}">Username</span></strong>
+                    <p class="text-secondary mb-0">Signed in as <strong><span
+                                  th:text="${username}">Username</span></strong>
                         <span class="ms-1"
-                            th:if="${isAdmin}">(Admin)</span><span
-                            class="ms-1"
-                            th:if="${isUser}">(User)</span><span
-                            class="ms-1"
-                            th:if="${isVendor}">(Vendor)</span>
+                              th:if="${isAdmin}">(Admin)</span><span class="ms-1"
+                              th:if="${isUser}">(User)</span><span class="ms-1"
+                              th:if="${isVendor}">(Vendor)</span>
                     </p>
                 </div>
                 <div>
                     <a th:if="${isVendor}"
-                        th:href="@{/products/product-add}"
-                        class="btn btn-primary">Add
-                        product</a>
-
+                       th:href="@{/products/product-add}"
+                       class="btn btn-primary">Add product</a>
                 </div>
                 <a th:href="@{/products/surprise}"
-                    class="btn surprise-button">
+                   class="btn surprise-button">
                     <i class="bi bi-stars surprise-button-icon"
-                        aria-hidden="true"></i>
+                       aria-hidden="true"></i>
                     <span>Surprise me</span>
                 </a>
             </header>
-            <section
-                class="d-flex flex-wrap align-items-end justify-content-between gap-3 py-3 mb-3 border-top border-bottom"
-                aria-label="Catalog sorting">
+            <section class="d-flex flex-wrap align-items-end justify-content-between gap-3 py-3 mb-3 border-top border-bottom"
+                     aria-label="Catalog sorting">
                 <div>
-                    <p
-                        class="text-uppercase small fw-semibold text-secondary mb-1">Catalog
-                        sorting</p>
-                    <p class="text-secondary small mb-0">Choose a price
-                        order
-                        for the product list.</p>
+                    <p class="text-uppercase small fw-semibold text-secondary mb-1">Catalog sorting</p>
+                    <p class="text-secondary small mb-0">Choose a price order for the product list.</p>
                 </div>
-                <form th:action="@{/products}" method="get"
-                    class="d-flex flex-wrap align-items-end gap-2">
-                    <input id="inStockProducts" type="checkbox"
-                        name="inStockOnly" value="true"
-                        th:checked="${inStockOnly}"
-                        onchange="this.form.submit()">
-                    <label for="inStockProducts">Hide out of stock
-                        products</label>
+                <form th:action="@{/products}"
+                      method="get"
+                      class="d-flex flex-wrap align-items-end gap-2">
+                    <input id="inStockProducts"
+                           type="checkbox"
+                           name="inStockOnly"
+                           value="true"
+                           th:checked="${inStockOnly}"
+                           onchange="this.form.submit()">
+                    <label for="inStockProducts">Hide out of stock products</label>
                     <div>
                         <label for="product-sort"
-                            class="form-label mb-1">Sort
-                            by</label>
+                               class="form-label mb-1">Sort by</label>
                         <select id="product-sort"
-                            class="form-select w-auto"
-                            name="filter">
+                                class="form-select w-auto"
+                                name="filter">
                             <option value="priceAsc"
-                                th:selected="${param.filter == 'priceAsc'}">Price:
-                                low to high</option>
+                                    th:selected="${param.filter == 'priceAsc'}">Price: low to high</option>
                             <option value="priceDesc"
-                                th:selected="${param.filter == 'priceDesc'}">Price:
-                                high to low</option>
+                                    th:selected="${param.filter == 'priceDesc'}">Price: high to low</option>
                             <option value="SKUAsc"
-                                th:selected="${param.filter == 'SKUAsc'}">Product
-                                SKU: low to high</option>
+                                    th:selected="${param.filter == 'SKUAsc'}">Product SKU: low to high</option>
                             <option value="SKUDesc"
-                                th:selected="${param.filter == 'SKUDesc'}">Product
-                                SKU: high to low</option>
+                                    th:selected="${param.filter == 'SKUDesc'}">Product SKU: high to low</option>
                             <option value="vendorAsc"
-                                th:selected="${param.filter == 'vendorAsc'}">Vendor
-                                name: A to Z</option>
+                                    th:selected="${param.filter == 'vendorAsc'}">Vendor name: A to Z</option>
                             <option value="vendorDesc"
-                                th:selected="${param.filter == 'vendorDesc'}">Vendor
-                                name: Z to A</option>
+                                    th:selected="${param.filter == 'vendorDesc'}">Vendor name: Z to A</option>
                         </select>
                     </div>
                     <button class="btn btn-primary"
-                        type="submit">Apply</button>
+                            type="submit">Apply</button>
                     <a th:href="@{/products}"
-                        class="btn btn-secondary">Reset</a>
+                       class="btn btn-secondary">Reset</a>
                 </form>
                 <form>
-
-                    <label for="searchbar" class="searchbar"><small>Search
-                            products </small></label>
-                    <input type="text" name="searchbar" id="searchbar"
-                        size="50"
-                        placeholder="Start typing to search the product catalog..."
-                        class="form-control">
-
+                    <label for="searchbar"
+                           class="searchbar"><small>Search products </small></label>
+                    <input type="text"
+                           name="searchbar"
+                           id="searchbar"
+                           size="50"
+                           placeholder="Start typing to search the product catalog..."
+                           class="form-control">
                 </form>
-
                 <section class="alerts w-100">
                     <output th:if="${outOfStockMessage}"
-                        class="alert alert-warning w-100"
-                        th:text="${outOfStockMessage}"></output>
-                    <div th:if="${errorMessage}" class="alert alert-danger"
-                        role="alert"
-                        th:text="${errorMessage}"></div>
+                            class="alert alert-warning w-100"
+                            th:text="${outOfStockMessage}"></output>
+                    <div th:if="${errorMessage}"
+                         class="alert alert-danger"
+                         role="alert"
+                         th:text="${errorMessage}"></div>
                     <strong>
                         <output th:if="${deleteSuccess}"
-                            class="alert alert-success w-100"
-                            th:text="${deleteSuccess}"></output>
+                                class="alert alert-success w-100"
+                                th:text="${deleteSuccess}"></output>
                     </strong>
                     <output th:if="${successMessage}"
-                        class="alert alert-success w-100"
-                        th:text="${successMessage}"></output>
+                            class="alert alert-success w-100"
+                            th:text="${successMessage}"></output>
                 </section>
-
             </section>
-
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-                <form th:action="@{/products}" method="get">
+                <form th:action="@{/products}"
+                      method="get">
                     <button type="submit"
-                        class="btn btn-primary">
-                        Products <span id="product-counter"
-                            class="badge text-bg-success"
-                            th:text="${productCount}">0</span>
+                            class="btn btn-primary"> Products <span id="product-counter"
+                              class="badge text-bg-success"
+                              th:text="${productCount}">0</span>
                     </button>
                 </form>
-                <form th:action="@{/products}" method="get">
-                    <button type="submit" name="filter"
-                        value="outOfStockProductsFilter"
-                        class="btn btn-primary">
-                        Out of stock <span class="badge text-bg-danger"
-                            th:text="${outOfStockProducts}">0</span>
+                <form th:action="@{/products}"
+                      method="get">
+                    <button type="submit"
+                            name="filter"
+                            value="outOfStockProductsFilter"
+                            class="btn btn-primary"> Out of stock <span class="badge text-bg-danger"
+                              th:text="${outOfStockProducts}">0</span>
                     </button>
                 </form>
             </div>
             <!-- TODO: Finish implementation of vendor only bulk edit button -->
             <div sec:authorize="hasRole('VENDOR')">
-                <form
-                    class="product-bulk-action-form d-flex flex-wrap align-items-center gap-2 mb-3"
-                    th:action="@{/products/update/bulk}"
-                    th:object="${productBulkUpdateForm}">
+                <form class="product-bulk-action-form d-flex flex-wrap align-items-center gap-2 mb-3"
+                      th:action="@{/products/update/bulk}"
+                      th:object="${productBulkUpdateForm}">
                     <div class="dropdown open">
-                        <button
-                            class="btn btn-primary dropdown-toggle"
-                            type="button"
-                            id="triggerId"
-                            data-bs-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                            Bulk edit
-                        </button>
+                        <button class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="triggerId"
+                                data-bs-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"> Bulk edit </button>
                         <div class="dropdown-menu"
-                            aria-labelledby="triggerId">
-                            <button
-                                class="dropdown-item"
-                                href="#">Select items</button>
-                            <button
-                                class="dropdown-item btn btn-hover"
-                                href="#">
-                                Edit all
-                            </button>
+                             aria-labelledby="triggerId">
+                            <button class="dropdown-item"
+                                    href="#">Select items</button>
+                            <button class="dropdown-item btn btn-hover"
+                                    href="#"> Edit all </button>
                         </div>
                     </div>
                 </form>
@@ -181,99 +161,89 @@
             <!-- Catalog filter sidebar -->
             <div class="catalog-layout">
                 <aside class="catalog-sidebar"
-                    aria-labelledby="catalog-filter-title">
-                    <form th:action="@{/products}" method="get"
-                        class="catalog-filter-form">
+                       aria-labelledby="catalog-filter-title">
+                    <form th:action="@{/products}"
+                          method="get"
+                          class="catalog-filter-form">
                         <h2 id="catalog-filter-title"
-                            class="h5 mb-3">Filter
-                            products</h2>
+                            class="h5 mb-3">Filter products</h2>
                         <input th:if="${param.filter != null}"
-                            type="hidden"
-                            name="filter" th:value="${param.filter}">
-                        <input th:if="${inStockOnly}" type="hidden"
-                            name="inStockOnly" value="true">
+                               type="hidden"
+                               name="filter"
+                               th:value="${param.filter}">
+                        <input th:if="${inStockOnly}"
+                               type="hidden"
+                               name="inStockOnly"
+                               value="true">
                         <div class="mb-3">
                             <label for="vendor-filter"
-                                class="form-label">Vendor</label>
-                            <select id="vendor-filter" name="vendor"
-                                class="form-select">
+                                   class="form-label">Vendor</label>
+                            <select id="vendor-filter"
+                                    name="vendor"
+                                    class="form-select">
                                 <option value>All vendors</option>
-                                <option
-                                    th:each="vendorName : ${vendors}"
-                                    th:value="${vendorName}"
-                                    th:text="${vendorName}"
-                                    th:selected="${vendorName == selectedVendor}"></option>
+                                <option th:each="vendorName : ${vendors}"
+                                        th:value="${vendorName}"
+                                        th:text="${vendorName}"
+                                        th:selected="${vendorName == selectedVendor}"></option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <!-- Filter by warehouse -->
                             <label for="warehouse-filter"
-                                class="form-label">Warehouse</label>
+                                   class="form-label">Warehouse</label>
                             <select id="warehouse-filter"
-                                name="warehouseId"
-                                class="form-select">
+                                    name="warehouseId"
+                                    class="form-select">
                                 <option value>All warehouses</option>
-                                <option
-                                    th:each="warehouse : ${warehouses}"
-                                    th:value="${warehouse.id}"
-                                    th:text="${warehouse.warehouseName}"
-                                    th:selected="${warehouse.id == selectedWarehouseId}"></option>
+                                <option th:each="warehouse : ${warehouses}"
+                                        th:value="${warehouse.id}"
+                                        th:text="${warehouse.warehouseName}"
+                                        th:selected="${warehouse.id == selectedWarehouseId}"></option>
                             </select>
                         </div>
                         <!-- Filter by availablility -->
                         <div class="mb-3">
                             <label for="availability-filter"
-                                class="form-label">Availability</label>
+                                   class="form-label">Availability</label>
                             <select id="availability-filter"
-                                name="availability"
-                                class="form-select">
+                                    name="availability"
+                                    class="form-select">
                                 <option value
-                                    th:selected="${selectedAvailability == null or selectedAvailability == ''}">Any
+                                        th:selected="${selectedAvailability == null or selectedAvailability == ''}">Any
                                     availability</option>
                                 <option value="inStock"
-                                    th:selected="${selectedAvailability == 'inStock'}">In
-                                    stock</option>
+                                        th:selected="${selectedAvailability == 'inStock'}">In stock</option>
                                 <option value="outOfStock"
-                                    th:selected="${selectedAvailability == 'outOfStock'}">Out
-                                    of stock</option>
+                                        th:selected="${selectedAvailability == 'outOfStock'}">Out of stock</option>
                             </select>
                         </div>
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary"
-                                type="submit">Apply
-                                filters</button>
+                                    type="submit">Apply filters</button>
                             <a class="btn btn-outline-secondary"
-                                th:href="@{/products}">Clear filters</a>
+                               th:href="@{/products}">Clear filters</a>
                         </div>
                     </form>
                 </aside>
-
                 <div class="catalog-results">
                     <!-- Product catalog table and actions -->
                     <section class="card border-0 shadow-sm">
                         <div class="table-responsive">
-                            <div class="output" aria-live="polite"><span
-                                    class="comparison-header" hidden>
-                                    Currently
-                                    selected:
-                                </span>
-
+                            <div class="output"
+                                 aria-live="polite"><span class="comparison-header"
+                                      hidden> Currently selected: </span>
                             </div>
                             <span>
-                                <form
-                                    id="product-comparison-form"
-                                    th:action="@{/products/compare}"
-                                    method="get">
-                                    <button
-                                        type="submit"
-                                        class="btn btn-success comparison-submit"
-                                        hidden>Compare
-                                        products
-                                    </button>
+                                <form id="product-comparison-form"
+                                      th:action="@{/products/compare}"
+                                      method="get">
+                                    <button type="submit"
+                                            class="btn btn-success comparison-submit"
+                                            hidden>Compare products </button>
                                 </form>
                             </span>
-                            <table
-                                class="table table-hover site-table mb-0 table-sm">
+                            <table class="table table-hover site-table mb-0 table-sm">
                                 <thead class="table-light">
                                     <tr>
                                         <!-- Table headers -->
@@ -297,248 +267,208 @@
                                         <td class="text-secondary"
                                             th:text="${product.id}"></td>
                                         <td>
-                                            <a
-                                                class="fw-semibold product-name"
-                                                th:href="@{/products/view/{productId}(productId=${product.id})}"
-                                                th:text="${product.productName}"></a>
+                                            <a class="fw-semibold product-name"
+                                               th:href="@{/products/view/{productId}(productId=${product.id})}"
+                                               th:text="${product.productName}"></a>
                                             <code>
                                                 <span
                                                     class="text-secondary fw-normal"
                                                     th:text="|(${product.productSKU})|"></span></code>
-                                            <span
-                                                th:if="${product.productQuantity <= 0}"
-                                                class="badge text-bg-danger ms-1">Out
-                                                of
-                                                stock</span> <span
-                                                th:if="${quantitySoldByProduct[product.productName] > 5}"
-                                                class="badge text-bg-success ms-1">Best
-                                                seller</span>
-                                            <span
-                                                th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold and isVendor}"
-                                                class="badge text-bg-warning ms-1">Low
-                                                stock</span>
+                                            <span th:if="${product.productQuantity <= 0}"
+                                                  class="badge text-bg-danger ms-1">Out of stock</span> <span
+                                                  th:if="${#lists.contains(bestSellingProductIds, product.id)}"
+                                                  class="badge text-bg-success ms-1">Best seller</span>
+                                            <span th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold and isVendor}"
+                                                  class="badge text-bg-warning ms-1">Low stock</span>
                                         </td><!-- Product row details -->
                                         <td>
-
-                                            <form
-                                                class="price-edit-form"
-                                                hidden
-                                                method="post"
-                                                sec:authorize="hasRole('VENDOR')"
-                                                th:if="${businessName != null and #strings.equalsIgnoreCase(product.vendorName, businessName)}"
-                                                th:action="@{/vendor/products/{id}/price(id=${product.id})}">
-                                                <span>$
-                                                    <input type="number"
-                                                        class="form-control form-control-sm text-end"
-                                                        style="max-width: 7rem"
-                                                        min="0.00"
-                                                        step="1.00"
-                                                        required
-                                                        name="productPrice"
-                                                        th:value="${product.productPrice}"
-                                                        aria-label="Product price">
+                                            <form class="price-edit-form"
+                                                  hidden
+                                                  method="post"
+                                                  sec:authorize="hasRole('VENDOR')"
+                                                  th:if="${businessName != null and #strings.equalsIgnoreCase(product.vendorName, businessName)}"
+                                                  th:action="@{/vendor/products/{id}/price(id=${product.id})}">
+                                                <span>$ <input type="number"
+                                                           class="form-control form-control-sm text-end"
+                                                           style="max-width: 7rem"
+                                                           min="0.00"
+                                                           step="1.00"
+                                                           required
+                                                           name="productPrice"
+                                                           th:value="${product.productPrice}"
+                                                           aria-label="Product price">
                                                 </span>
                                                 <button type="submit"
-                                                    class="btn btn-sm btn-success price-edit-submit">Save</button>
+                                                        class="btn btn-sm btn-success price-edit-submit">Save</button>
                                                 <button type="button"
-                                                    class="btn btn-sm btn-outline-secondary price-edit-cancel">Cancel</button>
+                                                        class="btn btn-sm btn-outline-secondary price-edit-cancel">Cancel</button>
                                             </form>
-
                                             <span class="product-price"
-                                                th:text="|$${product.productPrice}|"></span>
-                                            <span
-                                                class="text-secondary small"
-                                                th:text="|(${product.productQuantity} available)|"></span><button
-                                                type="button"
-                                                sec:authorize="hasRole('VENDOR')"
-                                                th:if="${businessName != null and #strings.equalsIgnoreCase(product.vendorName, businessName)}"
-                                                class="price-edit-button btn bi bi-pencil-fill"
-                                                aria-label="Edit product price"
-                                                title="Edit product price"></button>
+                                                  th:text="|$${product.productPrice}|"></span>
+                                            <span class="text-secondary small"
+                                                  th:text="|(${product.productQuantity} available)|"></span><button
+                                                    type="button"
+                                                    sec:authorize="hasRole('VENDOR')"
+                                                    th:if="${businessName != null and #strings.equalsIgnoreCase(product.vendorName, businessName)}"
+                                                    class="price-edit-button btn bi bi-pencil-fill"
+                                                    aria-label="Edit product price"
+                                                    title="Edit product price"></button>
                                         </td>
                                         <td class="text-center">
-                                            <a
-                                                th:if="${product.vendorName != null and vendorIdsByName[product.vendorName] != null}"
-                                                th:href="@{/vendor/profile/{vendorId}(vendorId=${vendorIdsByName[product.vendorName]})}"
-                                                th:text="${product.vendorName}"></a>
-                                            <span
-                                                th:unless="${product.vendorName != null and vendorIdsByName[product.vendorName] != null}"
-                                                th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></span>
+                                            <a th:if="${product.vendorName != null and vendorIdsByName[product.vendorName] != null}"
+                                               th:href="@{/vendor/profile/{vendorId}(vendorId=${vendorIdsByName[product.vendorName]})}"
+                                               th:text="${product.vendorName}"></a>
+                                            <span th:unless="${product.vendorName != null and vendorIdsByName[product.vendorName] != null}"
+                                                  th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></span>
                                         </td>
-                                        <td th:if="${isVendor}"><span
-                                                th:text="${product.vendorNotes}"></span></td>
+                                        <td th:if="${isVendor}"><span th:text="${product.vendorNotes}"></span></td>
                                         <td class="actions-column">
                                             <!-- Admin only row delete button -->
-                                            <span
-                                                class="product-action-form"
-                                                sec:authorize="hasRole('ADMIN')">
+                                            <span class="product-action-form"
+                                                  sec:authorize="hasRole('ADMIN')">
                                                 <button type="button"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal"
-                                                    th:data-delete-action="@{/products/delete/{id}(id=${product.id})}"
-                                                    th:data-product-name="${product.productName}">Delete</button>
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        th:data-delete-action="@{/products/delete/{id}(id=${product.id})}"
+                                                        th:data-product-name="${product.productName}">Delete</button>
                                             </span>
                                             <!-- Vendor only row delete button -->
-                                            <span
-                                                class="product-action-form"
-                                                sec:authorize="hasRole('VENDOR')"
-                                                th:if="${product.vendorName == businessName}">
+                                            <span class="product-action-form"
+                                                  sec:authorize="hasRole('VENDOR')"
+                                                  th:if="${product.vendorName == businessName}">
                                                 <button type="button"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal"
-                                                    th:data-delete-action="@{/products/delete/{id}(id=${product.id})}"
-                                                    th:data-product-name="${product.productName}">Delete</button>
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        th:data-delete-action="@{/products/delete/{id}(id=${product.id})}"
+                                                        th:data-product-name="${product.productName}">Delete</button>
                                             </span>
                                             <!-- User only add to cart button  -->
-                                            <div
-                                                class="catalog-user-actions"
-                                                sec:authorize="hasRole('USER')">
-                                                <form
-                                                    class="product-action-form add-to-cart-form"
-                                                    th:if="${product.productQuantity > 0}"
-                                                    th:action="@{/products/purchase/{id}(id=${product.id})}"
-                                                    method="post">
+                                            <div class="catalog-user-actions"
+                                                 sec:authorize="hasRole('USER')">
+                                                <form class="product-action-form add-to-cart-form"
+                                                      th:if="${product.productQuantity > 0}"
+                                                      th:action="@{/products/purchase/{id}(id=${product.id})}"
+                                                      method="post">
                                                     <input type="number"
-                                                        name="quantity"
-                                                        value="1"
-                                                        min="1"
-                                                        th:attr="max=${product.productQuantity}"
-                                                        aria-label="Quantity"
-                                                        required>
-                                                    <button
-                                                        class="btn btn-sm btn-success add-to-cart-button"
-                                                        type="submit">
-                                                        <i
-                                                            class="bi bi-cart4"
-                                                            aria-hidden="true"></i>
-                                                        <span>Add to
-                                                            cart</span>
+                                                           name="quantity"
+                                                           value="1"
+                                                           min="1"
+                                                           th:attr="max=${product.productQuantity}"
+                                                           aria-label="Quantity"
+                                                           required>
+                                                    <button class="btn btn-sm btn-success add-to-cart-button"
+                                                            type="submit">
+                                                        <i class="bi bi-cart4"
+                                                           aria-hidden="true"></i>
+                                                        <span>Add to cart</span>
                                                     </button>
                                                 </form>
                                                 <!-- User only add to wishlist button  -->
-                                                <form
-                                                    sec:authorize="hasRole('USER')"
-                                                    class="product-action-form wishlist-form"
-                                                    th:action="@{/products/wishlist/add/{productId}(productId=${product.id})}"
-                                                    method="post">
-                                                    <button
-                                                        th:unless="${#lists.contains(userWishlist, product.id)}"
-                                                        class="btn btn-sm btn-outline-warning"
-                                                        type="submit">
-                                                        <i
-                                                            class="bi bi-star"
-                                                            aria-hidden="true"></i>
-                                                        <span>Add to
-                                                            wishlist</span>
+                                                <form sec:authorize="hasRole('USER')"
+                                                      class="product-action-form wishlist-form"
+                                                      th:action="@{/products/wishlist/add/{productId}(productId=${product.id})}"
+                                                      method="post">
+                                                    <button th:unless="${#lists.contains(userWishlist, product.id)}"
+                                                            class="btn btn-sm btn-outline-warning"
+                                                            type="submit">
+                                                        <i class="bi bi-star"
+                                                           aria-hidden="true"></i>
+                                                        <span>Add to wishlist</span>
                                                     </button>
-                                                    <button
-                                                        th:if="${#lists.contains(userWishlist, product.id)}"
-                                                        class="btn btn-sm btn-outline-warning"
-                                                        type="button"
-                                                        disabled
-                                                        aria-label="Already in wishlist">
-                                                        <i
-                                                            class="bi bi-star-fill"
-                                                            aria-hidden="true"></i>
-                                                        <span>In
-                                                            wishlist</span>
+                                                    <button th:if="${#lists.contains(userWishlist, product.id)}"
+                                                            class="btn btn-sm btn-outline-warning"
+                                                            type="button"
+                                                            disabled
+                                                            aria-label="Already in wishlist">
+                                                        <i class="bi bi-star-fill"
+                                                           aria-hidden="true"></i>
+                                                        <span>In wishlist</span>
                                                     </button>
                                                 </form>
-
                                             </div>
                                             <!-- Vendor only row update button -->
-                                            <form
-                                                class="product-action-form"
-                                                sec:authorize="hasRole('VENDOR')"
-                                                th:if="${product.vendorName == businessName}"
-                                                th:action="@{/products/update/{id}(id=${product.id})}"
-                                                method="get">
-                                                <button
-                                                    th:if="${product.productQuantity <= 0}"
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    type="submit">Restock</button>
-                                                <button
-                                                    th:unless="${product.productQuantity <= 0}"
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    type="submit">Update</button>
+                                            <form class="product-action-form"
+                                                  sec:authorize="hasRole('VENDOR')"
+                                                  th:if="${product.vendorName == businessName}"
+                                                  th:action="@{/products/update/{id}(id=${product.id})}"
+                                                  method="get">
+                                                <button th:if="${product.productQuantity <= 0}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        type="submit">Restock</button>
+                                                <button th:unless="${product.productQuantity <= 0}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        type="submit">Update</button>
                                             </form>
-                                            <div
-                                                sec:authorize="hasRole('USER')">
-                                                <label
-                                                    th:for="|product-comparison-${product.id}|">Select
-                                                    for
-                                                    comparison</label><input
-                                                    type="checkbox"
-                                                    form="product-comparison-form"
-                                                    name="id"
-                                                    th:value="${product.id}"
-                                                    th:id="|product-comparison-${product.id}|"
-                                                    th:data-product-id="${product.id}"
-                                                    class="product-comparison">
+                                            <div sec:authorize="hasRole('USER')">
+                                                <label th:for="|product-comparison-${product.id}|">Select for
+                                                    comparison</label><input type="checkbox"
+                                                       form="product-comparison-form"
+                                                       name="id"
+                                                       th:value="${product.id}"
+                                                       th:id="|product-comparison-${product.id}|"
+                                                       th:data-product-id="${product.id}"
+                                                       class="product-comparison">
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr
-                                        th:if="${#lists.isEmpty(products)}">
-                                        <td
-                                            th:colspan="${isVendor ? 9 : 8}"
-                                            class="text-center text-secondary py-5">No
-                                            products found.</td>
+                                    <tr th:if="${#lists.isEmpty(products)}">
+                                        <td th:colspan="${isVendor ? 9 : 8}"
+                                            class="text-center text-secondary py-5">No products found.</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div
-                            th:replace="~{fragments/fragments :: pagination(${productPager}, 'Product pages')}"></div>
+                        <div th:replace="~{fragments/fragments :: pagination(${productPager}, 'Product pages')}"></div>
                     </section>
                 </div>
             </div>
         </main>
         <!-- Shared delete confirmation modal -->
-        <div class="modal fade" id="deleteModal" tabindex="-1"
-            aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal fade"
+             id="deleteModal"
+             tabindex="-1"
+             aria-labelledby="deleteModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <form class="modal-content" id="deleteForm"
-                    method="post"
-                    th:action="@{/products/delete/0}">
+                <form class="modal-content"
+                      id="deleteForm"
+                      method="post"
+                      th:action="@{/products/delete/0}">
                     <div class="modal-header">
                         <h5 class="modal-title"
-                            id="deleteModalLabel">Delete
-                            product</h5>
-                        <button type="button" class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                            id="deleteModalLabel">Delete product</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete <strong
-                            id="deleteProductName"></strong>? This
-                        cannot be
-                        undone.
-                    </div>
+                    <div class="modal-body"> Are you sure you want to delete <strong id="deleteProductName"></strong>?
+                        This cannot be undone. </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
                         <button type="submit"
-                            class="btn btn-danger">Delete</button>
+                                class="btn btn-danger">Delete</button>
                     </div>
                 </form>
             </div>
         </div>
         <footer class="container py-3">
-            <div
-                th:replace="~{fragments/fragments :: site-footer}"></div>
+            <div th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
         <script>
             var deleteModal = document.getElementById('deleteModal');
             if (deleteModal) {
                 deleteModal.addEventListener('show.bs.modal', function (event) {
-                var trigger = event.relatedTarget;
-                document.getElementById('deleteForm').action = trigger.dataset.deleteAction;
-                document.getElementById('deleteProductName').textContent = trigger.dataset.productName;
-            });
+                    var trigger = event.relatedTarget;
+                    document.getElementById('deleteForm').action = trigger.dataset.deleteAction;
+                    document.getElementById('deleteProductName').textContent = trigger.dataset.productName;
+                });
             }
         </script>
     </body>
+
 </html>
