@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.demo.controller.VendorRatingDTO;
+import com.example.demo.dto.VendorRatingDTO;
 import com.example.demo.dto.VendorReviewDTO;
 import com.example.demo.dto.VendorSalesRankingDTO;
 import com.example.demo.model.Order;
