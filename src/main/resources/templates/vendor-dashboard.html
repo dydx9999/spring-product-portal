@@ -1,90 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1">
         <title>Vendor Dashboard</title>
         <link rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
-        <script th:src="@{/js/vendor-dashboard.js}" defer></script>
+              th:href="@{/css/styles.css}">
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
+        <script th:src="@{/js/vendor-dashboard.js}"
+                defer></script>
     </head>
+
     <body class="site-page">
-        <div
-            th:replace="~{fragments/fragments :: site-navigation('vendor-dashboard')}"></div>
+        <div th:replace="~{fragments/fragments :: site-navigation('vendor-dashboard')}"></div>
         <main class="container py-4">
-            <header
-                class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <header class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
                 <!-- Top of page alerts  -->
                 <div>
-                    <p
-                        class="page-eyebrow text-uppercase small fw-semibold mb-2">Vendor
-                        workspace</p>
-                    <h1 class="h2 mb-2">Vendor Dashboard - <span
-                            th:text="${currentVendor.businessName}">Business
+                    <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Vendor workspace</p>
+                    <h1 class="h2 mb-2">Vendor Dashboard - <span th:text="${currentVendor.businessName}">Business
                             name</span></h1>
-                    <p class="text-secondary mb-0">Products and performance for
-                        <strong><span
-                                th:text="${currentVendor.businessName}">Business
-                                name</span></strong>
+                    <p class="text-secondary mb-0">Products and performance for <strong><span
+                                  th:text="${currentVendor.businessName}">Business name</span></strong>
                     </p>
                 </div>
                 <a class="btn btn-primary"
-                    th:href="@{/products/product-add}">Add product</a>
+                   th:href="@{/products/product-add}">Add product</a>
             </header>
             <div class="justify-items-center gap-3">
-                <a href="#vendor-sales-heading">Your
-                    sales</a>
+                <a href="#vendor-sales-heading">Your sales</a>
                 <a href="#vendor-products-heading">Your products</a>
             </div>
-            <th:block
-                th:with="outOfStockCount=${#lists.size(products.?[productQuantity <= 0])},
+            <th:block th:with="outOfStockCount=${#lists.size(products.?[productQuantity <= 0])},
             lowStockCount=${#lists.size(products.?[productQuantity > 0 and productQuantity <= lowStockThreshold])}">
-                <div class="alert alert-danger" role="alert"
-                    th:if="${outOfStockCount > 0}">
-                    <strong><span
-                            th:text="${outOfStockCount}">0</span></strong>
-                    of your products are out of stock
-                    <a class="alert-link"
-                        th:href="@{/products(filter='outOfStockCurrentVendor')}">click
-                        to view products</a>
+                <div class="alert alert-danger"
+                     role="alert"
+                     th:if="${outOfStockCount > 0}">
+                    <strong><span th:text="${outOfStockCount}">0</span></strong> of your products are out of stock <a
+                       class="alert-link"
+                       th:href="@{/products(filter='outOfStockCurrentVendor')}">click to view products</a>
                 </div>
                 <!-- Low stock threshold alert banner  -->
-                <div class="alert alert-warning" role="alert"
-                    th:if="${lowStockCount > 0}">
-                    <strong><span
-                            th:text="${lowStockCount}">0</span></strong>
-                    of your products are below your set stock thresholds
-                    <a class="alert-link"
-                        th:href="@{/products(filter='lowStockCurrentVendor')}">Click
-                        to view products</a>
+                <div class="alert alert-warning"
+                     role="alert"
+                     th:if="${lowStockCount > 0}">
+                    <strong><span th:text="${lowStockCount}">0</span></strong> of your products are below your set stock
+                    thresholds <a class="alert-link"
+                       th:href="@{/products(filter='lowStockCurrentVendor')}">Click to view products</a>
                 </div>
             </th:block>
             <!-- Vendor performance summary -->
             <section class="card border-0 shadow-sm"
-                aria-labelledby="vendor-performance-heading">
+                     aria-labelledby="vendor-performance-heading">
                 <div class="card-body border-bottom">
                     <h2 id="vendor-performance-heading"
-                        class="h5 mb-1">Vendor
-                        performance</h2>
-                    <p class="text-secondary small mb-0">Listings,
-                        sales,
-                        revenue, and customer feedback.</p>
+                        class="h5 mb-1">Vendor performance</h2>
+                    <p class="text-secondary small mb-0">Listings, sales, revenue, and customer feedback.</p>
                 </div>
                 <div class="table-responsive container">
                     <table class="table table-hover site-table mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col"># Products
-                                    listed</th>
+                                <th scope="col"># Products listed</th>
                                 <th scope="col"># Sales</th>
                                 <th scope="col"># Units sold</th>
                                 <th scope="col">Revenue</th>
-                                <th scope="col">Average
-                                    Rating</th>
+                                <th scope="col">Average Rating</th>
                                 <th scope="col"># Reviews</th>
                                 <th scope="col">Vendor Ranking</th>
                             </tr>
@@ -92,31 +80,25 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <span
-                                        th:text="${productsListedCount}"></span>
+                                    <span th:text="${productsListedCount}"></span>
                                 </td>
                                 <td
                                     th:text="${currentVendor.salesCount != null ? currentVendor.salesCount : 'Not available'}">
-                                    Sales
-                                </td>
+                                    Sales </td>
                                 <td th:text="${vendorUnitsSold}"></td>
                                 <td>
-                                    <span
-                                        th:if="${currentVendor.salesRevenue != null}">$<span
-                                            th:text="${#numbers.formatDecimal(currentVendor.salesRevenue, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
-                                    <span
-                                        th:unless="${currentVendor.salesRevenue != null}">Not
-                                        available</span>
+                                    <span th:if="${currentVendor.salesRevenue != null}">$<span
+                                              th:text="${#numbers.formatDecimal(currentVendor.salesRevenue, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
+                                    <span th:unless="${currentVendor.salesRevenue != null}">Not available</span>
                                 </td>
-                                <td><span
-                                        th:unless="${vendorRatingStats.averageRating == null}"
-                                        th:text="${#numbers.formatDecimal(vendorRatingStats.averageRating, 1, 2)}"
-                                        class="bi bi-star-fill text-warning">0</span></td>
-                                <td><span
-                                        th:unless="${vendorRatingStats.reviewsCount <= 0}"
-                                        th:text="${vendorRatingStats.reviewsCount}">0</span></td>
+                                <td><span th:unless="${vendorRatingStats.averageRating == null}"
+                                          th:text="${#numbers.formatDecimal(vendorRatingStats.averageRating, 1, 2)}"
+                                          class="bi bi-star-fill text-warning">0</span></td>
+                                <td><span th:unless="${vendorRatingStats.reviewsCount <= 0}"
+                                          th:text="${vendorRatingStats.reviewsCount}">0</span></td>
                                 <td
-                                    th:text="|#${vendorRank.salesRank != null ? vendorRank.salesRank : 'No stats found.'}|"></td>
+                                    th:text="|#${vendorRank.salesRank != null ? vendorRank.salesRank : 'No stats found.'}|">
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -124,24 +106,21 @@
             </section>
             <div class="container mb-2 mt-4">
                 <span class="alert alert-success"
-                    th:if="${successMessage}"
-                    th:text="${successMessage}"></span>
-                <span class="alert alert-danger" th:if="${errorMessage}"
-                    th:text="${errorMessage}"></span>
+                      th:if="${successMessage}"
+                      th:text="${successMessage}"></span>
+                <span class="alert alert-danger"
+                      th:if="${errorMessage}"
+                      th:text="${errorMessage}"></span>
             </div>
             <section class="card border-0 shadow-sm mt-4"
-                aria-labelledby="vendor-products-heading">
+                     aria-labelledby="vendor-products-heading">
                 <div class="card-body border-bottom">
                     <h2 id="vendor-products-heading"
-                        class="h5 mb-1">Your
-                        products</h2>
-                    <p class="text-secondary small mb-0">Inventory
-                        listed by
-                        your business.</p>
+                        class="h5 mb-1">Your products</h2>
+                    <p class="text-secondary small mb-0">Inventory listed by your business.</p>
                 </div>
                 <div>
-                    <table
-                        class="table-responsive table table-hover table-striped table-sm site-table mb-0">
+                    <table class="table-responsive table table-hover table-striped table-sm site-table mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">ID</th>
@@ -162,26 +141,26 @@
                                 <td>
                                     <form class="name-edit-form"
                                           hidden
-                                        th:action="@{/vendor/products/{id}/name(id=${product.id})}"
-                                        method="post">
+                                          th:action="@{/vendor/products/{id}/name(id=${product.id})}"
+                                          method="post">
                                         <label class="visually-hidden"
                                                th:for="|product-name-${product.id}|">Product name</label>
                                         <input type="text"
-                                            name="productName"
-                                            maxlength="255"
-                                            required
-                                            th:attr="size=${#strings.length(product.productName)}"
-                                            th:id="|product-name-${product.id}|"
-                                            th:value="${product.productName}">
+                                               name="productName"
+                                               maxlength="255"
+                                               required
+                                               th:attr="size=${#strings.length(product.productName)}"
+                                               th:id="|product-name-${product.id}|"
+                                               th:value="${product.productName}">
                                         <button type="submit"
-                                            class="btn btn-success edit-submit">Save</button>
+                                                class="btn btn-success edit-submit">Save</button>
                                         <button type="button"
-                                            class="btn btn-danger edit-cancel">Cancel</button>
+                                                class="btn btn-danger edit-cancel">Cancel</button>
                                     </form>
                                     <span class="product-name"
-                                        th:text="${product.productName}"></span>
+                                          th:text="${product.productName}"></span>
                                     <button type="button"
-                                        class="bi bi-pencil-fill btn name-edit-button"></button>
+                                            class="bi bi-pencil-fill btn name-edit-button"></button>
                                     <span th:if="${product.productQuantity <= 0}"
                                           class="badge text-bg-danger">Out of stock</span>
                                     <span th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold}"
@@ -198,80 +177,75 @@
                                     </span>
                                 </td>
                                 <td class="actions-column">
-                                    <form class="product-action-form"
-                                        sec:authorize="hasRole('VENDOR')"
-                                        th:action="@{/products/update/{id}(id=${product.id})}"
-                                        method="get">
-                                        <button
-                                            th:if="${product.productQuantity <= 0}"
-                                            class="btn btn-sm btn-outline-primary"
-                                            type="submit">Restock</button>
-                                        <button
-                                            th:unless="${product.productQuantity <= 0}"
-                                            class="btn btn-sm btn-outline-primary"
-                                            type="submit">Update</button>
-                                    </form>
-                                    <form class="product-action-form"
-                                        sec:authorize="hasRole('VENDOR')"
-                                        th:action="@{/products/delete/{id}(id=${product.id})}"
-                                        method="post">
-                                        <button
-                                            class="btn btn-sm btn-outline-danger"
-                                            type="submit">Delete</button>
-                                    </form>
+                                    <div class="action-buttons">
+                                        <form class="product-action-form"
+                                              sec:authorize="hasRole('VENDOR')"
+                                              th:action="@{/products/update/{id}(id=${product.id})}"
+                                              method="get">
+                                            <button th:if="${product.productQuantity <= 0}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    type="submit">Restock</button>
+                                            <button th:unless="${product.productQuantity <= 0}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    type="submit">Update</button>
+                                        </form>
+                                        <form class="product-action-form"
+                                              sec:authorize="hasRole('VENDOR')"
+                                              th:action="@{/products/delete/{id}(id=${product.id})}"
+                                              method="post">
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                    type="submit">Delete</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(products)}">
                                 <td colspan="7"
-                                    class="text-secondary py-4 text-center">No
-                                    products listed yet.</td>
+                                    class="text-secondary py-4 text-center">No products listed yet.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div
-                    th:replace="~{fragments/fragments :: pagination(${productPager}, 'Product pages')}"></div>
+                <div th:replace="~{fragments/fragments :: pagination(${productPager}, 'Product pages')}"></div>
             </section>
             <section class="card border-0 shadow-sm mt-4"
-                aria-labelledby="vendor-sales-heading">
-                <div
-                    class="card-body border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
+                     aria-labelledby="vendor-sales-heading">
+                <div class="card-body border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
                     <div>
                         <h2 id="vendor-sales-heading"
-                            class="h5 mb-1">Your
-                            sales</h2>
-                        <p class="text-secondary small mb-0">Recent
-                            sales</p>
+                            class="h5 mb-1">Your sales <span class="text-muted fw-semibold"
+                                  th:text="|(${#lists.size(orderDetails)})|"></span></h2>
+                        <p class="text-secondary small mb-0">Recent sales</p>
                     </div>
-                    <form method="get" action>
-                        <input type="hidden" name="productPage"
-                            th:value="${productPage}">
+                    <form method="get"
+                          action>
+                        <input type="hidden"
+                               name="productPage"
+                               th:value="${productPage}">
                         <label class="visually-hidden"
-                            for="sales-status-filter">
-                            Filter sales by status
-                        </label>
-                        <select id="sales-status-filter" name="status"
-                            class="form-select"
-                            style="max-width: 220px"
-                            onchange="this.form.submit()">
+                               for="sales-status-filter"> Filter sales by status </label>
+                        <select id="sales-status-filter"
+                                name="status"
+                                class="form-select"
+                                style="max-width: 220px"
+                                onchange="this.form.submit()">
                             <option value
-                                th:selected="${#strings.isEmpty(status)}">All
-                                statuses</option>
+                                    th:selected="${#strings.isEmpty(status)}">All statuses</option>
                             <option value="Processing"
-                                th:selected="${status == 'Processing'}">Processing</option>
+                                    th:selected="${status == 'Processing'}">Processing</option>
                             <option value="Accepted"
-                                th:selected="${status == 'Accepted'}">Accepted</option>
+                                    th:selected="${status == 'Accepted'}">Accepted</option>
                             <option value="Shipped"
-                                th:selected="${status == 'Shipped'}">Shipped</option>
+                                    th:selected="${status == 'Shipped'}">Shipped</option>
                             <option value="Delivered"
-                                th:selected="${status == 'Delivered'}">Delivered</option>
+                                    th:selected="${status == 'Delivered'}">Delivered</option>
                             <option value="Completed"
-                                th:selected="${status == 'Completed'}">Completed</option>
+                                    th:selected="${status == 'Completed'}">Completed</option>
                         </select>
                     </form>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover site-table mb-0">
+                    <table class="table table-sm table-hover site-table mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">Order Id</th>
@@ -287,103 +261,86 @@
                             <tr th:each="orderDetail : ${orderDetails}">
                                 <td>
                                     <a th:text="${orderDetail.orderId}"
-                                        th:href="@{/vendor/orders/view/{orderId}(orderId=${orderDetail.orderId})}"></a></td>
+                                       th:href="@{/vendor/orders/view/{orderId}(orderId=${orderDetail.orderId})}"></a>
+                                </td>
                                 <td
-                                    th:text="${#temporals.format(orderDetail.creationDate,'MMMM d, yyyy ''at'' h:mm a')}"></td>
+                                    th:text="${#temporals.format(orderDetail.creationDate,'MMMM d, yyyy ''at'' h:mm a')}">
+                                </td>
                                 <td>
-                                    <ul
-                                        th:if="${!#lists.isEmpty(orderDetail.items)}"
+                                    <ul th:if="${!#lists.isEmpty(orderDetail.items)}"
                                         class="list-group list-group-horizontal flex-wrap gap-1 border-0 mb-0">
-                                        <li
-                                            class="list-group-item border-0 rounded-pill bg-light-subtle px-2 py-1 small"
+                                        <li class="list-group-item border-0 rounded-pill bg-light-subtle px-2 py-1 small"
                                             th:each="item : ${orderDetail.items}"
                                             th:text="${item.quantity + 'x ' + item.productName}">item</li>
                                     </ul>
-                                    <span
-                                        th:unless="${!#lists.isEmpty(orderDetail.items)}"
-                                        class="text-secondary">No
-                                        items</span>
+                                    <span th:unless="${!#lists.isEmpty(orderDetail.items)}"
+                                          class="text-secondary">No items</span>
                                 </td>
-                                <td> <span
-                                        th:text="
+                                <td> <span th:text="
                                         |$${#numbers.formatDecimal(orderDetail.total,
                                         1, 'COMMA', 2, 'POINT')}|"></span></td>
-                                <td
-                                    th:text="${orderDetail.buyerId}"></td>
+                                <td th:text="${orderDetail.buyerId}"></td>
                                 <!-- Conditional status badge color rendering -->
-                                <td
-                                    th:switch="${#strings.toLowerCase(orderDetail.status)}">
+                                <td th:switch="${#strings.toLowerCase(orderDetail.status)}">
                                     <span th:case="'processing'"
-                                        class="badge text-bg-secondary"
-                                        th:text="${orderDetail.status}"></span>
+                                          class="badge text-bg-secondary"
+                                          th:text="${orderDetail.status}"></span>
                                     <span th:case="'delivered'"
-                                        class="badge text-bg-success"
-                                        th:text="${orderDetail.status}"></span>
+                                          class="badge text-bg-success"
+                                          th:text="${orderDetail.status}"></span>
                                     <span th:case="'accepted'"
-                                        class="badge text-bg-primary"
-                                        th:text="${orderDetail.status}"></span>
+                                          class="badge text-bg-primary"
+                                          th:text="${orderDetail.status}"></span>
                                     <span th:case="'shipped'"
-                                        class="badge text-bg-success"
-                                        th:text="${orderDetail.status}"></span>
+                                          class="badge text-bg-success"
+                                          th:text="${orderDetail.status}"></span>
                                     <span th:case="*"
-                                        class="badge text-bg-warning"
-                                        th:text="${orderDetail.status}"></span>
+                                          class="badge text-bg-warning"
+                                          th:text="${orderDetail.status}"></span>
                                 </td>
                                 <td>
                                     <!-- Order accept button  -->
-                                    <form
-                                        th:if="${#strings.equals(orderDetail.status, 'Processing')}"
-                                        th:action="@{/vendor/orders/{orderId}/status(orderId=${orderDetail.orderId}, status='Accepted')}"
-                                        method="post">
+                                    <form th:if="${#strings.equals(orderDetail.status, 'Processing')}"
+                                          th:action="@{/vendor/orders/{orderId}/status(orderId=${orderDetail.orderId}, status='Accepted')}"
+                                          method="post">
                                         <button type="submit"
-                                            class="btn btn-link p-0 text-decoration-none"
-                                            style="font-size: small; color: var(--portal-accent);">
-                                            <i
-                                                class="bi bi-check-circle me-1"
-                                                aria-hidden="true"></i>Accept
-                                            order
-                                        </button>
+                                                class="btn btn-link p-0 text-decoration-none"
+                                                style="font-size: small; color: var(--portal-accent);">
+                                            <i class="bi bi-check-circle me-1"
+                                               aria-hidden="true"></i>Accept order </button>
                                     </form>
                                     <!-- Add shipping details button (if status = Accepted) -->
-                                    <div
-                                        th:if="${#strings.equals(orderDetail.status, 'Accepted')}">
-                                        <a
-                                            th:href="@{/vendor/orders/{orderId}/shipping(orderId=${orderDetail.orderId})}"
-                                            style="font-size: small;"
-                                            type="submit">
-                                            + Add tracking details </a>
-                                        <a
-                                            th:href="@{/vendor/order-pick-list/{orderId}(orderId=${orderDetail.orderId})}"
-                                            style="font-size: small;"
-                                            type="submit"
-                                            class="bi bi-eye">
-                                            View order picklist </a>
+                                    <div th:if="${#strings.equals(orderDetail.status, 'Accepted')}">
+                                        <a th:href="@{/shipping/shipments/new/{orderId}(orderId=${orderDetail.orderId})}"
+                                           style="font-size: small;"
+                                           type="submit"> + Add tracking details </a>
+                                        <a th:href="@{/vendor/order-pick-list/{orderId}(orderId=${orderDetail.orderId})}"
+                                           style="font-size: small;"
+                                           type="submit"
+                                           class="bi bi-eye"> View order picklist </a>
                                     </div>
                                     <!-- View tracking button (if order status = Shipped) -->
                                     <a class="bi bi-truck"
-                                        style="font-size: small;"
-                                        th:if="${#strings.equals(orderDetail.status, 'Shipped')}"
-                                        th:href="@{/vendor/tracking/view(trackingNumber=${orderDetail.trackingNumber}, carrier=${orderDetail.carrier})}">
-                                        View tracking
-                                    </a>
+                                       style="font-size: small;"
+                                       th:if="${#strings.equals(orderDetail.status, 'Shipped') and orderDetail.shipmentId != null}"
+                                       th:href="@{/shipping/shipments/{shipmentId}/label(shipmentId=${orderDetail.shipmentId})}">
+                                        View tracking </a>
                                 </td>
                             </tr>
                             <!-- If no orders displayed for current vendor  -->
                             <tr th:if="${#lists.isEmpty(orderDetails)}">
                                 <td colspan="6"
-                                    class="text-secondary py-4 text-center">No
-                                    sales recorded yet.</td>
+                                    class="text-secondary py-4 text-center">No sales recorded yet.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div
-                    th:replace="~{fragments/fragments :: pagination(${salesPager}, 'Sales pages')}"></div>
+                <div th:replace="~{fragments/fragments :: pagination(${salesPager}, 'Sales pages')}"></div>
             </section>
         </main>
         <footer class="container py-3">
-            <div
-                th:replace="~{fragments/fragments :: site-footer}"></div>
+            <div th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
     </body>
+
 </html>
