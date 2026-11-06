@@ -101,7 +101,11 @@
                     <div class="card-body">
                         <h5 class="card-title">Details</h5>
                         <ul class="payment-details-list">
-                            <li><strong>Paid with:</strong> </li>
+                                <li><span
+                                          th:text="| Paid with: ${#strings.toUpperCase(orderDetails.cardBrand)} |"></span>
+                                    <span class="text-secondary"
+                                          th:text="|(ending in: ${orderDetails.cardLast4})|"></span>
+                                </li>
                             <li></li>
                             <li></li>
                             <li>Sales Tax:</li>
@@ -111,6 +115,34 @@
                     </div>
                 </div>
             </section>
+                <section class="shipment-details mt-3"
+                         th:unless="${#lists.isEmpty(shipments)}">
+                    <div class="card text-dark bg-light mb-3 payment-details-card"
+                         style="max-width: 18rem;"
+                         th:each="shipment : ${shipments}">
+                        <div class="card-header">Tracking Details</div>
+                        <div class="card-body">
+                            <h5 class="card-title"
+                                th:text="${shipment.vendorBusinessName}">Vendor</h5>
+                            <ul class="shipment-details-list ps-0">
+                                <li><strong>Status:</strong> <span th:text="${shipment.status}"></span></li>
+                                <li><strong>Shipped With:</strong> <span th:text="${shipment.carrier}"></span></li>
+                                <li><strong>Tracking number:</strong> <a th:href="${shipment.trackingUrl}"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       th:text="${shipment.trackingNumber}"></a>
+                                </li>
+                                <li><strong>Estimated delivery date: </strong> <span
+                                          th:text="${#temporals.format(estimatedDeliveryDate, 'yyyy-MM-dd')}"></span>
+                                </li>
+                                <li th:if="${shipment.trackingUrl}"><a th:href="${shipment.trackingUrl}"
+                                       target="_blank"
+                                       rel="noopener noreferrer">Track package</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </main>
         <footer class="container py-3">
             <div th:replace="~{fragments/fragments :: site-footer}"></div>
