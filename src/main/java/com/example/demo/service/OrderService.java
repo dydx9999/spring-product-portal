@@ -212,7 +212,7 @@ public class OrderService {
     @Transactional
     public void updateStatus(UUID orderId, Long vendorId, String newStatus) {
         List<String> validStatusList = List.of("Processing", "Pending payment", "Delivered", "Shipped", "Delivered",
-                "Accepted");
+                "Accepted", "Cancelled");
         if (!validStatusList.contains(newStatus)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order status");
         }
@@ -228,6 +228,10 @@ public class OrderService {
         if (currentStatus.equals("Accepted") && !newStatus.equals("Shipped")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Status update failed. Please try again with a valid tracking number.");
+        }
+        if (currentStatus.equals("Pending payment") && !newStatus.equals("Cancelled")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Status update failed. Unable to cancel order.");
         }
         if (currentStatus.equals("Shipped") && !newStatus.equals("Delivered")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

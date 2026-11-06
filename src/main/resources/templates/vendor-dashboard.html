@@ -295,6 +295,9 @@
                                     <span th:case="'shipped'"
                                           class="badge text-bg-success"
                                           th:text="${orderDetail.status}"></span>
+                                    <span th:case="'cancelled'"
+                                          class="badge text-bg-danger"
+                                          th:text="${orderDetail.status}"></span>
                                     <span th:case="*"
                                           class="badge text-bg-warning"
                                           th:text="${orderDetail.status}"></span>
@@ -309,6 +312,16 @@
                                                 style="font-size: small; color: var(--portal-accent);">
                                             <i class="bi bi-check-circle me-1"
                                                aria-hidden="true"></i>Accept order </button>
+                                    </form>
+                                    <!-- Delete pending payment order button -->
+                                    <form th:if="${#strings.equals(orderDetail.status, 'Pending payment')}"
+                                          th:action="@{/vendor/orders/{orderId}/status(orderId=${orderDetail.orderId}, status='Cancelled')}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-link p-0 text-decoration-none"
+                                                style="font-size: small; color: var(--portal-accent);">
+                                            <i class="bi bi-check-circle me-1"
+                                               aria-hidden="true"></i>Cancel order </button>
                                     </form>
                                     <!-- Add shipping details button (if status = Accepted) -->
                                     <div th:if="${#strings.equals(orderDetail.status, 'Accepted')}">
@@ -326,6 +339,9 @@
                                        th:if="${#strings.equals(orderDetail.status, 'Shipped') and orderDetail.shipmentId != null}"
                                        th:href="@{/shipping/shipments/{shipmentId}/label(shipmentId=${orderDetail.shipmentId})}">
                                         View tracking </a>
+                                    <span
+                                          th:if="${#strings.equals(orderDetail.status, 'Shipped') and orderDetail.shipmentId == null}">No
+                                        tracking details found.</span>
                                 </td>
                             </tr>
                             <!-- If no orders displayed for current vendor  -->
