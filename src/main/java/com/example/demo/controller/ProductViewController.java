@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -265,16 +266,20 @@ public class ProductViewController {
     @GetMapping("/view/{productId}")
     public String showProductPage(@PathVariable("productId") Long productId, Model model) {
         Product requestedProduct = productService.searchProductById(productId);
+        Long unitsSold = productRepository.findUnitsSoldByProductId(productId);
+        List<ProductReviewPageDTO> productReviews = productService.getReviewsByProductId(productId);
+        List<ProductSalesHistoryDTO> productSalesHistory = productService.getProductSalesHistory(productId);
+        List<Product> vendorProducts = productRepository.findByVendorNameIgnoreCase(requestedProduct.getVendorName(),
+                Sort.by(Product::getProductPrice));
+        model.addAttribute("vendorProducts", vendorProducts);
+        model.addAttribute("productSalesHistory", productSalesHistory);
         model.addAttribute("product", requestedProduct);
         model.addAttribute(
                 "averageRating",
                 reviewRepository.findAverageRatingByProductId(productId));
-        Long unitsSold = productRepository.findUnitsSoldByProductId(productId);
+        model.addAttribute("productReviews", productReviews);
         model.addAttribute("unitsSold", unitsSold);
-List<ProductReviewPageDTO> productReviews = productService.getReviewsByProductId(productId);
-model.addAttribute("productReviews", productReviews);
-        List<ProductSalesHistoryDTO> productSalesHistory = productService.getProductSalesHistory(productId);
-        model.addAttribute("productSalesHistory", productSalesHistory);
+
                 return "product-view-single";
     }
 
