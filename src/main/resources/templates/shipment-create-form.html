@@ -84,7 +84,8 @@
                            th:field="*{__${prefix}__.__${f[0]}__}"
                            th:placeholder="${f[1]}"
                            th:required="${f[3]}"
-                           th:errorclass="is-invalid">
+                           th:errorclass="is-invalid"
+                           maxlength="2">
                     <div class="invalid-feedback"
                          th:errors="*{__${prefix}__.__${f[0]}__}"></div>
                 </div>
