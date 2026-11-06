@@ -93,9 +93,10 @@
                                 </td>
                                 <td><span th:unless="${vendorRatingStats.averageRating == null}"
                                           th:text="${#numbers.formatDecimal(vendorRatingStats.averageRating, 1, 2)}"
-                                          class="bi bi-star-fill text-warning">0</span></td>
-                                <td><span th:unless="${vendorRatingStats.reviewsCount <= 0}"
-                                          th:text="${vendorRatingStats.reviewsCount}">0</span></td>
+                                          class="bi bi-star-fill text-warning">0</span>
+                                    <span th:if="${vendorRatingStats.averageRating == null}">No reviews yet.</span>
+                                </td>
+                                <td><span th:text="${vendorRatingStats.reviewsCount}">0</span></td>
                                 <td
                                     th:text="|#${vendorRank.salesRank != null ? vendorRank.salesRank : 'No stats found.'}|">
                                 </td>
