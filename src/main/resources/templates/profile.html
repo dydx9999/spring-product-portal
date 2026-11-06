@@ -13,8 +13,6 @@
               th:href="@{/css/styles.css}">
         <link rel="stylesheet"
               href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
-        <script th:src="@{/js/profile.js}"
-                defer></script>
     </head>
 
     <body class="site-page">
@@ -106,57 +104,56 @@
                     </div>
                 </section>
             </section>
-                <!-- Buyer reviews -->
-                <section class="card border-0 shadow-sm"
-                         aria-labelledby="account-details-heading"
-                         sec:authorize="hasRole('USER')">
-                    <div class="card-body p-4">
-                        <div
-                             class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
-                            <div>
-                                <h2 id="review-details-heading"
-                                    class="h5 mb-1">Your reviews<strong><span
-                                              th:text="| (${reviewPager.totalItems})|"></span></strong></h2>
-                                <p class="text-secondary small mb-0">Reviews you previously submitted.</p>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover site-table mb-0 table-sm">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">Product Name</th>
-                                        <th scope="col">Rating</th>
-                                        <th scope="col">Comment</th>
-                                        <th scope="col">Reviewed on</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="review : ${buyerReviews}">
-                                        <td>
-                                            <a th:if="${review.productId != null}"
-                                               th:href="@{/products/view/{productId}(productId=${review.productId})}"
-                                               th:text="${review.productName}">Product name</a>
-                                            <span th:unless="${review.productId != null}"
-                                                  th:text="${review.productName}">Product name</span>
-                                        </td>
-                                        <td>
-                                            <span class="text-warning"
-                                                  th:each="i : ${#numbers.sequence(1, 5)}">
-                                                <i
-                                                   th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
-                                            </span>
-                                        </td>
-                                        <td th:text="${review.comment}"></td>
-                                        <td class="text text-secondary fst-italic"
-                                            th:text="${#temporals.format(review.createdAt, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            <!-- Buyer reviews -->
+            <section class="card border-0 shadow-sm"
+                     aria-labelledby="account-details-heading"
+                     sec:authorize="hasRole('USER')">
+                <div class="card-body p-4">
+                    <div
+                         class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
+                        <div>
+                            <h2 id="review-details-heading"
+                                class="h5 mb-1">Your reviews<strong><span
+                                          th:text="| (${reviewPager.totalItems})|"></span></strong></h2>
+                            <p class="text-secondary small mb-0">Reviews you previously submitted.</p>
                         </div>
                     </div>
-                    <div th:replace="~{fragments/fragments :: pagination(${reviewPager}, 'Review pages')}"></div>
-                </section>
+                    <div class="table-responsive">
+                        <table class="table table-hover site-table mb-0 table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Rating</th>
+                                    <th scope="col">Comment</th>
+                                    <th scope="col">Reviewed on</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="review : ${buyerReviews}">
+                                    <td>
+                                        <a th:if="${review.productId != null}"
+                                           th:href="@{/products/view/{productId}(productId=${review.productId})}"
+                                           th:text="${review.productName}">Product name</a>
+                                        <span th:unless="${review.productId != null}"
+                                              th:text="${review.productName}">Product name</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-warning"
+                                              th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                                        </span>
+                                    </td>
+                                    <td th:text="${review.comment}"></td>
+                                    <td class="text text-secondary fst-italic"
+                                        th:text="${#temporals.format(review.createdAt, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:replace="~{fragments/fragments :: pagination(${reviewPager}, 'Review pages')}"></div>
+            </section>
         </main>
     </body>
 
