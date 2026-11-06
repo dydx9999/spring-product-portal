@@ -1,12 +1,17 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.easypost.exception.EasyPostException;
 import com.easypost.model.Rate;
 import com.easypost.model.Shipment;
+import com.easypost.model.Tracker;
 import com.easypost.service.EasyPostClient;
 import com.example.demo.dto.ShipmentCreateFormDTO;
 import com.example.demo.dto.ShipmentLabelDTO;
@@ -25,6 +31,8 @@ import com.example.demo.repository.OrderRepository;
 
 @Service
 public class ShippingService {
+
+    private static final Logger log = LoggerFactory.getLogger(ShippingService.class);
 
     // Prefix match: EasyPost names vary by account type (e.g. FedExDefault, UPSDAP)
     private static final List<String> ALLOWED_CARRIERS = List.of("USPS", "UPS", "FedEx");
@@ -96,6 +104,49 @@ public class ShippingService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "No label has been purchased for this shipment");
         }
         return toLabelDTO(shipment);
+    }
+
+    public void syncDeliveredShipments(UUID orderId, Long buyerId) {
+        for (Order order : orderRepository.findByOrderIdAndBuyerId(orderId, buyerId)) {
+            if (!"Shipped".equals(order.getStatus()) || order.getShipmentId() == null) {
+                continue;
+            }
+            try {
+                Tracker tracker = easyPostClient.shipment.retrieve(order.getShipmentId()).getTracker();
+                if (tracker != null && "delivered".equals(tracker.getStatus())) {
+                    orderService.updateStatus(orderId, order.getVendorId(), "Delivered");
+                }
+            } catch (EasyPostException e) {
+                // An EasyPost outage shouldn't stop the buyer viewing their order
+                log.warn("Tracker lookup failed for shipment {}: {}", order.getShipmentId(), e.getMessage());
+            }
+        }
+    }
+
+    public LocalDateTime calculateDeliveryDate(String shipmentId) {
+        if (shipmentId == null || shipmentId.isBlank()) {
+            return null;
+        }
+        Shipment shipment;
+        try {
+            shipment = easyPostClient.shipment.retrieve(shipmentId);
+        } catch (EasyPostException e) {
+            log.warn("Delivery estimate lookup failed for shipment {}: {}", shipmentId, e.getMessage());
+            return null;
+        }
+        if (shipment == null || shipment.getPostageLabel() == null
+                || shipment.getPostageLabel().getCreatedAt() == null
+                || shipment.getSelectedRate() == null
+                || shipment.getSelectedRate().getEstDeliveryDays() == null) {
+            return null;
+        }
+        Instant instant = (shipment.getPostageLabel().getCreatedAt()).toInstant();
+        LocalDateTime labelPurchaseDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+
+        int estimatedDays = (shipment.getSelectedRate().getEstDeliveryDays()).intValue();
+        LocalDateTime estimatedDeliveryDate = labelPurchaseDate.plusDays(estimatedDays);
+        return estimatedDeliveryDate;
+
     }
 
     private static UUID orderIdFrom(Shipment shipment) {
