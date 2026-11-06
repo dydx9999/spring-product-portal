@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
         <title>Order History</title>
         <link rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
     </head>
 
     <body class="site-page">
-        <div
-            th:replace="~{fragments/fragments :: site-navigation('orders')}"></div>
+        <div th:replace="~{fragments/fragments :: site-navigation('orders')}"></div>
         <main class="container py-4">
             <header class="mb-4">
-                <p
-                    class="page-eyebrow text-uppercase small fw-semibold mb-2">Orders</p>
-                <h1 class="h2 mb-2">Your order history: <strong><span
-                            th:text="${username}"></span></strong></h1>
+                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Orders</p>
+                <h1 class="h2 mb-2">Your order history: <strong><span th:text="${username}"></span></strong></h1>
                 <p class="text-secondary mb-0">Review your previous orders.</p>
             </header>
             <!-- Order history table -->
@@ -37,38 +37,35 @@
                         <tbody>
                             <tr class="order-row"
                                 th:each="order : ${orderSummary}">
-                                <td><a
-                                        th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}"><span
-                                            th:text="${order.orderId}"></span></a></td>
-
+                                <td><a th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}"><span
+                                              th:text="${order.orderId}"></span></a></td>
                                 <td
-                                    th:text="${#temporals.format(order.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></td>
+                                    th:text="${#temporals.format(order.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}">
+                                </td>
                                 <td>$<span
-                                        th:text="${#numbers.formatDecimal(order.total, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
-                                <td
-                                    th:switch="${#strings.toLowerCase(order.status)}">
+                                          th:text="${#numbers.formatDecimal(order.total, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                                </td>
+                                <td th:switch="${#strings.toLowerCase(order.status)}">
                                     <span th:case="'processing'"
-                                        class="badge text-bg-secondary"
-                                        th:text="${order.status}"></span>
+                                          class="badge text-bg-secondary"
+                                          th:text="${order.status}"></span>
                                     <span th:case="'pending payment'"
-                                        class="badge text-bg-warning"
-                                        th:text="${order.status}"></span>
+                                          class="badge text-bg-warning"
+                                          th:text="${order.status}"></span>
                                     <span th:case="'delivered'"
-                                        class="badge text-bg-success"
-                                        th:text="${order.status}"></span>
+                                          class="badge text-bg-success"
+                                          th:text="${order.status}"></span>
                                     <span th:case="'shipped'"
-                                        class="badge text-bg-info"
-                                        th:text="${order.status}"></span>
+                                          class="badge text-bg-info"
+                                          th:text="${order.status}"></span>
                                     <span th:case="'accepted'"
-                                        class="badge text-bg-primary"
-                                        th:text="${order.status}"></span>
+                                          class="badge text-bg-primary"
+                                          th:text="${order.status}"></span>
                                 </td>
                                 <td>
                                     <a class="order-single-link"
-                                        th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}">View
-                                        details</a>
+                                       th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}">View details</a>
                                 </td>
-
                             </tr>
                         </tbody>
                     </table>

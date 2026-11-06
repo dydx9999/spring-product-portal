@@ -1,77 +1,185 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
         <title>Update Profile</title>
         <link rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
     </head>
 
     <body class="site-page">
-        <div
-            th:replace="~{fragments/fragments :: site-navigation('profile-update')}"></div>
-
+        <div th:replace="~{fragments/fragments :: site-navigation('profile-update')}"></div>
         <main class="container py-4">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-8 col-xl-7">
                     <div class="mb-4">
-                        <p
-                            class="page-eyebrow text-uppercase small fw-semibold mb-2">Update
-                            your account information</p>
+                        <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Update your account information
+                        </p>
                         <h1 class="h2 mb-2">Update your information</h1>
-                        <p class="text-secondary mb-0">Edit the details for your
-                            account.</p>
+                        <p class="text-secondary mb-0">Edit the details for your account.</p>
                     </div>
-                    <form th:action="@{/user/profile/update}" method="post"
-                        th:object="${userForm}" class="site-form">
+                    <div class="alert alert-danger"
+                         th:if="${errorMessage}"
+                         th:text="${errorMessage}"></div>
+                    <form th:action="@{/user/profile/update}"
+                          method="post"
+                          th:object="${userForm}"
+                          class="site-form">
                         <div class="mb-4">
                             <label for="username"
-                                class="form-label fw-semibold">Username</label>
-                            <input id="username" th:field="*{username}"
-                                type="text"
-                                class="form-control form-control-lg"
-                                autocomplete="username" required>
+                                   class="form-label fw-semibold">Username</label>
+                            <input id="username"
+                                   th:field="*{username}"
+                                   type="text"
+                                   class="form-control form-control-lg"
+                                   autocomplete="username"
+                                   required>
                         </div>
                         <div class="mb-4">
                             <label for="password"
-                                class="form-label fw-semibold">New
-                                password</label>
-                            <input id="password" th:field="*{password}"
-                                type="password"
-                                class="form-control form-control-lg"
-                                autocomplete="new-password"
-                                placeholder="Leave blank to keep your current password">
+                                   class="form-label fw-semibold">New password</label>
+                            <input id="password"
+                                   th:field="*{password}"
+                                   type="password"
+                                   class="form-control form-control-lg"
+                                   autocomplete="new-password"
+                                   placeholder="Leave blank to keep your current password">
                         </div>
-                        <div class="mb-4" th:if="${isVendor}">
+                        <div class="mb-4"
+                             th:if="${isVendor}">
                             <label for="businessName"
-                                class="form-label fw-semibold">Business
-                                name</label>
-                            <input id="businessName" th:field="*{businessName}"
-                                type="text"
-                                class="form-control form-control-lg"
-                                autocomplete="organization" required>
+                                   class="form-label fw-semibold">Business name</label>
+                            <input id="businessName"
+                                   th:field="*{businessName}"
+                                   type="text"
+                                   class="form-control form-control-lg"
+                                   autocomplete="organization"
+                                   required>
                         </div>
-                        <div class="mb-4" sec:authorize="hasRole('VENDOR')">
+                        <div class="mb-4"
+                             sec:authorize="hasRole('VENDOR')">
                             <label for="bio"
-                                class="form-label fw-semibold">About your
-                                business</label>
-                            <input id="bio" th:field="*{bio}"
-                                type="text"
-                                class="form-control form-control-lg">
+                                   class="form-label fw-semibold">About your business</label>
+                            <input id="bio"
+                                   th:field="*{bio}"
+                                   type="text"
+                                   class="form-control form-control-lg">
                         </div>
+                        <fieldset class="mb-4">
+                            <legend class="h5 mb-1">Add an address</legend>
+                            <p class="text-secondary small">Optional. Leave blank to skip.</p>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="addressName"
+                                           class="form-label fw-semibold">Full name</label>
+                                    <input id="addressName"
+                                           th:field="*{address.name}"
+                                           type="text"
+                                           class="form-control"
+                                           autocomplete="shipping name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="addressCompany"
+                                           class="form-label fw-semibold">Company</label>
+                                    <input id="addressCompany"
+                                           th:field="*{address.company}"
+                                           type="text"
+                                           class="form-control"
+                                           autocomplete="shipping organization">
+                                </div>
+                                <div class="col-12">
+                                    <label for="addressStreet1"
+                                           class="form-label fw-semibold">Street address</label>
+                                    <input id="addressStreet1"
+                                           th:field="*{address.street1}"
+                                           type="text"
+                                           class="form-control"
+                                           autocomplete="shipping address-line1">
+                                </div>
+                                <div class="col-12">
+                                    <label for="addressStreet2"
+                                           class="form-label fw-semibold">Apt, suite, etc.</label>
+                                    <input id="addressStreet2"
+                                           th:field="*{address.street2}"
+                                           type="text"
+                                           class="form-control"
+                                           autocomplete="shipping address-line2">
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="addressCity"
+                                           class="form-label fw-semibold">City</label>
+                                    <input id="addressCity"
+                                           th:field="*{address.city}"
+                                           type="text"
+                                           class="form-control"
+                                           autocomplete="shipping address-level2">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="addressState"
+                                           class="form-label fw-semibold">State</label>
+                                    <input id="addressState"
+                                           th:field="*{address.state}"
+                                           type="text"
+                                           class="form-control"
+                                           maxlength="2"
+                                           placeholder="CA"
+                                           autocomplete="shipping address-level1">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="addressZip"
+                                           class="form-label fw-semibold">ZIP</label>
+                                    <input id="addressZip"
+                                           th:field="*{address.zip}"
+                                           type="text"
+                                           class="form-control"
+                                           autocomplete="shipping postal-code">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="addressCountry"
+                                           class="form-label fw-semibold">Country</label>
+                                    <input id="addressCountry"
+                                           th:field="*{address.country}"
+                                           type="text"
+                                           class="form-control"
+                                           maxlength="2"
+                                           autocomplete="shipping country">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="addressPhone"
+                                           class="form-label fw-semibold">Phone</label>
+                                    <input id="addressPhone"
+                                           th:field="*{address.phone}"
+                                           type="tel"
+                                           class="form-control"
+                                           autocomplete="shipping tel">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="addressEmail"
+                                           class="form-label fw-semibold">Email</label>
+                                    <input id="addressEmail"
+                                           th:field="*{address.email}"
+                                           type="email"
+                                           class="form-control"
+                                           autocomplete="shipping email">
+                                </div>
+                            </div>
+                        </fieldset>
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-primary" type="submit">Save
-                                changes</button>
+                            <button class="btn btn-primary"
+                                    type="submit">Save changes</button>
                             <a class="btn btn-outline-secondary"
-                                th:href="@{/user/profile}">Cancel</a>
+                               th:href="@{/user/profile}">Cancel</a>
                         </div>
                     </form>
                 </div>
             </div>
         </main>
-
     </body>
+
 </html>
