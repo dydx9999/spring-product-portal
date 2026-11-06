@@ -47,6 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                                 .requestMatchers("/products/wishlist/**").hasRole("USER")
                                                 .requestMatchers("/api/products/vendor-pick-list/**").hasRole("VENDOR")
                                                 .requestMatchers("/users",
+                                                                "/error",
                                                                 "/register/**",
                                                                 "/api/**",
                                                                 "/dashboard/**",

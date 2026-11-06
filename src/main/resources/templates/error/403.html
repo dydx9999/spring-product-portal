@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+        <title>Access denied</title>
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
+    </head>
+
+    <body class="site-page">
+        <main class="container py-5 text-center">
+            <h1 class="h2">403 - Access denied</h1>
+            <p class="text-secondary">You don't have permission to view this page.</p>
+            <button type="button"
+                    class="btn btn-primary"
+                    onclick="history.back()">Go back</button>
+            <a class="btn btn-outline-secondary"
+               th:href="@{/products}">Home</a>
+        </main>
+    </body>
+
+</html>
