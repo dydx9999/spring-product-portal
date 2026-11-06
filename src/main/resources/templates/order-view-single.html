@@ -18,6 +18,7 @@
     <body class="site-page">
         <div th:replace="~{fragments/fragments :: site-navigation('orders')}"></div>
         <main class="container py-4">
+            <div th:fragment="order-details">
             <header class="mb-4">
                 <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Your order</p>
                 <h1 class="h2 mb-2">Order: <strong>#<span th:text="${orderDetails.orderId}"></span></strong></h1>
@@ -30,8 +31,8 @@
                           th:text="${orderDetails.cardLast4}">4242</span> (exp. <span
                           th:text="|${orderDetails.cardExpMonth}/${orderDetails.cardExpYear}|">12/2030</span>)</p>
                 <p class="text-secondary mb-0"
-                   th:if="${orderDetails.cardLast4 == null and orderDetails.paymentMethodType != null}">Paid with <span
-                          th:text="${orderDetails.paymentMethodType}">link</span></p>
+                   th:if="${orderDetails.cardLast4 == null and orderDetails.paymentMethodType != null}">Paid with
+                        <span th:text="${orderDetails.paymentMethodType}">link</span></p>
             </header>
             <!-- Order line items -->
             <div class="container my-3"><span class="alert alert-success"
@@ -75,8 +76,8 @@
                                            th:href="@{/orders/review(orderId=${orderDetails.orderId})}"> Leave a
                                             review</a></span>
                                 </td>
-                            </tr>SELECT * FROM ORDERS ORDER BY creation_date DESC; <tr
-                                th:if="${#lists.isEmpty(orderDetails.items)}">
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(orderDetails.items)}">
                                 <td colspan="5">No line items found for this order.</td>
                             </tr>
                         </tbody>
