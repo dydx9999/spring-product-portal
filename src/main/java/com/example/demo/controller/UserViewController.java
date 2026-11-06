@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,7 @@ public class UserViewController {
     }
 
     // Display all user entries
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public String listUsers(@RequestParam(defaultValue = "1") int page, HttpServletRequest request, Model model) {
         PageView<User> userPager = userService.getUsers(page, PageView.DEFAULT_SIZE).withLinks(request, "page");
