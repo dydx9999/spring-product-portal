@@ -146,7 +146,7 @@ public class OrderService {
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         OrderDetailsDTO details = new OrderDetailsDTO(orderId, creationDate, items, total, status, trackingNumber,
-                carrier, null);
+                carrier, orders.get(0).getShipmentId());
         Order firstOrder = orders.get(0);
         details.setPaymentMethodType(firstOrder.getPaymentMethodType());
         details.setCardBrand(firstOrder.getCardBrand());
