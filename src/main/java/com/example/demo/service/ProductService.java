@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.demo.dto.ProductBestSellersDTO;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductReviewPageDTO;
 import com.example.demo.dto.ProductSalesHistoryDTO;
@@ -81,6 +82,10 @@ public class ProductService {
 
     public List<Product> getProducts() {
         return productRepository.findAll(Sort.by(Product::getId));
+    }
+
+    public List<ProductBestSellersDTO> getBestSellingProducts() {
+        return productRepository.findBestSellingProducts();
     }
 
     public List<Product> searchProductsByName(String productName) {
