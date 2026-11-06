@@ -1,175 +1,186 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <head>
-
+        <title>Fragments</title>
     </head>
 
     <body>
         <div th:fragment="site-navigation(activePage)">
-            <nav class="site-navigation" aria-label="Main navigation">
-                <div
-                    class="container py-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <nav class="site-navigation"
+                 aria-label="Main navigation">
+                <div class="container py-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
                     <ul class="nav nav-pills gap-2 mb-0">
                         <!-- Vendor actions dropdown  -->
-                        <div class="dropdown" sec:authorize="hasRole('VENDOR')">
+                        <div class="dropdown"
+                             sec:authorize="hasRole('VENDOR')">
                             <a class="btn btn-secondary dropdown-toggle"
-                                href="#" role="button" id="dropdownMenuLink"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Vendor Dashboard
-                            </a>
-
+                               href="#"
+                               role="button"
+                               id="dropdownMenuLink"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"> Vendor Dashboard </a>
                             <ul class="dropdown-menu"
                                 aria-labelledby="dropdownMenuLink">
                                 <li class="nav-item">
                                     <a class="dropdown-item"
-                                        th:classappend="${activePage == 'vendor-dashboard'} ? 'active' : ''"
-                                        th:href="@{/vendor}">View vendor
-                                        dashboard</a>
+                                       th:classappend="${activePage == 'vendor-dashboard'} ? 'active' : ''"
+                                       th:href="@{/vendor}">View vendor dashboard</a>
                                 </li>
                                 <li><a class="dropdown-item text text-bold"
-                                        th:href="@{/products(vendor=${businessNameVendor})}">Manage
-                                        your products</a></li>
+                                       th:href="@{/products(vendor=${businessNameVendor})}">Manage your products</a>
+                                </li>
                                 <li><a class="dropdown-item"
-                                        th:href="@{/vendor/orders/view}">View
-                                        your orders</a></li>
+                                       th:href="@{/vendor/orders/view}">View your orders</a></li>
                                 <li><a class="dropdown-item"
-                                        th:href="@{/vendor/discounts}">Discounts
-                                        manager</a></li>
+                                       th:href="@{/vendor/discounts}">Discounts manager</a></li>
                             </ul>
                         </div>
                         <li class="nav-item">
                             <a class="nav-link"
-                                th:classappend="${activePage == 'products'} ? 'active' : ''"
-                                th:href="@{/products}">View product catalog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:if="${isVendor}"
-                                th:classappend=" ${activePage=='product-add' } ? 'active'
-                            : ''" th:href=" @{/products/product-add}">Add new
-                                product</a>
+                               th:classappend="${activePage == 'products'} ? 'active' : ''"
+                               th:href="@{/products}">View product catalog</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link"
-                                th:classappend="${activePage == 'product-search'} ? 'active' : ''"
-                                th:href="@{/products/product-search}">Search for
-                                a product</a>
-                        </li>
-
-                        <li class="nav-item" sec:authorize="hasRole('USER')">
-                            <a class="nav-link"
-                                th:classappend="${activePage == 'orders'} ? 'active' : ''"
-                                th:href="@{/orders}">My
-                                orders</a>
+                               th:if="${isVendor}"
+                               th:classappend=" ${activePage=='product-add' } ? 'active'
+                            : ''"
+                               th:href=" @{/products/product-add}">Add new product</a>
                         </li>
                         <li class="nav-item">
-                            <form th:action="@{/logout}" method="post"
-                                class="m-0">
+                            <a class="nav-link"
+                               th:classappend="${activePage == 'product-search'} ? 'active' : ''"
+                               th:href="@{/products/product-search}">Search for a product</a>
+                        </li>
+                        <li class="nav-item"
+                            sec:authorize="hasRole('USER')">
+                            <a class="nav-link"
+                               th:classappend="${activePage == 'orders'} ? 'active' : ''"
+                               th:href="@{/orders}">My orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <form th:action="@{/logout}"
+                                  method="post"
+                                  class="m-0">
                                 <button class="nav-link"
-                                    type="submit">Logout</button>
+                                        type="submit">Logout</button>
                             </form>
                         </li>
-
                     </ul>
                     <div class="d-flex align-items-center gap-3">
                         <!-- User-only view wishlist navbar button -->
-
-                        <a
-                            class="d-flex align-items-center gap-2 text-decoration-none"
-                            sec:authorize="hasRole('USER')"
-                            th:href="@{/products/wishlist/view}">
-                            <svg aria-hidden="true" viewBox="0 0 24 24"
-                                width="20" height="20" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 3L14.47 8.57L20.5 9.24L16 13.26L17.21 19.27L12 16.27L6.79 19.27L8 13.26L3.5 9.24L9.53 8.57L12 3Z"
-                                    stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round" />
+                        <a class="d-flex align-items-center gap-2 text-decoration-none"
+                           sec:authorize="hasRole('USER')"
+                           th:href="@{/products/wishlist/view}">
+                            <svg aria-hidden="true"
+                                 viewBox="0 0 24 24"
+                                 width="20"
+                                 height="20"
+                                 fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 3L14.47 8.57L20.5 9.24L16 13.26L17.21 19.27L12 16.27L6.79 19.27L8 13.26L3.5 9.24L9.53 8.57L12 3Z"
+                                      stroke="currentColor"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round" />
                             </svg>
-                            <span>Wishlist <span>(</span><span
-                                    th:text="${wishlistSize}"></span>)</span>
+                            <span>Wishlist <span>(</span><span th:text="${wishlistSize}"></span>)</span>
                         </a>
                         <!-- User-only view cart navbar button -->
-                        <a
-                            class="d-flex align-items-center gap-2 text-decoration-none"
-                            sec:authorize="hasRole('USER')"
-                            th:href="@{/cart/view}">
-                            <svg aria-hidden="true" viewBox="0 0 24 24"
-                                width="20" height="20" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M3 4H5L7.2 14.4A2 2 0 0 0 9.16 16H18a2 2 0 0 0 1.96-1.6L21 9H6"
-                                    stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <circle cx="9" cy="20" r="1"
-                                    fill="currentColor" />
-                                <circle cx="18" cy="20" r="1"
-                                    fill="currentColor" />
-                            </svg>
-                            <span>Cart <span>(</span><span
-                                    th:text="${cartSize}"></span>)</span>
-                        </a>
-                        <a
-                            class="d-flex align-items-center gap-2 text-decoration-none"
-                            th:if="${signedIn}"
-                            th:href="@{/user/profile}"
-                            aria-label="View signed-in user profile">
-                            <span class="avatar-image"
-                                aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                        <a class="d-flex align-items-center gap-2 text-decoration-none"
+                           sec:authorize="hasRole('USER')"
+                           th:href="@{/cart/view}">
+                            <svg aria-hidden="true"
+                                 viewBox="0 0 24 24"
+                                 width="20"
+                                 height="20"
+                                 fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 4H5L7.2 14.4A2 2 0 0 0 9.16 16H18a2 2 0 0 0 1.96-1.6L21 9H6"
+                                      stroke="currentColor"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round" />
+                                <circle cx="9"
+                                        cy="20"
+                                        r="1"
                                         fill="currentColor" />
-                                </svg>
-                            </span>
-                            <span class="d-flex flex-column">
-                                <span class="fw-semibold"
-                                    th:text="${signedInUsername}">Username</span>
-                                <small class="text-muted"
-                                    th:text="${signedInRole}">Role</small>
-                            </span>
+                                <circle cx="18"
+                                        cy="20"
+                                        r="1"
+                                        fill="currentColor" />
+                            </svg>
+                            <span>Cart <span>(</span><span th:text="${cartSize}"></span>)</span>
                         </a>
+                        <div class="profile-dropdown">
+                            <div class="dropdown"
+                                 th:if="${signedIn}">
+                                <button class="btn d-flex align-items-center gap-2 dropdown-toggle"
+                                        type="button"
+                                        id="profileDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span class="avatar-image"
+                                          aria-hidden="true">
+                                        <!-- Keep the existing avatar SVG here -->
+                                    </span>
+                                    <span class="d-flex flex-column text-start">
+                                        <span class="fw-semibold"
+                                              th:text="${signedInUsername}">Username</span>
+                                        <small class="text-muted"
+                                               th:text="${signedInRole}">Role</small>
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end"
+                                    aria-labelledby="profileDropdown">
+                                    <li>
+                                        <a class="dropdown-item"
+                                           th:href="@{/user/profile}">My profile</a>
+                                    </li>
+                                    <li>
+                                        <form th:action="@{/logout}"
+                                              method="post">
+                                            <button class="dropdown-item"
+                                                    type="submit">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </nav>
         </div>
         <!-- A simple footer fragment -->
         <div th:fragment="site-footer">
-            <p>&copy; 2026 Spring Product Portal. All rights
-                reserved.</p>
-            <script
-                th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+            <p>&copy; 2026 Spring Product Portal. All rights reserved.</p>
+            <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
         </div>
-
         <!-- Pagination controls: pagination(pager, label) where pager is a PageView -->
         <nav th:fragment="pagination(pager, label)"
-            th:if="${pager != null and pager.totalItems > 0}"
-            class="pager d-flex flex-wrap align-items-center justify-content-between gap-3"
-            th:attr="aria-label=${label}">
-            <p class="pager-summary text-secondary small mb-0">
-                Showing <strong th:text="${pager.firstItem}">1</strong>
-                to <strong th:text="${pager.lastItem}">10</strong>
-                of <strong th:text="${pager.totalItems}">25</strong>
+             th:if="${pager != null and pager.totalItems > 0}"
+             class="pager d-flex flex-wrap align-items-center justify-content-between gap-3"
+             th:attr="aria-label=${label}">
+            <p class="pager-summary text-secondary small mb-0"> Showing <strong th:text="${pager.firstItem}">1</strong>
+                to <strong th:text="${pager.lastItem}">10</strong> of <strong th:text="${pager.totalItems}">25</strong>
             </p>
             <ul class="pagination pager-controls mb-0"
                 th:if="${pager.multiplePages}">
-                <li class="page-item disabled" th:if="${pager.first}">
+                <li class="page-item disabled"
+                    th:if="${pager.first}">
                     <span class="page-link">&lsaquo; Previous</span>
                 </li>
-                <li class="page-item" th:unless="${pager.first}">
-                    <a class="page-link" rel="prev"
-                        th:href="${pager.previousLink}">&lsaquo;
-                        Previous</a>
+                <li class="page-item"
+                    th:unless="${pager.first}">
+                    <a class="page-link"
+                       rel="prev"
+                       th:href="${pager.previousLink}">&lsaquo; Previous</a>
                 </li>
-
                 <li class="page-item disabled d-sm-none">
                     <span class="page-link"
-                        th:text="'Page ' + ${pager.page} + ' of ' + ${pager.totalPages}">Page
-                        1 of 3</span>
+                          th:text="'Page ' + ${pager.page} + ' of ' + ${pager.totalPages}">Page 1 of 3</span>
                 </li>
                 <th:block th:each="n : ${pager.pageNumbers}">
                     <li class="page-item disabled d-none d-sm-block"
@@ -178,27 +189,30 @@
                     </li>
                     <li class="page-item active d-none d-sm-block"
                         th:if="${n != 0 and n == pager.page}">
-                        <span class="page-link" aria-current="page"
-                            th:text="${n}">1</span>
+                        <span class="page-link"
+                              aria-current="page"
+                              th:text="${n}">1</span>
                     </li>
                     <li class="page-item d-none d-sm-block"
                         th:if="${n != 0 and n != pager.page}">
-                        <a class="page-link" th:href="${pager.linkTo(n)}"
-                            th:attr="aria-label='Go to page ' + ${n}"
-                            th:text="${n}">2</a>
+                        <a class="page-link"
+                           th:href="${pager.linkTo(n)}"
+                           th:attr="aria-label='Go to page ' + ${n}"
+                           th:text="${n}">2</a>
                     </li>
                 </th:block>
-
-                <li class="page-item disabled" th:if="${pager.last}">
+                <li class="page-item disabled"
+                    th:if="${pager.last}">
                     <span class="page-link">Next &rsaquo;</span>
                 </li>
-                <li class="page-item" th:unless="${pager.last}">
-                    <a class="page-link" rel="next"
-                        th:href="${pager.nextLink}">Next &rsaquo;</a>
+                <li class="page-item"
+                    th:unless="${pager.last}">
+                    <a class="page-link"
+                       rel="next"
+                       th:href="${pager.nextLink}">Next &rsaquo;</a>
                 </li>
             </ul>
         </nav>
-
     </body>
 
 </html>
