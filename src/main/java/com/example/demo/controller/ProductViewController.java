@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.dto.ProductBestSellersDTO;
 import com.example.demo.dto.ProductReviewPageDTO;
 import com.example.demo.dto.ProductSalesHistoryDTO;
 import com.example.demo.model.OrderItem;
@@ -91,6 +92,11 @@ public class ProductViewController {
             Vendor vendor = vendorService.getVendorByUserId(currentUser.getId());
             vendorBusinessName = vendor.getBusinessName();
         }
+        List<ProductBestSellersDTO> bestSellingProducts = productService.getBestSellingProducts();
+        model.addAttribute("bestSellingProducts", bestSellingProducts);
+        model.addAttribute("bestSellingProductIds", bestSellingProducts.stream()
+            .map(ProductBestSellersDTO::productId)
+            .toList());
         model.addAttribute("isVendor", isVendor);
         model.addAttribute("businessName", vendorBusinessName);
         model.addAttribute("username", currentUser.getUsername());
@@ -280,7 +286,7 @@ public class ProductViewController {
         model.addAttribute("productReviews", productReviews);
         model.addAttribute("unitsSold", unitsSold);
 
-                return "product-view-single";
+        return "product-view-single";
     }
 
     // HANDLE WISHLIST FORM SUBMIT
