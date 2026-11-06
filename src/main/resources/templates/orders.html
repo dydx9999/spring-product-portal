@@ -73,16 +73,52 @@
                         </tbody>
                     </table>
                 </div>
-                <div
-                    th:replace="~{fragments/fragments :: pagination(${orderPager}, 'Order pages')}"></div>
+                <div th:replace="~{fragments/fragments :: pagination(${orderPager}, 'Order pages')}"></div>
             </section>
-
         </main>
         <footer class="container py-3">
-            <div
-                th:replace="~{fragments/fragments :: site-footer}"></div>
+            <div th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
-
+        <div class="modal fade"
+             id="orderDetailsModal"
+             tabindex="-1"
+             aria-labelledby="orderDetailsModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5"
+                            id="orderDetailsModalLabel">Order details</h2>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"
+                         id="orderDetailsBody"></div>
+                </div>
+            </div>
+        </div>
+        <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+        <script>
+            const modalEl = document.getElementById('orderDetailsModal');
+            const bodyEl = document.getElementById('orderDetailsBody');
+            const modal = new bootstrap.Modal(modalEl);
+            document.querySelectorAll('a[href*="/orders/view/"]').forEach(link => {
+                link.addEventListener('click', async event => {
+                    event.preventDefault();
+                    bodyEl.textContent = 'Loading...';
+                    modal.show();
+                    try {
+                        const response = await fetch(link.href + '/modal', { credentials: 'same-origin' });
+                        if (!response.ok) throw new Error(response.status);
+                        bodyEl.innerHTML = await response.text();
+                    } catch (e) {
+                        bodyEl.textContent = 'Unable to load order details.';
+                    }
+                });
+            });
+        </script>
     </body>
 
 </html>
