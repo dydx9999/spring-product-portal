@@ -36,11 +36,6 @@
                               th:if="${isVendor}">(Vendor)</span>
                     </p>
                 </div>
-                <div>
-                    <a th:if="${isVendor}"
-                       th:href="@{/products/product-add}"
-                       class="btn btn-primary">Add product</a>
-                </div>
                 <a th:href="@{/products/surprise}"
                    class="btn surprise-button">
                     <i class="bi bi-stars surprise-button-icon"
