@@ -36,7 +36,8 @@
                               th:if="${isVendor}">(Vendor)</span>
                     </p>
                 </div>
-                <a th:href="@{/products/surprise}"
+                <a sec:authorize="hasRole('USER')"
+                   th:href="@{/products/surprise}"
                    class="btn surprise-button">
                     <i class="bi bi-stars surprise-button-icon"
                        aria-hidden="true"></i>
