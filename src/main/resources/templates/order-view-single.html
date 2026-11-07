@@ -8,7 +8,7 @@
               content="width=device-width, initial-scale=1.0">
         <title>Order History</title>
         <link rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet"
               href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
         <link rel="stylesheet"
@@ -19,102 +19,102 @@
         <div th:replace="~{fragments/fragments :: site-navigation('orders')}"></div>
         <main class="container py-4">
             <div th:fragment="order-details">
-            <header class="mb-4">
-                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Your order</p>
-                <h1 class="h2 mb-2">Order: <strong>#<span th:text="${orderDetails.orderId}"></span></strong></h1>
-                <p class="text-secondary mb-0">Placed on <span
-                        th:text="${#temporals.format(orderDetails.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></span>
-                </p>
-                <p class="text-secondary mb-0"
-                   th:if="${orderDetails.cardLast4 != null}">Paid with <span
-                          th:text="${#strings.capitalize(orderDetails.cardBrand)}">Visa</span> ending in <span
-                          th:text="${orderDetails.cardLast4}">4242</span> (exp. <span
-                          th:text="|${orderDetails.cardExpMonth}/${orderDetails.cardExpYear}|">12/2030</span>)</p>
-                <p class="text-secondary mb-0"
-                   th:if="${orderDetails.cardLast4 == null and orderDetails.paymentMethodType != null}">Paid with
+                <header class="mb-4">
+                    <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Your order</p>
+                    <h1 class="h2 mb-2">Order: <strong>#<span th:text="${orderDetails.orderId}"></span></strong></h1>
+                    <p class="text-secondary mb-0">Placed on <span
+                              th:text="${#temporals.format(orderDetails.creationDate, 'EEEE, MMMM d, yyyy ''at'' h:mm a')}"></span>
+                    </p>
+                    <p class="text-secondary mb-0"
+                       th:if="${orderDetails.cardLast4 != null}">Paid with <span
+                              th:text="${#strings.capitalize(orderDetails.cardBrand)}">Visa</span> ending in <span
+                              th:text="${orderDetails.cardLast4}">4242</span> (exp. <span
+                              th:text="|${orderDetails.cardExpMonth}/${orderDetails.cardExpYear}|">12/2030</span>)</p>
+                    <p class="text-secondary mb-0"
+                       th:if="${orderDetails.cardLast4 == null and orderDetails.paymentMethodType != null}">Paid with
                         <span th:text="${orderDetails.paymentMethodType}">link</span></p>
-            </header>
-            <!-- Order line items -->
-            <div class="container my-3"><span class="alert alert-success"
-                    th:if="${successMessage}"
-                    th:text="${successMessage}">SuccessMessage</span>
-                <span class="alert alert-danger"
-                      th:if="${errorMessage}"
-                    th:text="${errorMessage}">ErrorMessage</span>
-            </div>
-            <section class="card border-0 shadow-sm">
-                <div class="table-responsive">
-                    <table class="table table-hover site-table mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">Product</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Unit price</th>
-                                <th scope="col">Vendor</th>
-                                <th scope="col">Line total</th>
-                                <th scope="col">Review</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="item : ${orderDetails.items}">
-                                <td><a th:if="${item.productId != null}"
-                                       th:href="@{/products/view/{productId}(productId=${item.productId})}"
-                                       th:text="${item.productName}"></a><span th:unless="${item.productId != null}"
-                                          th:text="${item.productName}"></span></td>
-                                <td th:text="${item.quantity}"></td>
-                                <td>$<span
-                                          th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 2, 'POINT')}"></span>
-                                </td>
-                                <td th:text="${item.vendorBusinessName}"></td>
-                                <td>$<span
-                                          th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 1, 'COMMA', 2, 'POINT')}"></span>
-                                </td>
-                                <td> <span th:if="${reviewedItemIds.contains(item.id)}"
-                                        class="badge text-bg-success">Reviewed</span>
-                                    <span th:unless="${reviewedItemIds.contains(item.id)}"><a class="bi bi-star-fill btn
+                </header>
+                <!-- Order line items -->
+                <div class="container my-3"><span class="alert alert-success"
+                          th:if="${successMessage}"
+                          th:text="${successMessage}">SuccessMessage</span>
+                    <span class="alert alert-danger"
+                          th:if="${errorMessage}"
+                          th:text="${errorMessage}">ErrorMessage</span>
+                </div>
+                <section class="card border-0 shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-hover site-table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Unit price</th>
+                                    <th scope="col">Vendor</th>
+                                    <th scope="col">Line total</th>
+                                    <th scope="col">Review</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${orderDetails.items}">
+                                    <td><a th:if="${item.productId != null}"
+                                           th:href="@{/products/view/{productId}(productId=${item.productId})}"
+                                           th:text="${item.productName}"></a><span th:unless="${item.productId != null}"
+                                              th:text="${item.productName}"></span></td>
+                                    <td th:text="${item.quantity}"></td>
+                                    <td>$<span
+                                              th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 2, 'POINT')}"></span>
+                                    </td>
+                                    <td th:text="${item.vendorBusinessName}"></td>
+                                    <td>$<span
+                                              th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 1, 'COMMA', 2, 'POINT')}"></span>
+                                    </td>
+                                    <td> <span th:if="${reviewedItemIds.contains(item.id)}"
+                                              class="badge text-bg-success">Reviewed</span>
+                                        <span th:unless="${reviewedItemIds.contains(item.id)}"><a class="bi bi-star-fill btn
                                             btn-warning"
-                                           th:href="@{/orders/review(orderId=${orderDetails.orderId})}"> Leave a
-                                            review</a></span>
-                                </td>
+                                               th:href="@{/orders/review(orderId=${orderDetails.orderId})}"> Leave a
+                                                review</a></span>
+                                    </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(orderDetails.items)}">
-                                <td colspan="5">No line items found for this order.</td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="4"
-                                    class="text-end"
-                                    scope="row">Grand total:</th>
-                                <td>$<span
-                                          th:text="${#numbers.formatDecimal(orderDetails.total, 1, 'COMMA', 2, 'POINT')}">0.00</span>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </section>
-            <section class="payment-details mt-3">
-                <div class="card text-dark bg-light mb-3 payment-details-card"
-                     style="max-width: 18rem;">
-                    <div class="card-header">Payment Details</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Details</h5>
-                        <ul class="payment-details-list">
+                                    <td colspan="5">No line items found for this order.</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4"
+                                        class="text-end"
+                                        scope="row">Grand total:</th>
+                                    <td>$<span
+                                              th:text="${#numbers.formatDecimal(orderDetails.total, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </section>
+                <section class="payment-details mt-3">
+                    <div class="card text-dark bg-light mb-3 payment-details-card"
+                         style="max-width: 18rem;">
+                        <div class="card-header">Payment Details</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Details</h5>
+                            <ul class="payment-details-list">
                                 <li><span
                                           th:text="| Paid with: ${#strings.toUpperCase(orderDetails.cardBrand)} |"></span>
                                     <span class="text-secondary"
                                           th:text="|(ending in: ${orderDetails.cardLast4})|"></span>
                                 </li>
-                            <li></li>
-                            <li></li>
-                            <li>Sales Tax:</li>
-                            <li>Subtotal:</li>
-                            <li>Grand Total:</li>
-                        </ul>
+                                <li></li>
+                                <li></li>
+                                <li>Sales Tax:</li>
+                                <li>Subtotal:</li>
+                                <li>Grand Total:</li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
                 <section class="shipment-details mt-3"
                          th:unless="${#lists.isEmpty(shipments)}">
                     <div class="card text-dark bg-light mb-3 payment-details-card"

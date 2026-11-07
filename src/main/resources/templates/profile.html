@@ -23,14 +23,14 @@
                 <h1 class="h2 mb-2">Your profile</h1>
                 <p class="text-secondary mb-0">Manage your sign-in details.</p>
             </header>
-            <div class="container my-4">
+            <div class="alerts container my-4">
                 <span class="alert alert-success"
                       th:if="${successMessage}"
                       th:text="${successMessage}">Message</span>
             </div>
-            <section class="card border-0 shadow-sm"
+            <section class="card border shadow-sm mb-5"
                      aria-labelledby="account-details-heading">
-                <div class="card-body p-4">
+                <div class="card-body">
                     <div
                          class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
                         <div>
@@ -62,53 +62,54 @@
                             th:if="${isVendor}"> <em><span th:text="${currentVendor.bio}"></span></em></dd>
                     </dl>
                 </div>
-                <section class="card border-0 shadow-sm"
-                         aria-labelledby="account-details-heading">
-                    <div class="card-body p-4">
-                        <div
-                             class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
-                            <div>
-                                <h2 id="saved-addresses-heading"
-                                    class="h5 mb-1">Address Book</h2>
-                                <p class="text-secondary small mb-0">Your saved addresses</p>
-                            </div>
-                            <form th:action="@{/user/profile/update}"
-                                  method="get"
-                                  class="site-form">
-                                <button class="btn btn-primary"
-                                        type="submit">Add address</button>
-                            </form>
+            </section>
+            <section class="card shadow-sm mt-5 border mb-5 "
+                     aria-labelledby="account-details-heading">
+                <div class="card-body p-4">
+                    <div
+                         class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
+                        <div>
+                            <h2 id="saved-addresses-heading"
+                                class="h5 mb-1">Address Book</h2>
+                            <p class="text-secondary small mb-0">Your saved addresses</p>
                         </div>
-                        <p class="text-secondary small mb-0"
-                           th:if="${#lists.isEmpty(addresses)}">No saved addresses yet.</p>
-                        <div class="row g-3"
-                             th:unless="${#lists.isEmpty(addresses)}">
-                            <div class="col-md-6"
-                                 th:each="address, stat : ${addresses}">
-                                <address class="h-100 border rounded p-3 small">
-                                    <span class="text-secondary d-block mb-1"
-                                          th:text="|Address #${stat.count}|">Address #1</span>
-                                    <strong th:text="${address.name}">Name</strong><br>
-                                    <th:block th:if="${address.company}"><span th:text="${address.company}"></span><br>
-                                    </th:block>
-                                    <span th:text="${address.street1}"></span><br>
-                                    <th:block th:if="${address.street2}"><span th:text="${address.street2}"></span><br>
-                                    </th:block>
-                                    <span th:text="|${address.city}, ${address.state} ${address.zip}|"></span><br>
-                                    <span th:text="${address.country}"></span>
-                                    <th:block th:if="${address.phone}"><br><span th:text="${address.phone}"></span>
-                                    </th:block>
-                                </address>
-                            </div>
+                        <form th:action="@{/user/profile/update}"
+                              method="get"
+                              class="site-form">
+                            <button class="btn btn-primary"
+                                    type="submit">Add address</button>
+                        </form>
+                    </div>
+                    <p class="text-secondary small mb-0"
+                       th:if="${#lists.isEmpty(addresses)}">No saved addresses yet.</p>
+                    <div class="row g-3"
+                         th:unless="${#lists.isEmpty(addresses)}">
+                        <div class="col-md-6"
+                             th:each="address, stat : ${addresses}">
+                            <address class="h-100 border rounded p-3 small">
+                                <span class="text-secondary d-block mb-1"
+                                      th:text="|Address #${stat.count}|">Address #1</span>
+                                <strong th:text="${address.name}">Name</strong><br>
+                                <th:block th:if="${address.company}"><span th:text="${address.company}"></span><br>
+                                </th:block>
+                                <span th:text="${address.street1}"></span><br>
+                                <th:block th:if="${address.street2}"><span th:text="${address.street2}"></span><br>
+                                </th:block>
+                                <span th:text="|${address.city}, ${address.state} ${address.zip}|"></span><br>
+                                <span th:text="${address.country}"></span>
+                                <th:block th:if="${address.phone}"><br><span th:text="${address.phone}"></span>
+                                </th:block>
+                            </address>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
             </section>
             <!-- Buyer reviews -->
-            <section class="card border-0 shadow-sm"
+            <section class="card border shadow-sm mb-5"
                      aria-labelledby="account-details-heading"
                      sec:authorize="hasRole('USER')">
-                <div class="card-body p-4">
+                <div class="card-body p-4 border">
                     <div
                          class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-3">
                         <div>
