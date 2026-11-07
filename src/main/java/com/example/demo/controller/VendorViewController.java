@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -339,6 +340,7 @@ public class VendorViewController {
                 }
 
                 BigDecimal updatedPrice;
+
                 try {
                         updatedPrice = new BigDecimal(productPrice == null ? "" : productPrice.trim());
                 } catch (NumberFormatException e) {
@@ -350,8 +352,16 @@ public class VendorViewController {
                                         "Price must be zero or more with at most two decimal places.");
                         return "redirect:/products";
                 }
-
+                BigDecimal currentPrice = product.getProductPrice();
+                int discountPercent = 0;
+                if (currentPrice.signum() > 0 && updatedPrice.compareTo(currentPrice) < 0) {
+                        discountPercent = currentPrice.subtract(updatedPrice)
+                                        .multiply(BigDecimal.valueOf(100))
+                                        .divide(currentPrice, 0, RoundingMode.HALF_UP)
+                                        .intValueExact();
+                }
                 product.setProductPrice(updatedPrice.setScale(2));
+                product.setDiscountPercent(discountPercent);
                 productRepository.save(product);
                 redirectAttributes.addFlashAttribute("successMessage", "Product price updated.");
                 return "redirect:/products";

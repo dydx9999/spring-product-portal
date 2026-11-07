@@ -65,8 +65,16 @@
                                 <div>
                                     <dt class="col-sm-3 text-secondary fw-semibold">Price</dt>
                                     <dd class="col-sm-9 mb-0">
-                                        <span class="badge rounded-pill text-bg-success border px-3 py-2">$<span
-                                                  th:text="${product.productPrice}">Price</span></span>
+                                        <th:block th:if="${discountedPrice}">
+                                            <span th:text="|$${#numbers.formatDecimal(discountedPrice, 1, 2)}|"></span>
+                                            <div>
+                                                <span class="original-price text-danger text-decoration-line-through"
+                                                      th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 2)}|"></span>
+                                                <span class="fw-bolder"
+                                                      th:text="
+                                                      |-${product.discountPercent}%|"></span>
+                                            </div>
+                                        </th:block>
                                     </dd>
                                     <!-- Single product average rating stats -->
                                     <dt class="col-sm-3 text-secondary fw-semibold">Average Rating:</dt>
@@ -126,106 +134,109 @@
                                                     class="btn btn-sm
                                                 btn-outline-warning"><span
                                                       class="bi bi-star-fill text-warning"></span>Add to
-                                                wishlist</button></form>
+                                                wishlist</button>
+                                        </form>
                                     </dd>
                                 </div>
                             </dl>
                         </div>
                     </div>
-                    <section class="col-12 mt-4 mb-4"
-                             aria-labelledby="sales-history-heading">
-                        <h2 class="display-7 fw-semibold mb-3"
-                            id="sales-history-heading">Product sales history</h2>
-                        <div class="table-responsive">
-                            <table th:unless="${#lists.isEmpty(productSalesHistory)}"
-                                   class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Quantity sold</th>
-                                        <th scope="col">Date sold</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="sale : ${productSalesHistory}">
-                                        <td th:text="${sale.productQuantity}"></td>
-                                        <td th:text="${#temporals.format(sale.dateSold, 'MMMM d, yyyy ''at'' h:mm a')}">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <p th:if="${#lists.isEmpty(productSalesHistory)}"
-                               class="text-body-secondary mb-0">No product sales yet.</p>
-                        </div>
-                    </section>
-                    <section class="col-12 mt-4 mb-4"
-                             aria-labelledby="reviews-heading">
-                        <h2 class="display-7 fw-semibold mb-0"
-                            id="reviews-heading"> See what buyers are saying (<span
-                                  th:text="${#lists.size(productReviews)}">0</span>) </h2>
-                        <div class="table-responsive">
-                            <table th:unless="${#lists.isEmpty(productReviews)}"
-                                   class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Comment</th>
-                                        <th scope="col">Buyer</th>
-                                        <th scope="col">Rating</th>
-                                        <th scope="col">Reviewed on</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="review : ${productReviews}">
-                                        <td th:text="${review.comment ?: 'No comment provided.'}"></td>
-                                        <td th:text="${review.username}"></td>
-                                        <td>
-                                            <span th:each="star : ${#numbers.sequence(1, 5)}"
-                                                  th:class="${review.rating != null and star <= review.rating}
+                </div>
+            </section>
+            <section class="col-12 mt-4 mb-4"
+                     aria-labelledby="sales-history-heading">
+                <h2 class="display-7 fw-semibold mb-3"
+                    id="sales-history-heading">Product sales history</h2>
+                <div class="table-responsive">
+                    <table th:unless="${#lists.isEmpty(productSalesHistory)}"
+                           class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Quantity sold</th>
+                                <th scope="col">Date sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="sale : ${productSalesHistory}">
+                                <td th:text="${sale.productQuantity}"></td>
+                                <td th:text="${#temporals.format(sale.dateSold, 'MMMM d, yyyy ''at'' h:mm a')}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p th:if="${#lists.isEmpty(productSalesHistory)}"
+                       class="text-body-secondary mb-0">No product sales yet.</p>
+                </div>
+            </section>
+            <section class="col-12 mt-4 mb-4"
+                     aria-labelledby="reviews-heading">
+                <h2 class="display-7 fw-semibold mb-0"
+                    id="reviews-heading"> See what buyers are saying (<span
+                          th:text="${#lists.size(productReviews)}">0</span>) </h2>
+                <div class="table-responsive">
+                    <table th:unless="${#lists.isEmpty(productReviews)}"
+                           class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Buyer</th>
+                                <th scope="col">Rating</th>
+                                <th scope="col">Reviewed on</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="review : ${productReviews}">
+                                <td th:text="${review.comment ?: 'No comment provided.'}"></td>
+                                <td th:text="${review.username}"></td>
+                                <td>
+                                    <span th:each="star : ${#numbers.sequence(1, 5)}"
+                                          th:class="${review.rating != null and star <= review.rating}
                                                       ? 'bi bi-star-fill text-warning'
                                                       : 'bi bi-star text-secondary'"
-                                                  aria-hidden="true"></span>
-                                        </td>
-                                        <td th:text="${#temporals.format(review.createdAt,
+                                          aria-hidden="true"></span>
+                                </td>
+                                <td th:text="${#temporals.format(review.createdAt,
                                             'MMMM d, yyyy ''at'' h:mm a')}">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <span th:if="${#lists.isEmpty(productReviews)}">No reviews yet.</span>
-                        </div>
-                    </section>
-                    <section class="col-12 mt-4"
-                             aria-labelledby="vendor-products-heading">
-                        <h2 class="display-7 fw-semibold mb-0"
-                            id="vendor-products-heading">
-                            <span th:text="|Other products from ${product.VendorName}|"></span>
-                        </h2>
-                        <div class="table-responsive table-sm small">
-                            <table th:unless="${#lists.isEmpty(vendorProducts)}"
-                                   class="table table-striped">
-                                <thead>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="product : ${vendorProducts}"
-                                        th:if="${product.productQuantity > 0}">
-                                        <td th:text="${product.productName}"></td>
-                                        <td th:text="${product.productPrice}"></td>
-                                        <td>
-                                            <form th:action="@{/products/purchase/{productId}(productId=${product.id})}"
-                                                  method="post">
-                                                <input type="hidden"
-                                                       name="quantity"
-                                                       value="1" />
-                                                <button class="btn btn-success"
-                                                        type="submit">Add to cart</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <span th:if="${#lists.isEmpty(productReviews)}">No reviews yet.</span>
-                        </div>
-                    </section>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <span th:if="${#lists.isEmpty(productReviews)}">No reviews yet.</span>
                 </div>
+            </section>
+            <section class="col-12 mt-4"
+                     aria-labelledby="vendor-products-heading">
+                <h2 class="display-7 fw-semibold mb-0"
+                    id="vendor-products-heading">
+                    <span th:text="|Other products from ${product.VendorName}|"></span>
+                </h2>
+                <div class="table-responsive table-sm small">
+                    <table th:unless="${#lists.isEmpty(vendorProducts)}"
+                           class="table table-striped">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${vendorProducts}"
+                                th:if="${product.productQuantity > 0}">
+                                <td th:text="${product.productName}"></td>
+                                <td th:text="${product.productPrice}"></td>
+                                <td>
+                                    <form th:action="@{/products/purchase/{productId}(productId=${product.id})}"
+                                          method="post">
+                                        <input type="hidden"
+                                               name="quantity"
+                                               value="1" />
+                                        <button class="btn btn-success"
+                                                type="submit">Add to cart</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <span th:if="${#lists.isEmpty(productReviews)}">No reviews yet.</span>
+                </div>
+            </section>
+            </div>
             </section>
         </main>
     </body>

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -95,8 +96,8 @@ public class ProductViewController {
         List<ProductBestSellersDTO> bestSellingProducts = productService.getBestSellingProducts();
         model.addAttribute("bestSellingProducts", bestSellingProducts);
         model.addAttribute("bestSellingProductIds", bestSellingProducts.stream()
-            .map(ProductBestSellersDTO::productId)
-            .toList());
+                .map(ProductBestSellersDTO::productId)
+                .toList());
         model.addAttribute("isVendor", isVendor);
         model.addAttribute("businessName", vendorBusinessName);
         model.addAttribute("username", currentUser.getUsername());
@@ -277,6 +278,13 @@ public class ProductViewController {
         List<ProductSalesHistoryDTO> productSalesHistory = productService.getProductSalesHistory(productId);
         List<Product> vendorProducts = productRepository.findByVendorNameIgnoreCase(requestedProduct.getVendorName(),
                 Sort.by(Product::getProductPrice));
+        if (requestedProduct.getDiscountPercent() >= 0) {
+            BigDecimal discountPercent = BigDecimal.valueOf(requestedProduct.getDiscountPercent());
+            BigDecimal discountAmount = ((requestedProduct.getProductPrice()).multiply(discountPercent)
+                    .movePointLeft(2));
+            BigDecimal discountedPrice = (requestedProduct.getProductPrice()).subtract(discountAmount);
+            model.addAttribute("discountedPrice", discountedPrice);
+        }
         model.addAttribute("vendorProducts", vendorProducts);
         model.addAttribute("productSalesHistory", productSalesHistory);
         model.addAttribute("product", requestedProduct);
