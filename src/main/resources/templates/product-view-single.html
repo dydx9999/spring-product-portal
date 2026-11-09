@@ -40,10 +40,9 @@
                     <div class="col-md-5 col-lg-4">
                         <div class="h-100 min-vh-25 d-flex flex-column justify-content-between p-4 p-lg-5 text-white"
                              style="min-height: 280px; background: linear-gradient(145deg, #1d3557, #457b9d);">
-                            <span
-                                  class="badge rounded-pill bg-white text-primary align-self-start px-3 py-2">Product</span>
                             <div>
-                                <p class="small text-uppercase fw-semibold mb-2 opacity-75">Catalog item</p>
+                                <p class="small text-uppercase fw-semibold mb-2 opacity-75"
+                                   th:text="${product.vendorName}"></p>
                                 <p class="h3 fw-semibold mb-0"
                                    th:text="${product.productName}">Product Name</p>
                             </div>
@@ -65,12 +64,12 @@
                                 <div>
                                     <dt class="col-sm-3 text-secondary fw-semibold">Price</dt>
                                     <dd class="col-sm-9 mb-0">
-                                            <span th:text="|$${#numbers.formatDecimal(discountedPrice, 1, 2)}|"></span>
+                                        <span th:text="|$${#numbers.formatDecimal(discountedPrice, 1, 2)}|"></span>
                                         <th:block th:if="${discountedPrice != product.productPrice}">
-                                                <span class="original-price text-danger text-decoration-line-through"
-                                                      th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 2)}|"></span>
-                                                <span class="fw-bolder"
-                                                      th:text="
+                                            <span class="original-price text-danger text-decoration-line-through"
+                                                  th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 2)}|"></span>
+                                            <span class="fw-bolder"
+                                                  th:text="
                                                       |-${product.discountPercent}%|"></span>
                                         </th:block>
                                     </dd>
@@ -111,11 +110,11 @@
                                                 <input type="number"
                                                        min="1"
                                                        th:attr="max=${product.productQuantity}"
-                                                          th:disabled="${product.productQuantity <= 0}"
+                                                       th:disabled="${product.productQuantity <= 0}"
                                                        class="form-control form-control-sm"
                                                        name="quantity"
                                                        placeholder="1"
-                                                          th:value="${cartQuantity}"
+                                                       th:value="${cartQuantity}"
                                                        value="1" />
                                                 <small id="helpId"
                                                        class="form-text text-body-secondary">
@@ -149,7 +148,7 @@
             <section class="col-12 mt-4 mb-4"
                      aria-labelledby="sales-history-heading">
                 <h2 class="display-7 fw-semibold mb-3"
-                    id="sales-history-heading">Product sales history</h2>
+                    id="sales-history-heading">Sales History</h2>
                 <div class="table-responsive">
                     <table th:unless="${#lists.isEmpty(productSalesHistory)}"
                            class="table table-striped">
@@ -213,31 +212,29 @@
                     id="vendor-products-heading">
                     <span th:text="|Other products from ${product.VendorName}|"></span>
                 </h2>
-                <div class="table-responsive table-sm small">
-                    <table th:unless="${#lists.isEmpty(vendorProducts)}"
-                           class="table table-striped">
-                        <thead>
-                        </thead>
-                        <tbody>
-                            <tr th:each="product : ${vendorProducts}"
-                                th:if="${product.productQuantity > 0}">
-                                <td th:text="${product.productName}"></td>
-                                <td th:text="${product.productPrice}"></td>
-                                <td>
-                                    <form th:action="@{/products/purchase/{productId}(productId=${product.id})}"
-                                          method="post">
-                                        <input type="hidden"
-                                               name="quantity"
-                                               value="1" />
-                                        <button class="btn btn-success"
-                                                type="submit">Add to cart</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <span th:if="${#lists.isEmpty(productReviews)}">No reviews yet.</span>
-            </div>
+                <table th:unless="${#lists.isEmpty(vendorProducts)}"
+                       class="table table-sm">
+                    <thead>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${vendorProducts}"
+                            th:if="${product.productQuantity > 0}">
+                            <td th:text="${product.productName}"></td>
+                            <td th:text="|$${product.productPrice}|"></td>
+                            <td>
+                                <form th:action="@{/products/purchase/{productId}(productId=${product.id})}"
+                                      method="post">
+                                    <input type="hidden"
+                                           name="quantity"
+                                           value="1" />
+                                    <button class="btn btn-success"
+                                            type="submit">Add to cart</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <span th:if="${#lists.isEmpty(productReviews)}">No reviews yet.</span>
             </section>
         </main>
     </body>

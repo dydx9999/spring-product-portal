@@ -78,26 +78,6 @@
         <footer class="container py-3">
             <div th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
-        <div class="modal fade"
-             id="orderDetailsModal"
-             tabindex="-1"
-             aria-labelledby="orderDetailsModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="modal-title h5"
-                            id="orderDetailsModalLabel">Order details</h2>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body"
-                         id="orderDetailsBody"></div>
-                </div>
-            </div>
-        </div>
         <script>
             const modalEl = document.getElementById('orderDetailsModal');
             const bodyEl = document.getElementById('orderDetailsBody');

@@ -44,13 +44,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link"
-                               th:if="${isVendor}"
-                               th:classappend=" ${activePage=='product-add' } ? 'active'
-                            : ''"
-                               th:href=" @{/products/product-add}">Add product</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"
                                th:classappend="${activePage == 'product-search'} ? 'active' : ''"
                                th:href="@{/products/product-search}">Search</a>
                         </li>
@@ -59,14 +52,6 @@
                             <a class="nav-link"
                                th:classappend="${activePage == 'orders'} ? 'active' : ''"
                                th:href="@{/orders}">My orders</a>
-                        </li>
-                        <li class="nav-item">
-                            <form th:action="@{/logout}"
-                                  method="post"
-                                  class="m-0">
-                                <button class="nav-link"
-                                        type="submit">Logout</button>
-                            </form>
                         </li>
                     </ul>
                     <div class="d-flex align-items-center gap-3">
@@ -139,16 +124,16 @@
                                         <a class="dropdown-item"
                                            th:href="@{/user/profile}">My profile</a>
                                     </li>
+                                    <li sec:authorize="hasRole('USER')">
+                                        <a class="dropdown-item"
+                                           th:href="@{/cart/view}">Your cart</a>
+                                    </li>
                                     <li>
                                         <form th:action="@{/logout}"
                                               method="post">
                                             <button class="dropdown-item"
                                                     type="submit">Logout</button>
                                         </form>
-                                    </li>
-                                    <li sec:authorize="hasRole('USER')">
-                                        <a class="dropdown-item"
-                                           th:href="@{/cart/view}">Your cart</a>
                                     </li>
                                 </ul>
                             </div>
