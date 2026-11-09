@@ -105,7 +105,6 @@
                                     <dd class="col-sm-9 mb-0 text-end">
                                         <form class="product-action-form"
                                               sec:authorize="hasRole('USER')"
-                                              th:if="${product.productQuantity > 0}"
                                               th:action="@{/products/purchase/{id}(id=${product.id})}"
                                               method="post">
                                             <div class="mb-3">
@@ -117,13 +116,14 @@
                                                        class="form-control form-control-sm"
                                                        name="quantity"
                                                        placeholder="1"
-                                                       value="1" />
+                                                       th:value="${userCart.quantity}" />
                                                 <small id="helpId"
                                                        class="form-text text-body-secondary">
                                                     <span th:text="${product.productQuantity}"></span>
                                                     available.</small>
                                                 <div>
-                                                    <button class="btn btn-success bi bi-cart4 add-to-cart-button"
+                                                    <button th:classappend="${product.productQuantity} <= 0 ? 'disabled'"
+                                                            class="btn btn-success bi bi-cart4 add-to-cart-button"
                                                             type="submit"> Add to cart </button>
                                                 </div>
                                             </div>
