@@ -65,15 +65,13 @@
                                 <div>
                                     <dt class="col-sm-3 text-secondary fw-semibold">Price</dt>
                                     <dd class="col-sm-9 mb-0">
-                                        <th:block th:if="${discountedPrice}">
                                             <span th:text="|$${#numbers.formatDecimal(discountedPrice, 1, 2)}|"></span>
-                                            <div>
+                                        <th:block th:if="${discountedPrice != product.productPrice}">
                                                 <span class="original-price text-danger text-decoration-line-through"
                                                       th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 2)}|"></span>
                                                 <span class="fw-bolder"
                                                       th:text="
                                                       |-${product.discountPercent}%|"></span>
-                                            </div>
                                         </th:block>
                                     </dd>
                                     <!-- Single product average rating stats -->
@@ -113,16 +111,21 @@
                                                 <input type="number"
                                                        min="1"
                                                        th:attr="max=${product.productQuantity}"
+                                                          th:disabled="${product.productQuantity <= 0}"
                                                        class="form-control form-control-sm"
                                                        name="quantity"
                                                        placeholder="1"
-                                                       th:value="${userCart.quantity}" />
+                                                          th:value="${cartQuantity}"
+                                                       value="1" />
                                                 <small id="helpId"
                                                        class="form-text text-body-secondary">
                                                     <span th:text="${product.productQuantity}"></span>
                                                     available.</small>
+                                                <small th:if="${product.productQuantity <= 0}"
+                                                       class="d-block text-danger">Out of stock.</small>
                                                 <div>
                                                     <button th:classappend="${product.productQuantity} <= 0 ? 'disabled'"
+                                                            th:disabled="${product.productQuantity <= 0}"
                                                             class="btn btn-success bi bi-cart4 add-to-cart-button"
                                                             type="submit"> Add to cart </button>
                                                 </div>
@@ -234,8 +237,6 @@
                         </tbody>
                     </table>
                     <span th:if="${#lists.isEmpty(productReviews)}">No reviews yet.</span>
-                </div>
-            </section>
             </div>
             </section>
         </main>
