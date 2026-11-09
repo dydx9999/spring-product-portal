@@ -285,6 +285,8 @@ public class ProductViewController {
         List<Product> vendorProducts = productRepository.findByVendorNameIgnoreCase(requestedProduct.getVendorName(),
                 Sort.by(Product::getProductPrice));
         List<Cart> userCart = cartRepository.findByProductIdUserId(productId, currentUser.getId());
+        int cartQuantity = userCart.isEmpty() ? 1 : userCart.get(0).getQuantity();
+        model.addAttribute("cartQuantity", cartQuantity);
         if (requestedProduct.getDiscountPercent() >= 0) {
             BigDecimal discountPercent = BigDecimal.valueOf(requestedProduct.getDiscountPercent());
             BigDecimal discountAmount = ((requestedProduct.getProductPrice()).multiply(discountPercent)
@@ -300,7 +302,6 @@ public class ProductViewController {
                 reviewRepository.findAverageRatingByProductId(productId));
         model.addAttribute("productReviews", productReviews);
         model.addAttribute("unitsSold", unitsSold);
-        model.addAttribute("userCart", userCart.getFirst());
 
         return "product-view-single";
     }
