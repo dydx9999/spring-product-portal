@@ -24,11 +24,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.dto.ProductBestSellersDTO;
 import com.example.demo.dto.ProductReviewPageDTO;
 import com.example.demo.dto.ProductSalesHistoryDTO;
+import com.example.demo.model.Cart;
 import com.example.demo.model.OrderItem;
 import com.example.demo.model.PageView;
 import com.example.demo.model.Product;
 import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
+import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ReviewRepository;
@@ -53,11 +55,12 @@ public class ProductViewController {
     private final CartService cartService;
     private final VendorService vendorService;
     private final ReviewRepository reviewRepository;
+    private final CartRepository cartRepository;
 
     public ProductViewController(WishlistService wishlistService, WarehouseRepository warehouseRepository,
             OrderItemRepository orderItemRepository, ProductRepository productRepository,
             ProductService productService, UserService userService, CartService cartService,
-            VendorService vendorService, ReviewRepository reviewRepository) {
+            VendorService vendorService, ReviewRepository reviewRepository, CartRepository cartRepository) {
         this.wishlistService = wishlistService;
         this.warehouseRepository = warehouseRepository;
         this.orderItemRepository = orderItemRepository;
@@ -67,6 +70,7 @@ public class ProductViewController {
         this.cartService = cartService;
         this.vendorService = vendorService;
         this.reviewRepository = reviewRepository;
+        this.cartRepository = cartRepository;
 
     }
 
@@ -271,13 +275,16 @@ public class ProductViewController {
 
     // RENDER: product-view-single
     @GetMapping("/view/{productId}")
-    public String showProductPage(@PathVariable("productId") Long productId, Model model) {
+    public String showProductPage(@PathVariable("productId") Long productId, Model model,
+            Authentication authentication) {
+        User currentUser = userService.getUserByUsername(authentication.getName());
         Product requestedProduct = productService.searchProductById(productId);
         Long unitsSold = productRepository.findUnitsSoldByProductId(productId);
         List<ProductReviewPageDTO> productReviews = productService.getReviewsByProductId(productId);
         List<ProductSalesHistoryDTO> productSalesHistory = productService.getProductSalesHistory(productId);
         List<Product> vendorProducts = productRepository.findByVendorNameIgnoreCase(requestedProduct.getVendorName(),
                 Sort.by(Product::getProductPrice));
+        List<Cart> userCart = cartRepository.findByProductIdUserId(productId, currentUser.getId());
         if (requestedProduct.getDiscountPercent() >= 0) {
             BigDecimal discountPercent = BigDecimal.valueOf(requestedProduct.getDiscountPercent());
             BigDecimal discountAmount = ((requestedProduct.getProductPrice()).multiply(discountPercent)
@@ -293,6 +300,7 @@ public class ProductViewController {
                 reviewRepository.findAverageRatingByProductId(productId));
         model.addAttribute("productReviews", productReviews);
         model.addAttribute("unitsSold", unitsSold);
+        model.addAttribute("userCart", userCart.getFirst());
 
         return "product-view-single";
     }

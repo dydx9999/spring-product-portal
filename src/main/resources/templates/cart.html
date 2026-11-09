@@ -1,43 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
         <title>Product Cart</title>
         <link rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
-        <link rel="icon" type="image/svg+xml"
-            th:href="@{/assets/cart-favicon.svg}">
-        <script th:src="@{/js/cart.js}" defer></script>
+              th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/css/styles.css}">
+        <link rel="icon"
+              type="image/svg+xml"
+              th:href="@{/assets/cart-favicon.svg}">
+        <script th:src="@{/js/cart.js}"
+                defer></script>
     </head>
 
     <body class="site-page">
-        <div
-            th:replace="~{fragments/fragments :: site-navigation('cart')}"></div>
+        <div th:replace="~{fragments/fragments :: site-navigation('cart')}"></div>
         <main class="container py-4">
             <!-- Cart page header -->
             <header class="mb-4">
-                <p
-                    class="page-eyebrow text-uppercase small fw-semibold mb-2">Shopping</p>
-                <h1 class="h2 mb-2">Your shopping cart
-                </h1>
-                <p class="text-secondary mb-0 lead">Review the products
-                    currently
-                    in
-                    your cart.</p>
+                <p class="page-eyebrow text-uppercase small fw-semibold mb-2">Shopping</p>
+                <h1 class="h2 mb-2">Your shopping cart </h1>
+                <p class="text-secondary mb-0 lead">Review the products currently in your cart.</p>
                 <!-- Cart error message -->
-                <div th:if="${errorMessage}" class="alert alert-danger mt-3"
-                    role="alert" th:text="${errorMessage}"></div>
+                <div th:if="${errorMessage}"
+                     class="alert alert-danger mt-3"
+                     role="alert"
+                     th:text="${errorMessage}"></div>
             </header>
-
             <!-- Cart success message -->
-            <div th:if="${successMessage}" class="alert alert-success"
-                role="status" th:text="${successMessage}"></div>
+            <div th:if="${successMessage}"
+                 class="alert alert-success"
+                 role="status"
+                 th:text="${successMessage}"></div>
             <!-- Cart item list and actions -->
             <div class="card border-0 shadow-sm">
-                <div class="table-responsive" id="container">
+                <div class="table-responsive"
+                     id="container">
                     <table class="table table-hover site-table mb-0">
                         <thead class="table-light">
                             <tr>
@@ -47,84 +50,62 @@
                                 <th scope="col">Unit Price</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Actions</th>
-
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="product-row"
                                 th:each="cartItem : ${cart}">
                                 <td>
-                                    <span
-                                        th:text="${cartItem.productId}"></span>
-                                    <span
-                                        th:if="${products.get(cartItem.productId).productQuantity <= 0}"
-                                        class="badge text-bg-warning">Out of
-                                        stock!
-                                    </span>
-
+                                    <span th:text="${cartItem.productId}"></span>
+                                    <span th:if="${products.get(cartItem.productId).productQuantity <= 0}"
+                                          class="badge text-bg-warning">Out of stock! </span>
                                 </td>
                                 <td>
-                                    <a
-                                        th:href="@{/products/view/{productId}(productId=${cartItem.productId})}">
-                                    <span
-                                        th:text="${products.get(cartItem.productId).productName}"></span>
+                                    <a th:href="@{/products/view/{productId}(productId=${cartItem.productId})}">
+                                        <span th:text="${products.get(cartItem.productId).productName}"></span>
                                     </a>
                                     <span class="badge text-bg-primary"
-                                        th:if="${distinctCarts[cartItem.productId]} > 1">
-                                        In:
-                                        <span
-                                            th:text="
+                                          th:if="${distinctCarts[cartItem.productId]} > 1"> In: <span th:text="
                                             ${distinctCarts[cartItem.productId]}">
-                                        </span>
-                                        user's carts
-                                    </span>
-
+                                        </span> user's carts </span>
                                 </td>
                                 <td>
-                                    <strong><span>x</span><span
-                                            class="cart-item-quantity"
-                                            th:text="${cartItem.quantity}"></span></strong>
-                                    <span>(</span><span
-                                        class="product-item-quantity"
-                                        th:text="${products.get(cartItem.productId).productQuantity}">
-                                    </span> <span>available)<span
-                                            class="warning"
-                                            hidden="true"></span></span>
+                                    <strong><span>x</span><span class="cart-item-quantity"
+                                              th:text="${cartItem.quantity}"></span></strong>
+                                    <span>(</span><span class="product-item-quantity"
+                                          th:text="${products.get(cartItem.productId).productQuantity}">
+                                    </span> <span>available)<span class="warning"
+                                              hidden="true"></span></span>
                                 </td>
                                 <td>
                                     <p>$<span class="product-price"
-                                            th:text="${products.get(cartItem.productId).productPrice}"></span>
+                                              th:text="${products.get(cartItem.productId).productPrice}"></span>
                                         <span>/ea</span>
                                     </p>
-
                                 </td>
                                 <td>
-
                                     <span class="line-total"
-                                        th:text="|$${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}|"></span>
-
+                                          th:text="|$${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}|"></span>
                                 </td>
                                 <td>
                                     <!-- Remove item or update its quantity -->
-                                    <form
-                                        th:action="@{/cart/delete/{id}(id=${cartItem.productId})}"
-                                        method="post">
+                                    <form th:action="@{/cart/delete/{id}(id=${cartItem.productId})}"
+                                          method="post">
                                         <button type="submit"
-                                            class="btn btn-danger item-delete-button w-50">Delete
-                                        </button>
+                                                class="btn btn-danger item-delete-button w-50">Delete </button>
                                     </form>
                                     <form class="d-flex gap-2 mt-2"
-                                        th:action="@{/cart/update/{id}(id=${cartItem.productId})}"
-                                        method="post">
-                                        <input
-                                            type="number"
-                                            class="form-control text-center form-quantity"
-                                            style="max-width: 100px;"
-                                            name="quantity"
-                                            th:value="${cartItem.quantity}"
-                                            min="1" required>
+                                          th:action="@{/cart/update/{id}(id=${cartItem.productId})}"
+                                          method="post">
+                                        <input type="number"
+                                               class="form-control text-center form-quantity"
+                                               style="max-width: 100px;"
+                                               name="quantity"
+                                               th:value="${cartItem.quantity}"
+                                               min="1"
+                                               required>
                                         <button type="submit"
-                                            class="btn btn-outline-primary">Update</button>
+                                                class="btn btn-outline-primary">Update</button>
                                     </form>
                                     <span class="output"></span>
                                 </td>
@@ -134,28 +115,24 @@
                 </div>
             </div>
             <!-- Cart total and checkout action -->
-            <div
-                class="d-flex justify-content-end align-items-center gap-3 mt-3">
+            <div class="d-flex justify-content-end align-items-center gap-3 mt-3">
                 <div class="text-end">
                     <p class="mb-0">Subtotal: $<span
-                            th:text="${#numbers.formatDecimal(cartSubtotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
+                              th:text="${#numbers.formatDecimal(cartSubtotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
                     <p class="mb-0">Sales tax (7%) : $<span
-                            th:text="${#numbers.formatDecimal(salesTax,1, 'COMMA', 2, 'POINT')}"></span></p>
-                    <p class="mb-0 fw-semibold">
-                        Total: $<span
-                            th:text="${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 2, 'POINT')}"></span>
+                              th:text="${#numbers.formatDecimal(salesTax,1, 'COMMA', 2, 'POINT')}"></span></p>
+                    <p class="mb-0 fw-semibold"> Estimated total: $<span
+                              th:text="${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 2, 'POINT')}"></span>
+                        <small class="text-secondary small fw-light">(final total will calculated at checkout)</small>
                     </p>
                 </div>
-
                 <a th:href="@{/cart/checkout}"
-                    class="btn btn-primary">Checkout</a>
-
+                   class="btn btn-primary">Checkout</a>
             </div>
         </main>
         <footer class="container py-3">
             <div th:replace="~{fragments/fragments :: site-footer}"></div>
         </footer>
-
     </body>
 
 </html>
