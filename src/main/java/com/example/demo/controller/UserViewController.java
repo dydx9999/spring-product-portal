@@ -53,6 +53,11 @@ public class UserViewController {
         return "user-list";
     }
 
+    @GetMapping("/")
+    public String redirectLoginForm(Model model) {
+        return "redirect:/login";
+    }
+
     // Render user registration page
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
