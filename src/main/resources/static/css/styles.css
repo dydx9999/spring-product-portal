@@ -53,20 +53,7 @@
     --bs-btn-focus-shadow-rgb: 91, 63, 214;
 }
 
-/* Purchase actions use the warm CTA colour so they stand out from other buttons */
-.add-to-cart-button,
-.comparison-submit
-{
-    --bs-btn-bg: var(--portal-cta);
-    --bs-btn-border-color: var(--portal-cta);
-    --bs-btn-hover-bg: var(--portal-cta-hover);
-    --bs-btn-hover-border-color: var(--portal-cta-hover);
-    --bs-btn-active-bg: var(--portal-cta-hover);
-    --bs-btn-active-border-color: var(--portal-cta-hover);
-    --bs-btn-focus-shadow-rgb: 217, 72, 15;
-    font-weight: 600;
-    box-shadow: 0 2px 6px rgba(217, 72, 15, 0.3);
-}
+
 
 .highlight
 {
