@@ -63,7 +63,9 @@
                                     <span th:case="'accepted'"
                                           class="badge text-bg-primary"
                                           th:text="${order.status}"></span>
-                                </td>
+                                    <span th:case="'cancelled'"
+                                          class="badge text-bg-danger"
+                                          th:text="${order.status}"></span>
                                 <td>
                                     <a class="order-single-link"
                                        th:href="@{/orders/view/{orderId}(orderId=${order.orderId})}">View details</a>

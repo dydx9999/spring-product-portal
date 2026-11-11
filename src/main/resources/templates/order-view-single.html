@@ -42,6 +42,17 @@
                           th:if="${errorMessage}"
                           th:text="${errorMessage}">ErrorMessage</span>
                 </div>
+                <section class="status-tracker card border mb-2">
+                    <h2 class="fw-bold">Status Tracker</h2>
+                    <div class="status-container">
+                        <span th:classappend="${orderDetails.status == 'Pending payment' ? 'fw-bold'  :''}">Pending
+                            payment</span>
+                        <span th:classappend="${orderDetails.status == 'Processing' ? 'fw-bold'  :''}">Processing</span>
+                        <span th:classappend="${orderDetails.status == 'Accepted' ? 'fw-bold'  :''}">Accepted </span>
+                        <span th:classappend="${orderDetails.status == 'Shipped' ? 'fw-bold'  :''}">Shipped</span>
+                        <span th:classappend="${orderDetails.status == 'Delivered' ? 'fw-bold'  :''}">Delivered</span>
+                    </div>
+                </section>
                 <section class="card border-0 shadow-sm">
                     <div class="table-responsive">
                         <table class="table table-hover site-table mb-0">
@@ -101,14 +112,18 @@
                         <div class="card-body">
                             <h5 class="card-title">Details</h5>
                             <ul class="payment-details-list">
-                                <li><span
-                                          th:text="| Paid with: ${#strings.toUpperCase(orderDetails.cardBrand)} |"></span>
-                                    <span class="text-secondary"
-                                          th:text="|(ending in: ${orderDetails.cardLast4})|"></span>
+                                <li>
+                                    <th:block th:unless="${orderDetails.paymentMethodType == 'link'}">
+                                        <span
+                                              th:text="| Paid with: ${#strings.toUpperCase(orderDetails.cardBrand)} |"></span>
+                                        <span class="text-secondary"
+                                              th:text="|(ending in: ${orderDetails.cardLast4})|"></span>
+                                    </th:block>
+                                    <th:block th:if="${orderDetails.paymentMethodType =='link'}">
+                                        <span th:text="|Paid with: Link|"></span>
+                                    </th:block>
                                 </li>
-                                <li></li>
-                                <li></li>
-                                <li>Sales Tax:</li>
+                                <li>Sales Tax: </li>
                                 <li>Subtotal:</li>
                                 <li>Grand Total:</li>
                             </ul>
