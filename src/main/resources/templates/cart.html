@@ -79,7 +79,7 @@
                                 </td>
                                 <td>
                                     <p>$<span class="product-price"
-                                              th:text="${products.get(cartItem.productId).productPrice}"></span>
+                                              th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice - (products.get(cartItem.productId).discountPercent * 0.01) * products.get(cartItem.productId).productPrice, 1, 'COMMA', 2, 'POINT')}"></span>
                                         <span>/ea</span>
                                     </p>
                                 </td>

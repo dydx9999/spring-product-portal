@@ -92,6 +92,15 @@ h1
     color: var(--portal-ink);
 }
 
+.vendor-dashboard-nav
+{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    text-decoration: none;
+
+}
+
 p
 {
     line-height: 1.5;

@@ -34,9 +34,9 @@
                 <a class="btn btn-primary"
                    th:href="@{/products/product-add}">Add product</a>
             </header>
-            <div class="justify-items-center gap-3">
-                <a href="#vendor-sales-heading">Your sales</a>
+            <div class="vendor-dashboard-nav">
                 <a href="#vendor-products-heading">Your products</a>
+                <a href="#vendor-sales-heading">Your sales</a>
             </div>
             <th:block th:with="outOfStockCount=${#lists.size(products.?[productQuantity <= 0])},
             lowStockCount=${#lists.size(products.?[productQuantity > 0 and productQuantity <= lowStockThreshold])}">
