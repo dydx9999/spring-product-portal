@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -365,6 +366,20 @@ public class VendorViewController {
                 productRepository.save(product);
                 redirectAttributes.addFlashAttribute("successMessage", "Product price updated.");
                 return "redirect:/products";
+        }
+
+        @PreAuthorize("hasRole('VENDOR')")
+        @GetMapping("/update/bulk")
+        public String showBulkEditForm(Model model, Authentication authentication) {
+                User currentUser = userService.getUserByUsername(authentication.getName());
+                Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
+                List<Product> vendorProducts = productRepository.findByVendorNameIgnoreCase(
+                                currentVendor.getBusinessName(),
+                                Sort.by(Product::getProductName));
+
+                model.addAttribute("vendorProducts", vendorProducts);
+
+                return "vendor-bulk-edit";
         }
 
 }

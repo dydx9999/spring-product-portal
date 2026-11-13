@@ -31,8 +31,12 @@
                                   th:text="${currentVendor.businessName}">Business name</span></strong>
                     </p>
                 </div>
-                <a class="btn btn-primary"
-                   th:href="@{/products/product-add}">Add product</a>
+                <div class="action-buttons">
+                    <a class="btn btn-primary"
+                       th:href="@{/products/product-add}">Add product</a>
+                    <a class="btn btn-primary"
+                       th:href="@{/vendor/update/bulk}">Bulk Edit</a>
+                </div>
             </header>
             <div class="vendor-dashboard-nav">
                 <a href="#vendor-products-heading">Your products</a>

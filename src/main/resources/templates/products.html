@@ -135,7 +135,7 @@
             <!-- TODO: Finish implementation of vendor only bulk edit button -->
             <div sec:authorize="hasRole('VENDOR')">
                 <form class="product-bulk-action-form d-flex flex-wrap align-items-center gap-2 mb-3"
-                      th:action="@{/products/update/bulk}"
+                      th:action="@{/vendor/update/bulk}"
                       th:object="${productBulkUpdateForm}">
                     <div class="dropdown open">
                         <button class="btn btn-primary dropdown-toggle"

@@ -101,6 +101,16 @@ h1
 
 }
 
+.price-input
+{
+    width: 9ch;
+}
+
+.quantity-input
+{
+    width: 9ch;
+}
+
 p
 {
     line-height: 1.5;
