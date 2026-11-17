@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -139,4 +140,10 @@ public class Product {
         this.vendorNotes = vendorNotes;
     }
 
+    public BigDecimal getDiscountedPrice() {
+        return productPrice
+                .multiply(BigDecimal.valueOf(100 - discountPercent))
+                .movePointLeft(2)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
 }
