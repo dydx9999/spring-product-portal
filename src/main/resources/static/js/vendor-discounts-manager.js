@@ -4,11 +4,11 @@ document.querySelectorAll(".product-row").forEach((productRow) => {
     const discountedPriceOutput = productRow.querySelector(".discounted-price");
 
     function updateDiscountedPrice() {
-        const currentPrice = Number(
+        const priceCents = Math.round(Number(
             priceElement.textContent.replace(/[$,]/g, "").trim()
-        );
+        ) * 100);
         const discountPercent = Number(discountRange.value);
-        const discountedPrice = currentPrice * (1 - discountPercent / 100);
+        const discountedPrice = Math.round(priceCents * (100 - discountPercent) / 100) / 100;
 
         discountedPriceOutput.textContent = `$${discountedPrice.toFixed(2)}`;
         discountedPriceOutput.style.color = 'red';
@@ -16,5 +16,4 @@ document.querySelectorAll(".product-row").forEach((productRow) => {
     }
 
     discountRange.addEventListener("input", updateDiscountedPrice);
-    updateDiscountedPrice();
 });

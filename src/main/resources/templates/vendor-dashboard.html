@@ -171,8 +171,13 @@
                                     <span th:if="${product.productQuantity > 0 and product.productQuantity <= product.lowStockThreshold}"
                                           class="badge text-bg-warning">Low stock</span>
                                 </td>
-                                <td>$<span th:text="${#numbers.formatDecimal(product.productPrice,
-                                        1, 'COMMA', 2, 'POINT')}"></span></td>
+                                <td>
+                                    $<span th:text="${#numbers.formatDecimal(product.discountedPrice,
+                                        1, 'COMMA', 2, 'POINT')}"></span>
+                                    <span th:if="${product.discountPercent > 0}"
+                                          class="text-decoration-line-through text-secondary"
+                                          th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                </td>
                                 <td th:text="${product.productQuantity}"></td>
                                 <td th:text="${product.productSKU}"></td>
                                 <td th:text="${product.vendorNotes}"></td>

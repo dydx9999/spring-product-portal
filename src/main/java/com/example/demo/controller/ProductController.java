@@ -90,7 +90,7 @@ public class ProductController {
 
     @PostMapping("/discount/{productId}")
     public ResponseEntity<?> returnDiscountedPrice(@PathVariable("productId") Long productId) {
-        BigDecimal newPrice = productRepository.calculateDiscountedProductPrice(productId);
+        BigDecimal newPrice = productService.searchProductById(productId).getDiscountedPrice();
         return ResponseEntity.ok(newPrice);
     }
 }

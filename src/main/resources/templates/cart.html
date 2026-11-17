@@ -79,13 +79,14 @@
                                 </td>
                                 <td>
                                     <p>$<span class="product-price"
-                                              th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice - (products.get(cartItem.productId).discountPercent * 0.01) * products.get(cartItem.productId).productPrice, 1, 'COMMA', 2, 'POINT')}"></span>
+                                              th:attr="data-unit-price=${products.get(cartItem.productId).discountedPrice}"
+                                              th:text="${#numbers.formatDecimal(products.get(cartItem.productId).discountedPrice, 1, 'COMMA', 2, 'POINT')}"></span>
                                         <span>/ea</span>
                                     </p>
                                 </td>
                                 <td>
                                     <span class="line-total"
-                                          th:text="|$${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                          th:text="|$${#numbers.formatDecimal(products.get(cartItem.productId).discountedPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}|"></span>
                                 </td>
                                 <td>
                                     <!-- Remove item or update its quantity -->

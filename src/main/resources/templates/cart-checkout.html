@@ -60,14 +60,14 @@
                                         </span> <span>available)</span>
                                     </td>
                                     <td>
-                                        <p>$<span th:text="${products.get(cartItem.productId).productPrice}"></span>
+                                        <p>$<span th:text="${products.get(cartItem.productId).discountedPrice}"></span>
                                             <span>/ea</span>
                                         </p>
                                     </td>
                                     <td>
                                         <span>$</span>
                                         <span
-                                            th:text="${#numbers.formatDecimal(products.get(cartItem.productId).productPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}"></span>
+                                            th:text="${#numbers.formatDecimal(products.get(cartItem.productId).discountedPrice * cartItem.quantity, 1, 'COMMA', 2, 'POINT')}"></span>
                                     </td>
                                 </tr>
                             </tbody>

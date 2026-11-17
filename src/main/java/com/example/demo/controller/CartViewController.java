@@ -80,7 +80,7 @@ public class CartViewController {
                 .collect(Collectors.toMap(Product::getId, product -> product, (existing, duplicate) -> existing));
 
         BigDecimal cartTotal = cart.stream()
-                .map(cartItem -> products.get(cartItem.getProductId()).getProductPrice()
+                .map(cartItem -> products.get(cartItem.getProductId()).getDiscountedPrice()
                         .multiply(BigDecimal.valueOf(cartItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -140,7 +140,7 @@ public class CartViewController {
                 .collect(Collectors.toMap(Product::getId, product -> product, (existing, duplicate) -> existing));
 
         BigDecimal cartTotal = cart.stream()
-                .map(cartItem -> products.get(cartItem.getProductId()).getProductPrice()
+                .map(cartItem -> products.get(cartItem.getProductId()).getDiscountedPrice()
                         .multiply(BigDecimal.valueOf(cartItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -158,7 +158,7 @@ public class CartViewController {
         Long userId = currentUser.getId();
 
         try {
-            cartService.processOrder(userId, orderId);
+            cartService.processOrder(userId, orderId, salesTaxRate);
             OrderDetailsDTO order = orderService.getOrderDetails(orderId, userId);
             BigDecimal salesTax = order.getTotal().multiply(salesTaxRate).setScale(2, RoundingMode.HALF_UP);
             String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();

@@ -64,8 +64,8 @@
                                 <div>
                                     <dt class="col-sm-3 text-secondary fw-semibold">Price</dt>
                                     <dd class="col-sm-9 mb-0">
-                                        <span th:text="|$${#numbers.formatDecimal(discountedPrice, 1, 2)}|"></span>
-                                        <th:block th:if="${discountedPrice != product.productPrice}">
+                                        <span th:text="|$${#numbers.formatDecimal(product.discountedPrice, 1, 2)}|"></span>
+                                        <th:block th:if="${product.discountPercent > 0}">
                                             <span class="original-price text-danger text-decoration-line-through"
                                                   th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 2)}|"></span>
                                             <span class="fw-bolder"
@@ -220,7 +220,7 @@
                         <tr th:each="product : ${vendorProducts}"
                             th:if="${product.productQuantity > 0}">
                             <td th:text="${product.productName}"></td>
-                            <td th:text="|$${product.productPrice}|"></td>
+                            <td th:text="|$${product.discountedPrice}|"></td>
                             <td>
                                 <form th:action="@{/products/purchase/{productId}(productId=${product.id})}"
                                       method="post">

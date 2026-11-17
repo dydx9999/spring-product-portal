@@ -21,6 +21,9 @@
                 <span th:if="${successMessage}"
                     th:text="${successMessage}"
                     class="alert text-bg-success"></span>
+                <span th:if="${errorMessage}"
+                    th:text="${errorMessage}"
+                    class="alert text-bg-danger" role="alert"></span>
             </div>
             <div
                 class="table-responsive">
@@ -48,7 +51,8 @@
                                 scope="row"></td>
                             <td>
                                 <output class="discounted-price"
-                                    aria-live="polite"></output>
+                                    aria-live="polite"
+                                    th:text="|$${product.discountedPrice}|"></output>
                             </td>
                             <td class="price-tag"
                                 th:text="|${product.discountPercent ?: 0}%|"></td>
@@ -65,15 +69,15 @@
                                         <input class="form-range mb-0"
                                             type="range"
                                             name="discountPercent"
-                                            min="0" max="100"
-                                            th:value="${product.discountPercent}"
+                                            min="0" max="99"
+                                            th:value="${product.discountPercent > 99 ? 99 : product.discountPercent}"
                                             step="1"
                                             th:id="|discount-${product.id}|"
                                             oninput="this.nextElementSibling.value = this.value + '%'"
                                             aria-label="Discount percentage">
                                         <output
                                             class="fw-semibold text-nowrap"
-                                            th:text="|${product.discountPercent}%|">0%</output><button
+                                            th:text="|${product.discountPercent > 99 ? 99 : product.discountPercent}%|">0%</output><button
                                             type="submit"
                                             class="btn btn-success btn-sm">
                                             Submit

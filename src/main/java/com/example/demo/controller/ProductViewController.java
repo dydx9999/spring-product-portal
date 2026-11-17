@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -287,13 +286,6 @@ public class ProductViewController {
         List<Cart> userCart = cartRepository.findByProductIdUserId(productId, currentUser.getId());
         int cartQuantity = userCart.isEmpty() ? 1 : userCart.get(0).getQuantity();
         model.addAttribute("cartQuantity", cartQuantity);
-        if (requestedProduct.getDiscountPercent() >= 0) {
-            BigDecimal discountPercent = BigDecimal.valueOf(requestedProduct.getDiscountPercent());
-            BigDecimal discountAmount = ((requestedProduct.getProductPrice()).multiply(discountPercent)
-                    .movePointLeft(2));
-            BigDecimal discountedPrice = (requestedProduct.getProductPrice()).subtract(discountAmount);
-            model.addAttribute("discountedPrice", discountedPrice);
-        }
         model.addAttribute("vendorProducts", vendorProducts);
         model.addAttribute("productSalesHistory", productSalesHistory);
         model.addAttribute("product", requestedProduct);

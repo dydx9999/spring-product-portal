@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -142,7 +144,7 @@ public class CartService {
     }
 
     @Transactional
-    public void processOrder(Long userId, UUID orderId) {
+    public void processOrder(Long userId, UUID orderId, BigDecimal salesTaxRate) {
         List<Cart> cart = cartRepository.findByUserId(userId);
         if (cart.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cart is empty");
@@ -167,11 +169,21 @@ public class CartService {
             OrderItem orderItem = new OrderItem(null,
                     null,
                     product.getId(),
-                    product.getProductPrice(),
+                    product.getDiscountedPrice(),
                     product.getProductName(),
                     cartItem.getQuantity());
             orderItemsByVendorId.computeIfAbsent(vendorId, ignored -> new ArrayList<>())
                     .add(orderItem);
+        }
+
+        BigDecimal subtotal = orderItemsByVendorId.values().stream()
+                .flatMap(List::stream)
+                .map(item -> item.getProductPrice().multiply(BigDecimal.valueOf(item.getProductQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal salesTax = subtotal.multiply(salesTaxRate).setScale(2, RoundingMode.HALF_UP);
+        if (subtotal.add(salesTax).compareTo(new BigDecimal("0.50")) < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "The order total must be at least $0.50 to pay by card.");
         }
 
         LocalDateTime orderCreatedAt = LocalDateTime.now();

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -48,6 +49,7 @@ public class ProductService {
         newProduct.setProductSKU(generatedSKU);
         newProduct.setVendorName(vendorName);
         newProduct.setWarehouseId(requestedWarehouseLocation);
+        newProduct.setDiscountPercent(0);
         productRepository.save(newProduct);
         return newProduct;
 
@@ -145,11 +147,14 @@ public class ProductService {
 
         switch (filter) {
             case "priceAsc":
-                filteredProducts = productRepository.findAll(sortedWithIdTieBreak(Sort.Direction.ASC, "productPrice"));
+                filteredProducts = productRepository.findAll().stream()
+                        .sorted(Comparator.comparing(Product::getDiscountedPrice).thenComparing(Product::getId))
+                        .toList();
                 break;
             case "priceDesc":
-                filteredProducts = productRepository
-                        .findAll(sortedWithIdTieBreak(Sort.Direction.DESC, "productPrice"));
+                filteredProducts = productRepository.findAll().stream()
+                        .sorted(Comparator.comparing(Product::getDiscountedPrice).reversed().thenComparing(Product::getId))
+                        .toList();
                 break;
             case "outOfStockProductsFilter":
                 filteredProducts = productRepository.findOutOfStockProducts(BY_ID);

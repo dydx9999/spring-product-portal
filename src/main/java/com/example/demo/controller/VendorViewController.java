@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -188,8 +187,8 @@ public class VendorViewController {
                         Model model) {
                 User currentUser = userService.getUserByUsername(authentication.getName());
                 Vendor currentVendor = vendorService.getVendorByUserId(currentUser.getId());
-                if (discountPercent < 0 || discountPercent > 100) {
-                        redirectAttributes.addFlashAttribute("errorMessage", "Discount must be between 0 and 100%.");
+                if (discountPercent < 0 || discountPercent > 99) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Discount must be between 0 and 99%.");
                         return "redirect:/vendor/discounts";
                 }
                 Product product = productRepository.findById(productId)
@@ -202,7 +201,6 @@ public class VendorViewController {
                 }
                 product.setDiscountPercent(discountPercent);
                 productRepository.save(product);
-                model.addAttribute("newPrice", productRepository.calculateDiscountedProductPrice(productId));
                 redirectAttributes.addFlashAttribute("savedProductId", productId);
                 redirectAttributes.addFlashAttribute("successMessage", "Discount successfully applied!");
                 return "redirect:/vendor/discounts";
@@ -353,16 +351,7 @@ public class VendorViewController {
                                         "Price must be zero or more with at most two decimal places.");
                         return "redirect:/products";
                 }
-                BigDecimal currentPrice = product.getProductPrice();
-                int discountPercent = 0;
-                if (currentPrice.signum() > 0 && updatedPrice.compareTo(currentPrice) < 0) {
-                        discountPercent = currentPrice.subtract(updatedPrice)
-                                        .multiply(BigDecimal.valueOf(100))
-                                        .divide(currentPrice, 0, RoundingMode.HALF_UP)
-                                        .intValueExact();
-                }
                 product.setProductPrice(updatedPrice.setScale(2));
-                product.setDiscountPercent(discountPercent);
                 productRepository.save(product);
                 redirectAttributes.addFlashAttribute("successMessage", "Product price updated.");
                 return "redirect:/products";

@@ -81,7 +81,7 @@
                             <tr th:each=" product: ${products}">
                                 <td th:text="${product.productName}"></td>
                                 <td
-                                    th:text="|$${#numbers.formatDecimal(product.productPrice, 1, 'COMMA', 2, 'POINT')}|">
+                                    th:text="|$${#numbers.formatDecimal(product.discountedPrice, 1, 'COMMA', 2, 'POINT')}|">
                                 </td>
                                 <td th:text="${product.productQuantity}"></td>
                                 <td sec:authorize="hasRole('USER')">

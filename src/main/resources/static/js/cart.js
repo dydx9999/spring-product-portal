@@ -35,7 +35,7 @@ function calculateLineTotal(productRow) {
     const lineTotal = productRow.querySelector(".line-total");
     const cartQuantity = productRow.querySelector(".cart-item-quantity");
     const productPrice = productRow.querySelector(".product-price");
-    const total = Number(productPrice.textContent) * Number(cartQuantity.textContent);
+    const total = Number(productPrice.dataset.unitPrice) * Number(cartQuantity.textContent);
     lineTotal.textContent = total.toLocaleString("en-US", {
         style: "currency",
         currency: "USD",

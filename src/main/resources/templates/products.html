@@ -292,7 +292,7 @@
                                                            required
                                                            name="productPrice"
                                                            th:value="${product.productPrice}"
-                                                           aria-label="Product price">
+                                                           aria-label="Base product price">
                                                 </span>
                                                 <button type="submit"
                                                         class="btn btn-sm btn-success price-edit-submit">Save</button>
@@ -300,6 +300,10 @@
                                                         class="btn btn-sm btn-outline-secondary price-edit-cancel">Cancel</button>
                                             </form>
                                             <span class="product-price"
+                                                  th:attr="data-base-price=${product.productPrice}"
+                                                  th:text="|$${product.discountedPrice}|"></span>
+                                            <span th:if="${product.discountPercent > 0}"
+                                                  class="text-decoration-line-through text-secondary"
                                                   th:text="|$${product.productPrice}|"></span>
                                             <span class="text-secondary small"
                                                   th:text="|(${product.productQuantity} available)|"></span><button

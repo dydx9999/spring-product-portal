@@ -1,6 +1,5 @@
 package com.example.demo.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,14 +69,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         GROUP BY oi.product_name
                             """, nativeQuery = true)
         Long findUnitsSoldByProductId(Long productId);
-
-        @Query(value = """
-                        SELECT ROUND(p.product_price * (100 - COALESCE(p.discount_percent, 0)) / 100.0, 2)
-                        AS discounted_price
-                        FROM products p
-                        WHERE p.id = :productId
-                        """, nativeQuery = true)
-        BigDecimal calculateDiscountedProductPrice(Long productId);
 
         @Query(value = """
                         SELECT oi.product_quantity, o.creation_date

@@ -91,7 +91,7 @@
                                     th:text="${entry.product != null and entry.product.vendorName != null ? entry.product.vendorName : 'Unassigned'}">Vendor</td>
                                 <td class="text-end">
                                     <span th:if="${entry.product != null}"
-                                        th:text="|$${#numbers.formatDecimal(entry.product.productPrice, 1, 2)}|">$0.00</span>
+                                        th:text="|$${#numbers.formatDecimal(entry.product.discountedPrice, 1, 2)}|">$0.00</span>
                                     <span th:unless="${entry.product != null}"
                                         class="text-secondary">&mdash;</span>
                                 </td>

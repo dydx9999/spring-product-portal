@@ -77,7 +77,7 @@ function hidePriceEditField(row) {
         return;
     }
 
-    input.value = price.textContent.trim().replace(/^\$/, '');
+    input.value = price.dataset.basePrice;
     form.hidden = true;
     price.hidden = false;
     editButton.hidden = false;
