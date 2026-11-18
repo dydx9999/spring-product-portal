@@ -75,7 +75,7 @@ public class ProductViewController {
 
     // ---- Product list ----
     @GetMapping
-    public String showProductList(@RequestParam(required = false) String filter,
+    public String showProductCatalog(@RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "false") boolean inStockOnly,
             @RequestParam(name = "vendor", required = false) String vendorNameFilter,
             @RequestParam(required = false) Long warehouseId,
@@ -97,22 +97,13 @@ public class ProductViewController {
             vendorBusinessName = vendor.getBusinessName();
         }
         List<ProductBestSellersDTO> bestSellingProducts = productService.getBestSellingProducts();
-        model.addAttribute("bestSellingProducts", bestSellingProducts);
-        model.addAttribute("bestSellingProductIds", bestSellingProducts.stream()
-                .map(ProductBestSellersDTO::productId)
-                .toList());
-        model.addAttribute("isVendor", isVendor);
-        model.addAttribute("businessName", vendorBusinessName);
-        model.addAttribute("username", currentUser.getUsername());
-        model.addAttribute("productCount", productRepository.countProducts());
-        model.addAttribute("outOfStockProducts", productRepository.countOutOfStockProducts());
+
         Map<String, Integer> quantitySoldByProduct = new HashMap<>();
         for (OrderItem orderItem : orderItemRepository.findAll()) {
             if (orderItem.getProductName() != null) {
                 quantitySoldByProduct.merge(orderItem.getProductName(), orderItem.getProductQuantity(), Integer::sum);
             }
         }
-        model.addAttribute("quantitySoldByProduct", quantitySoldByProduct);
         List<Product> products = filter == null
                 ? productService.getProducts()
                 : productService.getFilteredProducts(filter, vendorBusinessName);
@@ -153,6 +144,16 @@ public class ProductViewController {
         model.addAttribute("selectedVendor", vendorNameFilter);
         model.addAttribute("selectedWarehouseId", warehouseId);
         model.addAttribute("selectedAvailability", availability);
+        model.addAttribute("bestSellingProducts", bestSellingProducts);
+        model.addAttribute("bestSellingProductIds", bestSellingProducts.stream()
+                .map(ProductBestSellersDTO::productId)
+                .toList());
+        model.addAttribute("isVendor", isVendor);
+        model.addAttribute("businessName", vendorBusinessName);
+        model.addAttribute("username", currentUser.getUsername());
+        model.addAttribute("productCount", productRepository.countProducts());
+        model.addAttribute("outOfStockProducts", productRepository.countOutOfStockProducts());
+        model.addAttribute("quantitySoldByProduct", quantitySoldByProduct);
         return "products";
     }
 
