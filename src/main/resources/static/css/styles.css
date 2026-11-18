@@ -7,25 +7,25 @@
 
 :root
 {
-    --portal-ink: #1e1b3a;
-    --portal-accent: #5b3fd6;
-    --portal-accent-hover: #4a2fc0;
-    --portal-accent-soft: #efebff;
+    --portal-ink: #26323a;
+    --portal-accent: #4f6878;
+    --portal-accent-hover: #3d5362;
+    --portal-accent-soft: #eaf0f3;
     --portal-cta: #d9480f;
     --portal-cta-hover: #b93c0b;
     --portal-sun: #ffc93c;
-    --portal-muted: #66617f;
-    --portal-line: #e6e1f5;
-    --portal-bg: #f8f6fd;
-    --portal-gradient: linear-gradient(90deg, #5b3fd6, #e64980, #ff922b);
+    --portal-muted: #66737b;
+    --portal-line: #dce3e7;
+    --portal-bg: #f6f8f9;
+    --portal-gradient: linear-gradient(90deg, #4f6878, #788b95, #a9b6b9);
 
     --bs-primary: var(--portal-accent);
-    --bs-primary-rgb: 91, 63, 214;
+    --bs-primary-rgb: 79, 104, 120;
     --bs-link-color: var(--portal-accent);
-    --bs-link-color-rgb: 91, 63, 214;
+    --bs-link-color-rgb: 79, 104, 120;
     --bs-link-hover-color: var(--portal-accent-hover);
-    --bs-link-hover-color-rgb: 74, 47, 192;
-    --bs-focus-ring-color: rgba(91, 63, 214, 0.3);
+    --bs-link-hover-color-rgb: 61, 83, 98;
+    --bs-focus-ring-color: rgba(79, 104, 120, 0.3);
 }
 
 .btn-primary
@@ -38,8 +38,8 @@
     --bs-btn-active-border-color: var(--portal-accent-hover);
     --bs-btn-disabled-bg: var(--portal-accent);
     --bs-btn-disabled-border-color: var(--portal-accent);
-    --bs-btn-focus-shadow-rgb: 91, 63, 214;
-    box-shadow: 0 2px 6px rgba(91, 63, 214, 0.25);
+    --bs-btn-focus-shadow-rgb: 79, 104, 120;
+    box-shadow: 0 2px 6px rgba(79, 104, 120, 0.18);
 }
 
 .btn-outline-primary
@@ -50,7 +50,7 @@
     --bs-btn-hover-border-color: var(--portal-accent);
     --bs-btn-active-bg: var(--portal-accent-hover);
     --bs-btn-active-border-color: var(--portal-accent-hover);
-    --bs-btn-focus-shadow-rgb: 91, 63, 214;
+    --bs-btn-focus-shadow-rgb: 79, 104, 120;
 }
 
 
@@ -123,7 +123,7 @@ p
     gap: 0.5rem;
 }
 
-/* Restock and Update have different label widths; a shared width keeps Delete in the same column */
+
 .action-buttons .btn
 {
     min-width: 4.75rem;
@@ -208,7 +208,7 @@ a
     border-image: var(--portal-gradient) 1;
     border-bottom: 0;
     background-color: #fff;
-    box-shadow: 0 2px 10px rgba(30, 27, 58, 0.06);
+    box-shadow: 0 2px 10px rgba(38, 50, 58, 0.06);
 }
 
 .site-navigation .nav-link
@@ -228,8 +228,8 @@ a
 .site-navigation .nav-link.active
 {
     color: #fff;
-    background: linear-gradient(135deg, var(--portal-accent), #8b5cf6);
-    box-shadow: 0 2px 8px rgba(91, 63, 214, 0.3);
+    background: linear-gradient(135deg, var(--portal-accent), #718691);
+    box-shadow: 0 2px 8px rgba(79, 104, 120, 0.2);
 }
 
 @media (prefers-reduced-motion: reduce)
@@ -264,7 +264,7 @@ a
 
 .page-eyebrow
 {
-    color: #d6336c;
+    color: var(--portal-accent);
     letter-spacing: 0.06em;
 }
 
@@ -430,7 +430,7 @@ a
     width: min(75%, 8rem);
     height: 0.65rem;
     border-radius: 1rem;
-    background: #f1eef9;
+    background: #edf1f3;
 }
 
 .comparison-value-space-long
@@ -564,15 +564,15 @@ a
 {
     position: relative;
     overflow: hidden;
-    background-color: #efe9ff;
+    background-color: #edf2f4;
     background-image:
-        radial-gradient(circle at 85% 20%, rgba(255, 146, 43, 0.25), transparent 40%),
-        radial-gradient(circle at 10% 90%, rgba(230, 73, 128, 0.18), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(199, 157, 111, 0.12), transparent 40%),
+        radial-gradient(circle at 10% 90%, rgba(120, 145, 153, 0.1), transparent 45%),
         repeating-linear-gradient(135deg,
             transparent 0,
             transparent 34px,
-            rgba(91, 63, 214, 0.05) 35px,
-            rgba(91, 63, 214, 0.05) 36px);
+            rgba(79, 104, 120, 0.04) 35px,
+            rgba(79, 104, 120, 0.04) 36px);
 }
 
 .vendor-profile-heading
@@ -703,8 +703,8 @@ a
     justify-items: center;
     align-content: center;
     padding: 2rem;
-    border: 1px dashed #c4b8f0;
-    background: #f6f3ff;
+    border: 1px dashed #cbd6dc;
+    background: #f2f5f6;
     text-align: center;
 }
 
@@ -815,7 +815,7 @@ a
 
 .vendor-review-star-empty
 {
-    color: #d9d4ea;
+    color: #d6dfe3;
 }
 
 .vendor-review-comment
@@ -1122,7 +1122,7 @@ a
     --bs-pagination-hover-border-color: var(--portal-line);
     --bs-pagination-focus-color: var(--portal-accent);
     --bs-pagination-focus-bg: var(--portal-accent-soft);
-    --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(91, 63, 214, 0.25);
+    --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(79, 104, 120, 0.2);
     --bs-pagination-active-bg: var(--portal-accent);
     --bs-pagination-active-border-color: var(--portal-accent);
     --bs-pagination-disabled-color: var(--portal-muted);
