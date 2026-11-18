@@ -157,12 +157,12 @@
                                 <td>
                                     <span th:each="star : ${#numbers.sequence(1, 5)}"
                                           th:class="${review.rating != null and star <= review.rating}
-                                                      ? 'bi bi-star-fill text-warning'
-                                                      : 'bi bi-star text-secondary'"
+                                                         ? 'bi bi-star-fill text-warning'
+                                                         : 'bi bi-star text-secondary'"
                                           aria-hidden="true"></span>
                                 </td>
                                 <td th:text="${#temporals.format(review.createdAt,
-                                            'MMMM d, yyyy ''at'' h:mm a')}">
+                                               'MMMM d, yyyy ''at'' h:mm a')}">
                                 </td>
                             </tr>
                         </tbody>
