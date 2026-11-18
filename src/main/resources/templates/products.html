@@ -256,7 +256,7 @@
                                 <tbody>
                                     <!-- Out of stock product row alert -->
                                     <tr class="product-row"
-                                        th:classappend="${product.productQuantity <= 0} ? 'table-danger' : ''"
+                                        th:classappend="${(product.productQuantity <= 0 ? 'table-danger ' : '') + ((product.vendorName == businessName) ? 'border border-success border-3' : '')}"
                                         th:each="product : ${products}">
                                         <td class="text-secondary"
                                             th:text="${product.id}"></td>
@@ -319,7 +319,6 @@
                                             <span th:unless="${product.vendorName != null and vendorIdsByName[product.vendorName] != null}"
                                                   th:text="${product.vendorName != null ? product.vendorName : 'Unassigned'}"></span>
                                         </td>
-                                        <td th:if="${isVendor}"><span th:text="${product.vendorNotes}"></span></td>
                                         <td class="actions-column">
                                             <!-- Admin only row delete button -->
                                             <span class="product-action-form"
