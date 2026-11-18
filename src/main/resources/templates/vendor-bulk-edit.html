@@ -7,7 +7,7 @@
         <meta charset="UTF-8">
         <meta name="viewport"
               content="width=device-width, initial-scale=1">
-        <title>Vendor Product Bulk Edit</title>
+        <title>Bulk Editing Workspace</title>
         <link rel="stylesheet"
               th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
         <link rel="stylesheet"
@@ -68,6 +68,7 @@
                             </td>
                         </tr>
                     </table>
+                    <p th:text="|Currently displaying: ${#lists.size(vendorProducts)} items|"></p>
                     <button type="submit"
                             class="btn btn-success">Save Changes</button>
                     <a th:href="@{/vendor}"
